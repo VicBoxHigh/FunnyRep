@@ -12,7 +12,9 @@ namespace DumyReportes.Flags
         ERROR_CREATION_ENITIY,
         ERROR_VALIDATION_ENTITY,
         ERROR_SERSSION_EXPIRED,
-        ERROR_OK_RESULT
+        ERROR_OK_RESULT,
+        ERROR_RESULT 
+           
     }
 
     public enum ReportStatus

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DumyReportes.Models
 {
-    abstract class IValidateModel
+    public abstract class IValidateModel
     {
         public bool ValidateResult { get; set; } = true;
 
