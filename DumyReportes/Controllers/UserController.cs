@@ -12,19 +12,41 @@ namespace DumyReportes.Controllers
     public class UserController : ApiController
     {
         // GET: api/User
-        public IEnumerable<string> Get()
+        [Route("~/api/User/all")]
+        public /*IEnumerable<string>*/ object Get()
         {
-            return new string[] { "value1", "value2" };
+
+            Flags.ErrorFlag result = ReportData.GetAllUsers(out List<User> users, out string error);
+
+            return new
+            {
+                users = users.ToList(),
+                errorCode = result.ToString()
+
+            };
+
         }
 
         // GET: api/User/5
-        public string Get(int id)
+        /// [Route("~/api/User/{authorId:int}/books")]
+        public object Get(int id)
         {
-            return "value";
+            Flags.ErrorFlag result = ReportData.GetUser(id, out User user, out string error);
+
+
+
+            return new
+            {
+                resultCode = result.ToString(),
+                errorMsg = error,
+                user = user,
+
+            };
+
         }
 
         // POST: api/User
-        public int Post([FromBody]string numEmpleado,string userName, string pass, bool isEnable, int accessLevel)
+        public string Post(/*[FromBody]*/string numEmpleado, string userName, string pass, bool isEnable, int accessLevel)
         {
 
             User user = new User(
@@ -33,28 +55,47 @@ namespace DumyReportes.Controllers
                     pass,
                     isEnable,
                     (Flags.AccessLevel)accessLevel
-                
+
                 );
 
             //Válida la data
-            if (!user.Validate()) return (int)Flags.ErrorFlag.ERROR_RESULT;
+            bool isValid = user.Validate();
+            if (!isValid) return Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString(); ;
 
             //Inserta en DB
             Flags.ErrorFlag resultCreate = ReportData.createUser(user, out string error);
 
 
-            return (int)resultCreate;
+            return resultCreate.ToString();
 
         }
 
+        //including user disabling 
         // PUT: api/User/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut]
+        public string Put(int id, [FromBody]User user)
         {
+            bool isValid = user.Validate();
+            if (!isValid) return Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString();
+            user.IdUser = id;
+
+            Flags.ErrorFlag result = ReportData.UpdateUser(user, out string error);
+
+            return result.ToString();
+
         }
 
+        [HttpDelete]
         // DELETE: api/User/5
-        public void Delete(int id)
+        public string Delete(int id)
         {
+
+            Flags.ErrorFlag result = ReportData.DeleteUser(id, out string error);
+
+
+            return result.ToString();
+
+
         }
     }
 }

@@ -13,6 +13,11 @@ namespace DumyReportes.Flags
         ERROR_VALIDATION_ENTITY,
         ERROR_SERSSION_EXPIRED,
         ERROR_OK_RESULT,
+        ERROR_INVALID_OBJECT,
+        ERROR_RECORD_NOT_EXISTS,
+        ERROR_DATABASE,
+        ERROR_NO_DELETED_RECORDS,
+        ERROR_NO_AFECTED_RECORDS,
         ERROR_RESULT 
            
     }
