@@ -1,6 +1,7 @@
 ﻿using DumyReportes.Flags;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +9,7 @@ namespace DumyReportes.Models
 {
     public class Report
     {
+        [Key]
         public int IdReport { get; private set; }
         public int IdUserWhoNotified { get; private set; }
 

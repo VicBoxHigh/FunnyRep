@@ -203,7 +203,7 @@ namespace DumyReportes.Data
             try
             {
                 int a = command.ExecuteNonQuery();
-                if (a == 0) result = Flags.ErrorFlag.ERROR_NO_DELETED_RECORDS;
+                if (a == 0) result = Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS;
                 else result = Flags.ErrorFlag.ERROR_OK_RESULT;
             }
             catch (SqlException ex)

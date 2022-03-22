@@ -18,8 +18,8 @@ namespace DumyReportes.Flags
         ERROR_DATABASE,
         ERROR_NO_DELETED_RECORDS,
         ERROR_NO_AFECTED_RECORDS,
-        ERROR_RESULT 
-           
+        ERROR_RESULT,
+        ERROR_NO_UPDATED_RECORDS
     }
 
     public enum ReportStatus

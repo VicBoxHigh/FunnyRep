@@ -13,40 +13,50 @@ namespace DumyReportes.Controllers
     {
         // GET: api/User
         [Route("~/api/User/all")]
-        public /*IEnumerable<string>*/ object Get()
+        public /*IEnumerable<string>*/ IHttpActionResult Get()
         {
 
             Flags.ErrorFlag result = UserData.GetAllUsers(out List<User> users, out string error);
 
-            return new
+            return Ok(new
             {
                 users = users.ToList(),
                 errorCode = result.ToString()
 
-            };
+            });
 
         }
 
         // GET: api/User/5
         /// [Route("~/api/User/{authorId:int}/books")]
-        public object Get(int id)
+        public IHttpActionResult Get(int id)
         {
+            if (id < 1) return BadRequest("ID no válido");
+
             Flags.ErrorFlag result = UserData.GetUser(id, out User user, out string error);
 
-
-
-            return new
+            if (result == Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS)
             {
-                resultCode = result.ToString(),
-                errorMsg = error,
-                user = user,
+                return Content(HttpStatusCode.NotFound, result.ToString());
+            
+            }
 
-            };
+            return
+                Ok(
+                    new
+                    {
+                        resultCode = result.ToString(),
+                        errorMsg = error,
+                        user = user,
+
+                    }
+                );
+
 
         }
 
         // POST: api/User
-        public string Post(/*[FromBody]*/string numEmpleado, string userName, string pass, bool isEnable, int accessLevel)
+        public IHttpActionResult Post(/*[FromBody]*/string numEmpleado, string userName, string pass, bool isEnable, int accessLevel)
         {
 
             User user = new User(
@@ -60,40 +70,45 @@ namespace DumyReportes.Controllers
 
             //Válida la data
             bool isValid = user.Validate();
-            if (!isValid) return Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString(); ;
+            if (!isValid) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString()); 
 
             //Inserta en DB
             Flags.ErrorFlag resultCreate = UserData.createUser(user, out string error);
 
+            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return BadRequest(resultCreate.ToString());
 
-            return resultCreate.ToString();
+            return StatusCode(HttpStatusCode.Created);// resultCreate.ToString();
 
         }
 
         //including user disabling 
         // PUT: api/User/5
         [HttpPut]
-        public string Put(int id, [FromBody]User user)
+        public IHttpActionResult Put(int id, [FromBody] User user)
         {
             bool isValid = user.Validate();
-            if (!isValid) return Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString();
+            if (!isValid) return Content(HttpStatusCode.BadRequest, Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
             user.IdUser = id;
 
             Flags.ErrorFlag result = UserData.UpdateUser(user, out string error);
 
-            return result.ToString();
+            if (result == Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS)
+                return Content(HttpStatusCode.NoContent, result.ToString());
+
+
+            return Ok();
 
         }
 
         [HttpDelete]
         // DELETE: api/User/5
-        public string Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
 
             Flags.ErrorFlag result = UserData.DeleteUser(id, out string error);
 
 
-            return result.ToString();
+            return Ok();
 
 
         }
