@@ -7,7 +7,7 @@ using System.Web;
 
 namespace DumyReportes.Data
 {
-    public class ReportData
+    public class UserData
     {
 
         public static string QUERY_CREATE_LOCATION =

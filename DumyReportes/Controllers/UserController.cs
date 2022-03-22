@@ -16,7 +16,7 @@ namespace DumyReportes.Controllers
         public /*IEnumerable<string>*/ object Get()
         {
 
-            Flags.ErrorFlag result = ReportData.GetAllUsers(out List<User> users, out string error);
+            Flags.ErrorFlag result = UserData.GetAllUsers(out List<User> users, out string error);
 
             return new
             {
@@ -31,7 +31,7 @@ namespace DumyReportes.Controllers
         /// [Route("~/api/User/{authorId:int}/books")]
         public object Get(int id)
         {
-            Flags.ErrorFlag result = ReportData.GetUser(id, out User user, out string error);
+            Flags.ErrorFlag result = UserData.GetUser(id, out User user, out string error);
 
 
 
@@ -63,7 +63,7 @@ namespace DumyReportes.Controllers
             if (!isValid) return Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString(); ;
 
             //Inserta en DB
-            Flags.ErrorFlag resultCreate = ReportData.createUser(user, out string error);
+            Flags.ErrorFlag resultCreate = UserData.createUser(user, out string error);
 
 
             return resultCreate.ToString();
@@ -79,7 +79,7 @@ namespace DumyReportes.Controllers
             if (!isValid) return Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString();
             user.IdUser = id;
 
-            Flags.ErrorFlag result = ReportData.UpdateUser(user, out string error);
+            Flags.ErrorFlag result = UserData.UpdateUser(user, out string error);
 
             return result.ToString();
 
@@ -90,7 +90,7 @@ namespace DumyReportes.Controllers
         public string Delete(int id)
         {
 
-            Flags.ErrorFlag result = ReportData.DeleteUser(id, out string error);
+            Flags.ErrorFlag result = UserData.DeleteUser(id, out string error);
 
 
             return result.ToString();
