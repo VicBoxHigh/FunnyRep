@@ -18,7 +18,7 @@ namespace DumyReportes.Models
         [DataMember]
         public int IdUserWhoNotified { get; set; }
         [DataMember]
-        public Location location { get; set;  }
+        public Location Location { get; set;  }
         [DataMember]
         public Flags.ReportStatus CurrentStat { get; set; }
         [DataMember]
@@ -26,19 +26,19 @@ namespace DumyReportes.Models
 
         [DataMember]
         public List<ReportUpdate> ReportUpdates { get; set; }
-
         
-        public Report(int idReport, int idUserWhoNotified, Location location, ReportStatus currentStat, DateTime dTCreation, List<ReportUpdate> reportUpdates)
+        
+        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, List<ReportUpdate> reportUpdates)
         {
             IdReport = idReport;
             IdUserWhoNotified = idUserWhoNotified;
-            this.location = location;
+            this.Location = Location;
             CurrentStat = currentStat;
             DTCreation = dTCreation;
             this.ReportUpdates = reportUpdates;
         }
-        public Report(int idReport, int idUserWhoNotified, Location location, ReportStatus currentStat, DateTime dTCreation)
-        :this(idReport, idUserWhoNotified, location, currentStat, dTCreation, new List<ReportUpdate>())
+        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation)
+        :this(idReport, idUserWhoNotified, Location, currentStat, dTCreation, new List<ReportUpdate>())
         {
    
             

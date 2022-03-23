@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DumyReportes.Data;
+using DumyReportes.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,9 +12,13 @@ namespace DumyReportes.Controllers
     public class ReportController : ApiController
     {
 
+
+
         //WhoNotifiedReports and OwnerReports
 
-        // GET: api/Report //get all reports //get report header data only
+        private readonly ReportDataContext _ReportDataContext = new ReportDataContext();
+
+        // GET: api/Report //get ALL reports //get report header data only
         [Route("~/api/Report/all")]
         public IHttpActionResult Get()
         {
@@ -28,10 +34,27 @@ namespace DumyReportes.Controllers
         //idUser  3088 3088
         //__________________
         //  Assigned | Created
-        //So, he function can get all the reports, by owner or not, depending on the IdUser
-        
-        public IHttpActionResult Get(bool isOwner,int idUser)
+        //So, the function can get all the reports, by owner or not, depending on the IdUser
+
+        public IHttpActionResult Get(bool isOwner, int idUser)
         {
+            if (idUser < 1) return BadRequest("ID no válido");
+
+            Flags.ErrorFlag result =
+                _ReportDataContext.GetAllBy(isOwner, idUser, out List<IReportObject> reportObjs, out string error) :
+                
+            if (result != Flags.ErrorFlag.ERROR_OK_RESULT)
+                return StatusCode(HttpStatusCode.NotFound);
+
+            if (reportObjs.Count == 0) return StatusCode(HttpStatusCode.NoContent);
+
+            return Ok(
+                new
+                {
+                    reports = reportObjs
+                }
+            );
+
 
         }
 
@@ -42,19 +65,19 @@ namespace DumyReportes.Controllers
             return "value";
         }
 
-       
+
         //Get reports ByOwnerId
         //Get reports ByWhoNotifier
 
-        
+
 
         // POST: api/Report
-        public void Post([FromBody]string value)
+        public void Post([FromBody] string value)
         {
         }
 
         // PUT: api/Report/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody] string value)
         {
         }
 
