@@ -13,9 +13,9 @@ using DumyReportes.Models;
 
 namespace DumyReportes.Controllers
 {
-    public class ReportsController : ApiController
+    public class DeleteReportsController : ApiController
     {
-        private ReportContext db = new ReportContext();
+        private DeleteReportContext db = new DeleteReportContext();
 
         // GET: api/Reports
         public IQueryable<Report> GetReports()

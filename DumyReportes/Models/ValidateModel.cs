@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DumyReportes.Models
 {
-    public abstract class IValidateModel
+    public abstract class ValidateModel
     {
        /* [JsonIgnore]*/ //or using DataContract
         public bool ValidateResult { get; set; } = true;

@@ -9,7 +9,7 @@ using System.Web;
 namespace DumyReportes.Models
 {
     [DataContract]
-    public class User : IValidateModel
+    public class User : ValidateModel, IReportObject
     {
         [DataMember]
         public int IdUser { get; set; }

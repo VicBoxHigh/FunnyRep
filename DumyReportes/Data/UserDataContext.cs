@@ -1,4 +1,5 @@
-﻿using DumyReportes.Models;
+﻿using DumyReportes.Flags;
+using DumyReportes.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -7,7 +8,7 @@ using System.Web;
 
 namespace DumyReportes.Data
 {
-    public class UserData
+    public class UserDataContext : IDataOperation
     {
 
         public static string QUERY_CREATE_LOCATION =
@@ -39,8 +40,11 @@ namespace DumyReportes.Data
 
 
         //Insertará un row para tabla usuario
-        public static Flags.ErrorFlag createUser(User user, out string error)
+ 
+
+        public ErrorFlag Create(IReportObject reportObject, out string error)
         {
+            User user = reportObject as User;
             error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_CREATE_USER, ConexionBD.getConexion());
@@ -63,7 +67,6 @@ namespace DumyReportes.Data
 
 
             return result;
-
         }
 
         public static string QUERY_GET_USER =
@@ -79,12 +82,11 @@ namespace DumyReportes.Data
 
             ";
         //Where IdUser = @IdUser
-
-        public static Flags.ErrorFlag GetAllUsers(out List<User> users, out string error)
+        public ErrorFlag GetAll(out List<IReportObject> users, out string error)
         {
             error = "";
             Flags.ErrorFlag result;
-            users = new List<User>();
+            users = new List<IReportObject>();
 
             SqlCommand command = new SqlCommand(QUERY_GET_USER /*ALL*/, ConexionBD.getConexion());
             try
@@ -98,7 +100,7 @@ namespace DumyReportes.Data
 
                     while (sqlDataReader.Read())
                     {
-                        users.Add(recreateUser(sqlDataReader));
+                        users.Add(InstanceFromReader(sqlDataReader));
 
                     }
 
@@ -113,10 +115,9 @@ namespace DumyReportes.Data
 
             return result;
 
-
-        }
-
-        public static Flags.ErrorFlag GetUser(int iduser, out User user, out string error)
+         }
+     
+        public ErrorFlag Get(int iduser, out IReportObject user, out string error)
         {
             error = "";
             user = null;
@@ -136,7 +137,7 @@ namespace DumyReportes.Data
 
                     if (sqlDataReader.Read())
                     {
-                        user = recreateUser(sqlDataReader);
+                        user = InstanceFromReader(sqlDataReader);
                         result = Flags.ErrorFlag.ERROR_OK_RESULT;
                     }
                     else
@@ -156,22 +157,21 @@ namespace DumyReportes.Data
 
             return result;
         }
+   
 
-        private static User recreateUser(SqlDataReader sqlDataReader)
+        public IReportObject InstanceFromReader(SqlDataReader reader)
         {
-
             User user = new User(
-                    (string)sqlDataReader["NumEmpleado"],
-                    (string)sqlDataReader["UserName"],
-                    (string)sqlDataReader["Pass"],
-                    Boolean.Parse(sqlDataReader["IsEnabled"].ToString()),
-                    (Flags.AccessLevel)sqlDataReader["Level"]
-                );
+                   (string)reader["NumEmpleado"],
+                   (string)reader["UserName"],
+                   (string)reader["Pass"],
+                   Boolean.Parse(reader["IsEnabled"].ToString()),
+                   (Flags.AccessLevel)reader["Level"]
+               );
 
-            if (user != null) user.IdUser = (int)sqlDataReader["IdUser"];
+            if (user != null) user.IdUser = (int)reader["IdUser"];
 
             return user;
-
         }
 
 
@@ -187,8 +187,13 @@ namespace DumyReportes.Data
 
                 ";
 
-        public static Flags.ErrorFlag UpdateUser(User updatedUser, out string error)
+      /*  public static Flags.ErrorFlag UpdateUser(User updatedUser, out string error)
         {
+           
+        }*/
+        public ErrorFlag Update(IReportObject reportObject, out string error)
+        {
+            User updatedUser = reportObject as User;
             error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
@@ -214,8 +219,8 @@ namespace DumyReportes.Data
 
 
             return result;
-        }
 
+        }
 
         public static string QUERY_DELETE_USER =
             @"
@@ -223,23 +228,24 @@ namespace DumyReportes.Data
                 WHERE [User].IdUser  = @IdUser
             ";
 
-        public static Flags.ErrorFlag DeleteUser(int IdUser, out string error)
+      
+        public ErrorFlag Delete(int id, out string error)
         {
             error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_DELETE_USER, ConexionBD.getConexion());
-            command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = IdUser;
+            command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = id;
 
             try
             {
                 int rowsModified = command.ExecuteNonQuery();
                 if (rowsModified == 0) result = Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS;
-                result = Flags.ErrorFlag.ERROR_OK_RESULT;
+                result = ErrorFlag.ERROR_OK_RESULT;
 
             }
             catch (SqlException ex)
             {
-                result = Flags.ErrorFlag.ERROR_DATABASE;
+                result = ErrorFlag.ERROR_DATABASE;
                 error = ex.Message;
 
             }
@@ -248,6 +254,32 @@ namespace DumyReportes.Data
             return result;
         }
 
+        public static string QUERY_EXIST_USER =
+            @"SELECT TOP 1 FROM [ReportApp].[dbo].[User] Where [User].IdUser =  @IdUser";
+
+        public ErrorFlag Exists(int id, out string error)
+        {
+            error = "";
+            ErrorFlag result;
+            SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
+            command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = id;
+
+            try
+            {
+                int a = command.ExecuteNonQuery();
+                if (a == 0) result = ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                else result = ErrorFlag.ERROR_OK_RESULT;
+            }
+            catch (SqlException ex)
+            {
+                error = ex.Message;
+                result = ErrorFlag.ERROR_CONNECTION_DB;
+            }
+
+
+            return result;
+
+        }
 
     }
 }

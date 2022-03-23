@@ -3,29 +3,47 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Web;
 
 namespace DumyReportes.Models
 {
+    [DataContract]
+
     public class Report
     {
         [Key]
-        public int IdReport { get; private set; }
-        public int IdUserWhoNotified { get; private set; }
+        [DataMember]
+        public int IdReport { get; set; }
+        [DataMember]
+        public int IdUserWhoNotified { get; set; }
+        [DataMember]
+        public Location location { get; set;  }
+        [DataMember]
+        public Flags.ReportStatus CurrentStat { get; set; }
+        [DataMember]
+        public DateTime DTCreation { get; set; }
 
-        public Location location { get; private set;  }
+        [DataMember]
+        public List<ReportUpdate> ReportUpdates { get; set; }
 
-        public Flags.ErrorFlag CurrentStat { get; set; }
-
-        public DateTime DTCreation { get; private set; }
-
-        public Report(int idReport, int idUserWhoNotified, Location location, ErrorFlag currentStat, DateTime dTCreation)
+        
+        public Report(int idReport, int idUserWhoNotified, Location location, ReportStatus currentStat, DateTime dTCreation, List<ReportUpdate> reportUpdates)
         {
             IdReport = idReport;
             IdUserWhoNotified = idUserWhoNotified;
             this.location = location;
             CurrentStat = currentStat;
             DTCreation = dTCreation;
+            this.ReportUpdates = reportUpdates;
+        }
+        public Report(int idReport, int idUserWhoNotified, Location location, ReportStatus currentStat, DateTime dTCreation)
+        :this(idReport, idUserWhoNotified, location, currentStat, dTCreation, new List<ReportUpdate>())
+        {
+   
+            
+
+
         }
 
     }

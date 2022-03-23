@@ -11,16 +11,18 @@ namespace DumyReportes.Controllers
 {
     public class UserController : ApiController
     {
+
+        private readonly UserDataContext _UserDataContext = new UserDataContext();
         // GET: api/User
         [Route("~/api/User/all")]
         public /*IEnumerable<string>*/ IHttpActionResult Get()
         {
 
-            Flags.ErrorFlag result = UserData.GetAllUsers(out List<User> users, out string error);
+            Flags.ErrorFlag result = _UserDataContext.GetAll(out List<IReportObject> users, out string error);
 
             return Ok(new
             {
-                users = users.ToList(),
+                users,
                 errorCode = result.ToString()
 
             });
@@ -33,7 +35,9 @@ namespace DumyReportes.Controllers
         {
             if (id < 1) return BadRequest("ID no válido");
 
-            Flags.ErrorFlag result = UserData.GetUser(id, out User user, out string error);
+            /*User userOut ;*/
+            Flags.ErrorFlag result = _UserDataContext.Get(id, out  IReportObject user  , out string error);
+            /*userOut = user as User;*/
 
             if (result == Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS)
             {
@@ -47,7 +51,7 @@ namespace DumyReportes.Controllers
                     {
                         resultCode = result.ToString(),
                         errorMsg = error,
-                        user = user,
+                        user = user /*as User*/,
 
                     }
                 );
@@ -73,7 +77,7 @@ namespace DumyReportes.Controllers
             if (!isValid) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString()); 
 
             //Inserta en DB
-            Flags.ErrorFlag resultCreate = UserData.createUser(user, out string error);
+            Flags.ErrorFlag resultCreate = _UserDataContext.Create(user, out string error);
 
             if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return BadRequest(resultCreate.ToString());
 
@@ -90,7 +94,7 @@ namespace DumyReportes.Controllers
             if (!isValid) return Content(HttpStatusCode.BadRequest, Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
             user.IdUser = id;
 
-            Flags.ErrorFlag result = UserData.UpdateUser(user, out string error);
+            Flags.ErrorFlag result = _UserDataContext.Update(user, out string error);
 
             if (result == Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS)
                 return Content(HttpStatusCode.NoContent, result.ToString());
@@ -105,7 +109,7 @@ namespace DumyReportes.Controllers
         public IHttpActionResult Delete(int id)
         {
 
-            Flags.ErrorFlag result = UserData.DeleteUser(id, out string error);
+            Flags.ErrorFlag result = _UserDataContext.Delete(id, out string error);
 
 
             return Ok();

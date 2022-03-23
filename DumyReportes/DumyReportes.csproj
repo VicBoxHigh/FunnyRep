@@ -162,19 +162,25 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\DeleteReportsController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data\ConexionBD.cs" />
-    <Compile Include="Data\ReportContext.cs" />
-    <Compile Include="Data\UserData.cs" />
+    <Compile Include="Data\DeleteReportContext.cs" />
+    <Compile Include="Data\IDataOperation.cs" />
+    <Compile Include="Data\ReportDataContext.cs" />
+    <Compile Include="Data\UserDataContext.cs" />
     <Compile Include="Flags\Flags.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\IValidateModel.cs" />
+    <Compile Include="Models\Evidence.cs" />
+    <Compile Include="Models\IReportObject.cs" />
+    <Compile Include="Models\ValidateModel.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Report.cs" />
+    <Compile Include="Models\ReportUpdate.cs" />
     <Compile Include="Models\SessionToken.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
