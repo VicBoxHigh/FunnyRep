@@ -281,5 +281,10 @@ namespace DumyReportes.Data
 
         }
 
+        public ErrorFlag Detail(int id, out string error)
+        {
+            throw new NotImplementedException();
+            
+        }
     }
 }
