@@ -18,7 +18,7 @@ namespace DumyReportes.Data
 
         Flags.ErrorFlag Exists(int id, out string error);
 
-        Flags.ErrorFlag Detail(int id, out string error);
+        Flags.ErrorFlag Detail(int id, out List<IReportObject> reportObjects, out string error);
 
     }
 }

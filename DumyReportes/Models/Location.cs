@@ -11,10 +11,15 @@ namespace DumyReportes.Models
         public int IdLocation { get; private set; }
         public string Description { get; private set; }
 
-        public int lat { get; private set; }
-        public int lon { get; private set; }
+        public decimal lat { get; private set; }
+        public decimal lon { get; private set; }
 
-
-
+        public Location(int idLocation, string description, decimal lat, decimal lon)
+        {
+            IdLocation = idLocation;
+            Description = description;
+            this.lat = lat;
+            this.lon = lon;
+        }
     }
 }

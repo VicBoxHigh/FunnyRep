@@ -8,7 +8,7 @@ using System.Web;
 namespace DumyReportes.Models
 {
     [DataContract]
-    public class ReportUpdate
+    public class ReportDtlEntry: ValidateModel, IReportObject
     {
 
         [Key]
@@ -31,6 +31,19 @@ namespace DumyReportes.Models
         [DataMember]
         public bool IsOwnerUpdate { get; set; }
 
+        public ReportDtlEntry(int idReportUpdate, int idReport, Evidence evidence, string titleUpdate, string description, bool isOwnerUpdate)
+        {
+            IdReportUpdate = idReportUpdate;
+            IdReport = idReport;
+            Evidence = evidence;
+            TitleUpdate = titleUpdate;
+            Description = description;
+            IsOwnerUpdate = isOwnerUpdate;
+        }
 
+        public override bool Validate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

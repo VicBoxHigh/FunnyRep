@@ -14,13 +14,16 @@ namespace DumyReportes.Flags
         ERROR_SERSSION_EXPIRED,
         ERROR_OK_RESULT,
         ERROR_INVALID_OBJECT,
+        ERROR_INVALID_ID,
         ERROR_RECORD_NOT_EXISTS,
         ERROR_RECORD_EXISTS,
         ERROR_DATABASE,
         ERROR_NO_DELETED_RECORDS,
         ERROR_NO_AFECTED_RECORDS,
         ERROR_RESULT,
+        ERROR_DENIED_OPERATION,
         ERROR_NO_UPDATED_RECORDS
+
     }
 
     public enum ReportStatus

@@ -10,7 +10,7 @@ namespace DumyReportes.Models
 {
     [DataContract]
 
-    public class Report
+    public class Report : ValidateModel, IReportObject
     {
         [Key]
         [DataMember]
@@ -25,10 +25,16 @@ namespace DumyReportes.Models
         public DateTime DTCreation { get; set; }
 
         [DataMember]
-        public List<ReportUpdate> ReportUpdates { get; set; }
+        public List<ReportDtlEntry> ReportUpdates { get; set; }
+
+        [DataMember]
+        public string Title { get; set; }
         
-        
-        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, List<ReportUpdate> reportUpdates)
+        [DataMember]
+        public string Description { get; set; }
+
+
+        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, List<ReportDtlEntry> reportUpdates,string title, string description)
         {
             IdReport = idReport;
             IdUserWhoNotified = idUserWhoNotified;
@@ -36,9 +42,11 @@ namespace DumyReportes.Models
             CurrentStat = currentStat;
             DTCreation = dTCreation;
             this.ReportUpdates = reportUpdates;
+            this.Title = title;
+            this.Description = description;
         }
-        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation)
-        :this(idReport, idUserWhoNotified, Location, currentStat, dTCreation, new List<ReportUpdate>())
+        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, string title, string descripion)
+        :this(idReport, idUserWhoNotified, Location, currentStat, dTCreation, new List<ReportDtlEntry>(),title, descripion)
         {
    
             
@@ -46,5 +54,18 @@ namespace DumyReportes.Models
 
         }
 
+        public override bool Validate()
+        {
+            
+
+            ValidateResult =  IdReport > 0 & Title.Length < 50 & IdUserWhoNotified > 0 & Location != null & DTCreation != null;            
+
+
+
+
+            return ValidateResult;
+
+             
+        }
     }
 }

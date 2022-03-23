@@ -164,6 +164,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\DeleteReportsController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ReportDtlController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data\ConexionBD.cs" />
@@ -180,7 +181,7 @@
     <Compile Include="Models\ValidateModel.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Report.cs" />
-    <Compile Include="Models\ReportUpdate.cs" />
+    <Compile Include="Models\ReportDtlEntry.cs" />
     <Compile Include="Models\SessionToken.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

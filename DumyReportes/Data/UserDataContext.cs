@@ -281,7 +281,7 @@ namespace DumyReportes.Data
 
         }
 
-        public ErrorFlag Detail(int id, out string error)
+        public ErrorFlag Detail(int id, out List<IReportObject> reportObjects, out string error)
         {
             throw new NotImplementedException();
             
