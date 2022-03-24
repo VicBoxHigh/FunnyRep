@@ -20,7 +20,7 @@ namespace DumyReportes.Models
         [DataMember]
         public Location Location { get; set;  }
         [DataMember]
-        public Flags.ReportStatus CurrentStat { get; set; }
+        public Flags.ReportStatus IdStatus { get; set; }
         [DataMember]
         public DateTime DTCreation { get; set; }
 
@@ -33,13 +33,16 @@ namespace DumyReportes.Models
         [DataMember]
         public string Description { get; set; }
 
+        public Report()
+        {
 
+        }
         public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, List<ReportDtlEntry> reportUpdates,string title, string description)
         {
             IdReport = idReport;
             IdUserWhoNotified = idUserWhoNotified;
             this.Location = Location;
-            CurrentStat = currentStat;
+            IdStatus = currentStat;
             DTCreation = dTCreation;
             this.ReportUpdates = reportUpdates;
             this.Title = title;
@@ -58,7 +61,7 @@ namespace DumyReportes.Models
         {
             
 
-            ValidateResult =  IdReport > 0 & Title.Length < 50 & IdUserWhoNotified > 0 & Location != null & DTCreation != null;            
+            ValidateResult =   Title.Length < 50 & IdUserWhoNotified > 0 & Location != null & DTCreation != null;            
 
 
 

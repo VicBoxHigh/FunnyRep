@@ -5,7 +5,7 @@ namespace DumyReportes.Data
 {
     internal interface IDataOperation
     {
-        Flags.ErrorFlag Get(int iduser, out IReportObject reportObject, out string error);
+        Flags.ErrorFlag Get(int id, out IReportObject reportObject, out string error);
         Flags.ErrorFlag GetAll(out List<IReportObject> reportObjects, out string error);
 
         IReportObject InstanceFromReader(System.Data.SqlClient.SqlDataReader reader);

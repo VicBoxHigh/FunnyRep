@@ -43,7 +43,12 @@ namespace DumyReportes.Models
 
         public override bool Validate()
         {
-            throw new NotImplementedException();
+
+            ValidateResult = IdReport > 0 & Evidence != null & TitleUpdate != null && Description != null && 
+                TitleUpdate.Length < 45 & Description.Length < 512;
+
+            return ValidateResult;
+
         }
     }
 }

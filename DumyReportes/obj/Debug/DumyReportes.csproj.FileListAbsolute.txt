@@ -69,7 +69,6 @@ C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\es\System.Web.Razor
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\es\System.Web.WebPages.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\es\System.Web.WebPages.Deployment.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\es\System.Web.WebPages.Razor.resources.dll
-C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.csproj.AssemblyReference.cache
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.csproj.CoreCompileInputs.cache
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.dll

@@ -171,6 +171,7 @@
     <Compile Include="Data\DeleteReportContext.cs" />
     <Compile Include="Data\IDataOperation.cs" />
     <Compile Include="Data\ReportDataContext.cs" />
+    <Compile Include="Data\ReportDtlContext.cs" />
     <Compile Include="Data\UserDataContext.cs" />
     <Compile Include="Flags\Flags.cs" />
     <Compile Include="Global.asax.cs">

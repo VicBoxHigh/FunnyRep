@@ -37,7 +37,7 @@ namespace DumyReportes.Models
 
         public override bool Validate()
         {
-            ValidateResult = IdUser > 0 & this.NumEmpleado.Length < 25 & this.UserName.Length < 25 & this.Pass.Length < 25;
+            ValidateResult =   this.NumEmpleado.Length < 25 & this.UserName.Length < 25 & this.Pass.Length < 25;
             /*Trace.Assert(this.NumEmpleado.Length > 25);
             Trace.Assert(this.UserName.Length > 25);
             Trace.Assert(this.Pass.Length > 25);

@@ -20,5 +20,11 @@ namespace DumyReportes.Models
         [DataMember]
         public string Patch { get; set; }
 
+        public Evidence(int idEvidence, string fileName, string patch)
+        {
+            IdEvidence = idEvidence;
+            FileName = fileName;
+            Patch = patch;
+        }
     }
 }
