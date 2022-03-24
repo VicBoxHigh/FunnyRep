@@ -83,6 +83,7 @@ namespace DumyReportes.Data
 
             END TRY
             BEGIN CATCH
+                SELECT ERROR_MESSAGE() ERROR;
 	            ROLLBACK TRANSACTION CreateReportDtlTran;
             END CATCH
             ";
@@ -92,38 +93,48 @@ namespace DumyReportes.Data
             ReportDtlEntry reportDtlEntry = reportObject as ReportDtlEntry;
             Evidence evidence = reportDtlEntry.Evidence;
             error = "";
+            ErrorFlag result;
 
             SqlCommand command = new SqlCommand(QUERY_INSERT_EVIDENCE_AND_REPORT, ConexionBD.getConexion());
 
             if (evidence != null)
             {
-                command.Parameters.Add("@fileName", System.Data.SqlDbType.Int).Value = reportDtlEntry.Evidence;
-                command.Parameters.Add("@path", System.Data.SqlDbType.Int).Value = reportDtlEntry.Evidence;
+                command.Parameters.Add("@fileName", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Evidence.FileName;
+                command.Parameters.Add("@path", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Evidence.Path;
 
             }
-            command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = reportDtlEntry.Evidence;
-            command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Evidence;
-            command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Evidence;
-            command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = reportDtlEntry.Evidence;
-            command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.Evidence;
+            command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = reportDtlEntry.IdReport;
+            command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.TitleUpdate;
+            command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Description;
+            command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = reportDtlEntry.DTUpdate;
+            command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.IsOwnerUpdate;
 
 
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 try
                 {
-                    reader.NextResult();
-                    if (reader.RecordsAffected == 0) //si el segundo INSERT falla (los rowsAffected son  = 0), el Rollback se realizó y
-                        return Flags.ErrorFlag.ERROR_NO_AFECTED_RECORDS;
 
-                    else return Flags.ErrorFlag.ERROR_OK_RESULT;
+                    result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
+
+                    if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
+                    //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
+                    if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
+                    {
+                        result = ErrorFlag.ERROR_CREATION_ENITITY;
+                        //result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
+                        //if (reader.Read())
+
+                    }
+
 
                 }
                 catch (SqlException ex)
                 {
-                    return ErrorFlag.ERROR_CONNECTION_DB;
+                    result = ErrorFlag.ERROR_CONNECTION_DB;
                 }
 
+                return result;
 
             }
         }
@@ -166,6 +177,7 @@ namespace DumyReportes.Data
               Where RDE.IdReport = @IdReport
               Order by DTUpdate ASC
             ";
+        //Trae todos los ReportDtlEntry de un reporte especifico
         public ErrorFlag GetAll(int id, out List<IReportObject> reportObjects, out string error)
         {
             error = "";
@@ -205,8 +217,8 @@ namespace DumyReportes.Data
         {
             Evidence evidence = null;
 
-            evidence = reader["E.IdEvidence"] == null ? null : new Evidence(
-                (int)reader["E.IdEvidence"],
+            evidence = reader["IdEvidence"] == null ? null : new Evidence(
+                (int)reader["IdEvidence"],
                 reader["FileName"].ToString(),
                 reader["Path"].ToString()
                 ); ;
@@ -216,9 +228,11 @@ namespace DumyReportes.Data
                 (int)reader["IdReportDtlEntry"],
                 (int)reader["IdReport"],
                 evidence,
-                reader["RDE.Title"].ToString(),
-                reader["RDE.Description"].ToString(),
-                (bool)reader["isOwnerUpdate"]
+                reader["TitleUpdate"].ToString(),
+                reader["Description"].ToString(),
+                (bool)reader["isOwnerUpdate"],
+                 DateTime.Parse(reader["DTUpdate"].ToString())
+
 
                 );
 

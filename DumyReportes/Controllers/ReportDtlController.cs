@@ -34,7 +34,7 @@ namespace DumyReportes.Controllers
         //Todas las entries de un ReportHeader, es independiente del usuario, ya que es gobernado por el IdReport (Header)
         // GET: api/ReportDtl
         [Route("~/api/ReportDtl/{idRH}")]
-        public IHttpActionResult Get(int idRH)
+        public IHttpActionResult Get([FromUri]int idRH)
         {
             if (idRH < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
             Flags.ErrorFlag resultGet = _ReportDtlContext.GetAll(idRH, out List<IReportObject> reportObjects, out string error);
@@ -64,7 +64,7 @@ namespace DumyReportes.Controllers
 
             Flags.ErrorFlag resultCreate = _ReportDtlContext.Create(reportDtlEntry, out string error);
 
-            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resultCreate.ToString());
+            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return Conflict();
 
 
             return StatusCode(HttpStatusCode.Created);

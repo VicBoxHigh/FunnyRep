@@ -70,3 +70,7 @@ C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Release\DumyReporte
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Release\DumyReportes.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Release\DumyReportes.dll
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Release\DumyReportes.pdb
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\EntityFramework.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\EntityFramework.SqlServer.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\EntityFramework.xml
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\EntityFramework.SqlServer.xml

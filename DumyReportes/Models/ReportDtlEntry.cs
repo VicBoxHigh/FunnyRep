@@ -8,13 +8,12 @@ using System.Web;
 namespace DumyReportes.Models
 {
     [DataContract]
-    public class ReportDtlEntry: ValidateModel, IReportObject
+    public class ReportDtlEntry : ValidateModel, IReportObject
     {
 
         [Key]
         [DataMember]
         public int IdReportUpdate { get; set; }
-
 
         [DataMember]
         public int IdReport { get; set; }
@@ -31,7 +30,15 @@ namespace DumyReportes.Models
         [DataMember]
         public bool IsOwnerUpdate { get; set; }
 
-        public ReportDtlEntry(int idReportUpdate, int idReport, Evidence evidence, string titleUpdate, string description, bool isOwnerUpdate)
+        [DataMember]
+        public DateTime DTUpdate { get; set; }
+
+        public ReportDtlEntry()
+        {
+
+        }
+
+        public ReportDtlEntry(int idReportUpdate, int idReport, Evidence evidence, string titleUpdate, string description, bool isOwnerUpdate, DateTime dTUpdate)
         {
             IdReportUpdate = idReportUpdate;
             IdReport = idReport;
@@ -39,12 +46,13 @@ namespace DumyReportes.Models
             TitleUpdate = titleUpdate;
             Description = description;
             IsOwnerUpdate = isOwnerUpdate;
+            DTUpdate = dTUpdate;
         }
 
         public override bool Validate()
         {
 
-            ValidateResult = IdReport > 0 & Evidence != null & TitleUpdate != null && Description != null && 
+            ValidateResult = Evidence != null & TitleUpdate != null && Description != null &&
                 TitleUpdate.Length < 45 & Description.Length < 512;
 
             return ValidateResult;

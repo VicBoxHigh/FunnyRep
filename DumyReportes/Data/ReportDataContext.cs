@@ -65,7 +65,7 @@ namespace DumyReportes.Data
                             ,@LocLat
                             ,@LocLong
 		                    );
-
+                       
 
                         INSERT INTO [dbo].[Report]
                             ([IdUserWhoNotified]
@@ -84,12 +84,11 @@ namespace DumyReportes.Data
                             ,@RepTitle
                             ,@RepDescription);
 
-
-
 	            COMMIT TRANSACTION CreateReportDtlTran;
 
             END TRY
             BEGIN CATCH
+                SELECT ERROR_MESSAGE() ERROR;
 	            ROLLBACK TRANSACTION CreateReportDtlTran;
             END CATCH
             ";
@@ -126,11 +125,14 @@ namespace DumyReportes.Data
                     {
                          
                         result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
-                        if (reader.NextResult())
+                        if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
+                        //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
+                        if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
                         {
+                            result = ErrorFlag.ERROR_CREATION_ENITITY;
                             //result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
                             //if (reader.Read())
-                            if (reader.RecordsAffected == 1) result = ErrorFlag.ERROR_OK_RESULT;
+                           
                         }
                     }
 

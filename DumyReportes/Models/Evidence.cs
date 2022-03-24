@@ -18,13 +18,13 @@ namespace DumyReportes.Models
         public string FileName { get; set; }
 
         [DataMember]
-        public string Patch { get; set; }
+        public string Path { get; set; }
 
         public Evidence(int idEvidence, string fileName, string patch)
         {
             IdEvidence = idEvidence;
             FileName = fileName;
-            Patch = patch;
+            Path = patch;
         }
     }
 }

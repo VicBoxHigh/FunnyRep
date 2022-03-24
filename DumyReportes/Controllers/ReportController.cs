@@ -42,7 +42,7 @@ namespace DumyReportes.Controllers
 
             Flags.ErrorFlag result =
                 _ReportDataContext.GetAllBy(isOwner, idUser, out List<IReportObject> reportObjs, out string error);
-                
+
             if (result != Flags.ErrorFlag.ERROR_OK_RESULT)
                 return StatusCode(HttpStatusCode.NotFound);
 
@@ -65,7 +65,7 @@ namespace DumyReportes.Controllers
         {
             if (id < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
-            Flags.ErrorFlag resultGetReporDetail = _ReportDataContext.Get(id, out IReportObject reportObj ,out string error);
+            Flags.ErrorFlag resultGetReporDetail = _ReportDataContext.Get(id, out IReportObject reportObj, out string error);
 
 
             if (resultGetReporDetail != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resultGetReporDetail.ToString());
@@ -95,16 +95,30 @@ namespace DumyReportes.Controllers
 
 
 
-            Flags.ErrorFlag resultCreation = _ReportDataContext.Create(report,out string error);
+            Flags.ErrorFlag resultCreation = _ReportDataContext.Create(report, out string error);
 
-            if (resultCreation != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.NotModified, resultCreation.ToString());
 
+
+            if (resultCreation != Flags.ErrorFlag.ERROR_OK_RESULT)
+            {
+                /*HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NotModified)
+                {
+                    Content = new StringContent("No hubo cambios."),
+                    ReasonPhrase = resultCreation.ToString()
+                };
+
+                throw new HttpResponseException(httpResponseMessage);*/
+                return StatusCode(HttpStatusCode.NotModified);
+                
+                //return Content<string>(HttpStatusCode.NotModified, resultCreation.ToString());
+
+            }
 
             return StatusCode(HttpStatusCode.Created);
 
 
         }
-       
+
 
         // PUT: api/Report/5
         public IHttpActionResult Put(int id, [FromBody] Report report)
@@ -126,7 +140,7 @@ namespace DumyReportes.Controllers
         // DELETE: api/Report/5
         public IHttpActionResult Delete(int id)
         {
-            if (id < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString()) ;
+            if (id < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
 
             Flags.ErrorFlag resultDelete = _ReportDataContext.Delete(id, out string error);
