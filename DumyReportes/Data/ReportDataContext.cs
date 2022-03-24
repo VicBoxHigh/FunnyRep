@@ -121,9 +121,10 @@ namespace DumyReportes.Data
                     command.Parameters.Add("@RepTitle", System.Data.SqlDbType.VarChar).Value = report.Title;
                     command.Parameters.Add("@RepDescription", System.Data.SqlDbType.VarChar).Value = report.Description;
 
-
+                    
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                         
                         result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
                         if (reader.NextResult())
                         {
