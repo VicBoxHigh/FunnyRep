@@ -190,6 +190,7 @@
     <Compile Include="Data\ReportDtlContext.cs" />
     <Compile Include="Data\UserDataContext.cs" />
     <Compile Include="Filters\VicAuth.cs" />
+    <Compile Include="Filters\VicAuthentication.cs" />
     <Compile Include="Flags\Flags.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -203,6 +204,9 @@
     <Compile Include="Models\SessionToken.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\LoginValidatorHelper.cs" />
+    <Compile Include="Util\TokenGenerator.cs" />
+    <Compile Include="Util\TokenValidatorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
