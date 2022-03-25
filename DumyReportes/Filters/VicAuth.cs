@@ -16,8 +16,9 @@ namespace DumyReportes.Filters
         public override void OnAuthorization(HttpActionContext actionContext)
         {
             //actionContext.Request.Properties.
-             
-            
+            base.OnAuthorization(actionContext);
+
+
             KeyValuePair<string, IEnumerable<string>> keyValuePair = actionContext.Request.Headers.FirstOrDefault(h => h.Key.Equals("Authorization"));
             if (actionContext.Request.Headers.Authorization == null) //No Auh method
             {
@@ -27,6 +28,7 @@ namespace DumyReportes.Filters
             if(String.IsNullOrEmpty(actionContext.Request.Headers.Authorization.Parameter))
             {
                 actionContext.Response = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                return;
             }
            
             string paramsAuth = actionContext.Request.Headers.Authorization.Parameter;
@@ -34,8 +36,7 @@ namespace DumyReportes.Filters
 
             string usrename = parsed.Split(':')[0];
             string password = parsed.Split(':')[1];
-            base.OnAuthorization(actionContext);
-            actionContext.prin
+          // / actionContext.prin
             //actionContext.Response.StatusCode = System.Net.HttpStatusCode.Unauthorized;
 
             //OAuthAuthorizationServerOptions

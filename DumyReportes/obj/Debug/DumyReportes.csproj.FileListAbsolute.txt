@@ -75,3 +75,15 @@ C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.pdb
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\obj\Debug\DumyReportes.csproj.AssemblyReference.cache
 C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Owin.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.IdentityModel.Logging.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.IdentityModel.Tokens.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.IdentityModel.JsonWebTokens.xml
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.IdentityModel.Logging.xml
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\Microsoft.IdentityModel.Tokens.xml
+C:\Users\progjun2\source\repos\DumyReportes\DumyReportes\bin\System.IdentityModel.Tokens.Jwt.xml

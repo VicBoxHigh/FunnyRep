@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using DumyReportes.Filters;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -30,7 +31,7 @@ namespace DumyReportes.Util
 
             tokenHandler.ValidateToken(token, validationParameters, out securityToken);
 
-            
+            return true;
 
         }
 

@@ -13,7 +13,8 @@ namespace DumyReportes
         {
             // Configuración y servicios de API web
             
-            config.Filters.Add(new VicAuth());
+          //  config.Filters.Add(new VicAuth());
+            
 
             // Rutas de API web
             config.MapHttpAttributeRoutes();

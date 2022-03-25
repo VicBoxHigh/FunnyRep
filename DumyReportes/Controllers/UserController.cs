@@ -1,4 +1,5 @@
 ﻿using DumyReportes.Data;
+using DumyReportes.Filters;
 using DumyReportes.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Http;
 
 namespace DumyReportes.Controllers
 {
+    [IdentityBasicAuthentication]
     public class UserController : ApiController
     {
 
@@ -29,6 +31,8 @@ namespace DumyReportes.Controllers
 
         }
 
+        [Authorize]
+        [VicAuth]
         // GET: api/User/5
         /// [Route("~/api/User/{authorId:int}/books")]
         public IHttpActionResult Get(int id)
@@ -57,6 +61,12 @@ namespace DumyReportes.Controllers
                 );
 
 
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public IHttpActionResult Post(int a)
+        {
+            return Ok("ok");
         }
 
         // POST: api/User

@@ -39,8 +39,37 @@ namespace DumyReportes.Data
             ";
 
 
-        //Insertará un row para tabla usuario
+        public static string QUERY_CREDENTIALS_EXIST =
+            @"
+               SELECT * FROM User Where User = @user and  Pass =  @pass and IsEnabled = 1 );
  
+            ";
+
+        internal User CredentialsExist(string userName, string password)
+        {
+
+            SqlCommand command = new SqlCommand(QUERY_CREDENTIALS_EXIST, ConexionBD.getConexion());
+
+            User userResult = null;
+
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+
+
+                userResult = (User)InstanceFromReader(reader);
+
+            }
+
+
+
+            return userResult;
+
+
+        }
+
+
+        //Insertará un row para tabla usuario
+
 
         public ErrorFlag Create(IReportObject reportObject, out string error)
         {
@@ -115,8 +144,8 @@ namespace DumyReportes.Data
 
             return result;
 
-         }
-     
+        }
+
         public ErrorFlag Get(int iduser, out IReportObject user, out string error)
         {
             error = "";
@@ -157,7 +186,7 @@ namespace DumyReportes.Data
 
             return result;
         }
-   
+
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
@@ -187,10 +216,10 @@ namespace DumyReportes.Data
 
                 ";
 
-      /*  public static Flags.ErrorFlag UpdateUser(User updatedUser, out string error)
-        {
-           
-        }*/
+        /*  public static Flags.ErrorFlag UpdateUser(User updatedUser, out string error)
+          {
+
+          }*/
         public ErrorFlag Update(IReportObject reportObject, out string error)
         {
             User updatedUser = reportObject as User;
@@ -228,7 +257,7 @@ namespace DumyReportes.Data
                 WHERE [User].IdUser  = @IdUser
             ";
 
-      
+
         public ErrorFlag Delete(int id, out string error)
         {
             error = "";
@@ -284,7 +313,11 @@ namespace DumyReportes.Data
         public ErrorFlag Detail(int id, out List<IReportObject> reportObjects, out string error)
         {
             throw new NotImplementedException();
-            
+
         }
+
+
+
+
     }
 }
