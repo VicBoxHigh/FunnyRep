@@ -1,4 +1,4 @@
-let containerRep = $("#cntNewRep");
+let containerRep = document.getElementById("cntNewRep");
 
 let txtTitle = $("#txtTitle");
 let txtDescription = $("#txtDescriptionReport");
@@ -6,19 +6,19 @@ let txtLugar = $("#txtLugar");
 
 let btnGetLocation = $("#btnGetLocation");
 
-let btnGuardar = $("#btnGuardar");
+let btnGuardar = document.getElementById("btnGuardar");
 
 let iframeMap = document.createElement("iframe");
 
 let lat = 0;
 let lon = 0;
 
-let btnStartCam = $("#btnStartCam");
-let btnTakePic = $("#btnTakePic");
+const webcamElement = document.getElementById("webcam");
+const canvasElement = document.getElementById("canvas");
+const butonSnap = document.getElementById("buttonSnap");
+//const snapSoundElement = document.getElementById("snapSound");
+const webcam = new Webcam(webcamElement, "user", canvasElement, null);
 
-const webcamElement = $("#webcam");
-const canvasElement = $("#canvas");
-const snapSoundElement = $("#snapSound");
 /* const webcam = new Webcam(
   webcamElement,
   "user",
@@ -26,12 +26,12 @@ const snapSoundElement = $("#snapSound");
   snapSoundElement
 ); */
 
-const generarMapa = (position) => {
+/* const generarMapa = (position) => {
   let lat = position.coords.latitude;
   let lon = position.coords.longitude;
 
   cntMap.after(iframeMap);
-};
+}; */
 
 const guardarLocation = (position) => {
   lat = position.coords.latitude;
@@ -46,49 +46,63 @@ const getLocation = () => {
   }
 };
 
-btnStartCam.on("click", () => {
-    
+btnGetLocation.on("click", () => {
+  getLocation();
 });
 
-btnTakePic.on("click", () => {
-
-    var picture = webcam.snap();
-
-
-
-}, false);
-
-btnGuardar.on(
-  "click",
-  (e) => {
-    webcam.stop();
-
-    $.ajax({
-      type: "POST",
-      url: "localhost://api/report",
-      user: "vperez",
-      password: "vperez",
-      data: {
-        a: 1,
-        IdReport: 0,
-        IdUserWhoNotified: 12,
-        Location: {
-          IdLocation: 0,
-          Description: txtLugar.val(),
-          lat: lat,
-          lon: Long,
-        },
-        IdStatus: 0,
-        DTCreation: new Date()
-          .toISOString()
-          .slice(0, 19)
-          .replace("/-/g", "/")
-          .replace("T", " "),
-        ReportUpdates: [],
-        Title: txtTitle.val(),
-        Description: txtDescription.val(),
+btnGuardar.addEventListener("click", (e) => {
+  $.ajax({
+    type: "POST",
+    url: "http://localhost:44381/api/Report",
+    contentType: "application/json; charset=utf-8",
+    dataType: "jsonp",
+    /*  user: "vperez",
+      password: "vperez", */
+    data: {
+      a: 1,
+      IdReport: 0,
+      IdUserWhoNotified: 12,
+      Location: {
+        IdLocation: 0,
+        Description: txtLugar.val(),
+        lat: lat,
+        lon: lon,
       },
-    });
-  },
-  false
-);
+      IdStatus: 0,
+      DTCreation: new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace("/-/g", "/")
+        .replace("T", " "),
+      ReportUpdates: [],
+      Title: txtTitle.val(),
+      Description: txtDescription.val(),
+    },
+    succes: function (data) {
+      alert(data);
+    },
+    error: function (err) {
+      alert(err);
+    },
+  });
+  /*  webcam.stop(); */
+});
+
+const snapF = () => {
+  alert("snap");
+
+  /*  let picture = webcam.snap();
+ 
+  document.querySelector("#download-photo").href = picture;
+  document.querySelector("#download-photo").download = "foto1F.png"; */
+};
+butonSnap.addEventListener("click", snapF, false);
+
+webcam
+  .start()
+  .then((result) => {
+    console.log("webcam started");
+  })
+  .catch((err) => {
+    console.log(err);
+  });

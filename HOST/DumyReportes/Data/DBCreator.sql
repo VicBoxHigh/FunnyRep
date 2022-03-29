@@ -1,4 +1,8 @@
-USE ReportApp;
+  CREATE DATABASE ReportApp;
+  GO 
+
+  USE ReportApp;
+ GO
 
 CREATE TABLE AccessLevel(
 
@@ -52,7 +56,7 @@ CREATE TABLE ReportStatus(
 	titleStatus varchar(25)
 
 );
-
+ 
 CREATE TABLE Report(
 
 	IdReport INT NOT NULL IDENTITY ( 1,1) PRIMARY KEY,
@@ -65,8 +69,15 @@ CREATE TABLE Report(
 
 	IdStatus int NOT NULL,
 	FOREIGN KEY(IdStatus) REFERENCES ReportStatus(IdStatus),
+ 
+	[FileNameEvidence] varchar(45),
+	[PathEvidence] varchar(256),
 
-	NotifiedDT datetime NOT NULL
+	NotifiedDT datetime NOT NULL,
+	 
+	Title varchar(50) NOT NULL,
+
+	[Description] varchar (256 )
 
 );
 
@@ -85,25 +96,16 @@ CREATE TABLE UserOwner_Report(
 
 );
 
-CREATE TABLE Evidence(
-	
-	IdEvidence int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	[FileName] varchar(45),
-	[Path] varchar(256)
+ 
+CREATE TABLE ReportDtlEntry (
 
-
-);
-
-
-CREATE TABLE ReportUpdate (
-
-	IdReportUptdate INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	IdReportDtlEntry INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	
 	IdReport int NOT NULL,
 	FOREIGN KEY(IdReport ) REFERENCES [Report](IdReport ),
 
-	IdEvidence int NOT NULL,
-	FOREIGN KEY(IdEvidence) REFERENCES Evidence(IdEvidence),
+ 	[FileNameEvidence] varchar(45),
+	[PathEvidence] varchar(256),
 
 	TitleUpdate varchar(45) NOT NULL,
 	[Description] varchar(512) NOT NULL,

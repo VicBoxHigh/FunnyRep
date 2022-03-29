@@ -18,8 +18,8 @@ namespace DumyReportes.Models
         [DataMember]
         public int IdReport { get; set; }
 
-        [DataMember]
-        public Evidence Evidence { get; set; }
+
+
 
         [DataMember]
         public string TitleUpdate { get; set; }
@@ -33,26 +33,21 @@ namespace DumyReportes.Models
         [DataMember]
         public DateTime DTUpdate { get; set; }
 
+        [DataMember]
+        public string FileNameEvidence { get; set; }
+
+        [DataMember]
+        public string PathEvidence { get; set; }
+
         public ReportDtlEntry()
         {
 
         }
-
-        public ReportDtlEntry(int idReportUpdate, int idReport, Evidence evidence, string titleUpdate, string description, bool isOwnerUpdate, DateTime dTUpdate)
-        {
-            IdReportUpdate = idReportUpdate;
-            IdReport = idReport;
-            Evidence = evidence;
-            TitleUpdate = titleUpdate;
-            Description = description;
-            IsOwnerUpdate = isOwnerUpdate;
-            DTUpdate = dTUpdate;
-        }
-
+ 
         public override bool Validate()
         {
 
-            ValidateResult = Evidence != null & TitleUpdate != null && Description != null &&
+            ValidateResult =  TitleUpdate != null && Description != null &&
                 TitleUpdate.Length < 45 & Description.Length < 512;
 
             return ValidateResult;

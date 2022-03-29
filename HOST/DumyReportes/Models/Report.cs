@@ -23,6 +23,9 @@ namespace DumyReportes.Models
         public Flags.ReportStatus IdStatus { get; set; }
         [DataMember]
         public DateTime DTCreation { get; set; }
+        
+        [DataMember]
+        public string Pic64 { get; set; }
 
         [DataMember]
         public List<ReportDtlEntry> ReportUpdates { get; set; }
@@ -32,6 +35,12 @@ namespace DumyReportes.Models
         
         [DataMember]
         public string Description { get; set; }
+
+        [DataMember]
+        public string FileNameEvidence { get; set; }
+
+        [DataMember]
+        public string PathEvidence { get; set; }
 
         public Report()
         {

@@ -74,6 +74,8 @@ namespace DumyReportes.Data
                             ,[NotifiedDT]
                             ,[Title]
                             ,[Description]
+                            ,[FileNameEvidence]
+                            [PathEvidence]
                             )
                         VALUES
                             (
@@ -82,8 +84,12 @@ namespace DumyReportes.Data
                             ,@IdStatus
                             ,@NotifiedDT
                             ,@RepTitle
-                            ,@RepDescription);
+                            ,@RepDescription
+                            ,@fileNameEvidence
+                            ,@pathEvidence
+                        );
 
+ 
 	            COMMIT TRANSACTION CreateReportDtlTran;
 
             END TRY
@@ -92,6 +98,9 @@ namespace DumyReportes.Data
 	            ROLLBACK TRANSACTION CreateReportDtlTran;
             END CATCH
             ";
+ 
+
+
 
         public ErrorFlag Create(IReportObject reportObject, out string error)
         {
@@ -104,6 +113,10 @@ namespace DumyReportes.Data
 
             using (SqlCommand command = connection.CreateCommand())
             {
+                
+
+                command.Connection = connection;
+                command.Transaction = transaction;
                 try
                 {
                     command.Connection = connection;
@@ -119,11 +132,13 @@ namespace DumyReportes.Data
                     command.Parameters.Add("@NotifiedDT", System.Data.SqlDbType.DateTime).Value = DateTime.Now;
                     command.Parameters.Add("@RepTitle", System.Data.SqlDbType.VarChar).Value = report.Title;
                     command.Parameters.Add("@RepDescription", System.Data.SqlDbType.VarChar).Value = report.Description;
+                    command.Parameters.Add("@fileNameEvidence", System.Data.SqlDbType.VarChar).Value = report.FileNameEvidence;
+                    command.Parameters.Add("@pathEvidence", System.Data.SqlDbType.VarChar).Value = report.PathEvidence;
 
-                    
+                    int IdReportInserdet = 0;
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                         
+
                         result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
                         if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
                         //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
@@ -132,11 +147,12 @@ namespace DumyReportes.Data
                             result = ErrorFlag.ERROR_CREATION_ENITITY;
                             //result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
                             //if (reader.Read())
-                           
+
                         }
                     }
+              
 
-
+                   
                 }
                 catch (SqlException ex)
                 {

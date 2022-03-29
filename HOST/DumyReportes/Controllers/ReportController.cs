@@ -2,13 +2,16 @@
 using DumyReportes.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace DumyReportes.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController : ApiController
     {
 
@@ -88,12 +91,17 @@ namespace DumyReportes.Controllers
 
         //Crea ReportHeader
         // POST: api/Report
-        public IHttpActionResult Post([FromBody] Report report)
+        public IHttpActionResult Post( [FromBody]Report report )
         {
-
+            if (report == null) return BadRequest("Objeo nulo");
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
-
+            string fileName = Guid.NewGuid().ToString();
+            string path = $"C:\\imgs\\";
+            File.WriteAllBytes(path + fileName , Convert.FromBase64String(report.Pic64));
+         
+            report.FileNameEvidence = fileName;
+            report.PathEvidence = path;
 
             Flags.ErrorFlag resultCreation = _ReportDataContext.Create(report, out string error);
 

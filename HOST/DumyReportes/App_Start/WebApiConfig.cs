@@ -12,10 +12,10 @@ namespace DumyReportes
         public static void Register(HttpConfiguration config)
         {
             // Configuración y servicios de API web
-            
-          //  config.Filters.Add(new VicAuth());
-            
 
+            //  config.Filters.Add(new VicAuth());
+
+            config.EnableCors();
             // Rutas de API web
             config.MapHttpAttributeRoutes();
 

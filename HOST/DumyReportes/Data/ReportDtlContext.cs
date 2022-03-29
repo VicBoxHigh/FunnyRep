@@ -91,18 +91,16 @@ namespace DumyReportes.Data
         public ErrorFlag Create(IReportObject reportObject, out string error)
         {
             ReportDtlEntry reportDtlEntry = reportObject as ReportDtlEntry;
-            Evidence evidence = reportDtlEntry.Evidence;
+             
             error = "";
             ErrorFlag result;
 
             SqlCommand command = new SqlCommand(QUERY_INSERT_EVIDENCE_AND_REPORT, ConexionBD.getConexion());
 
-            if (evidence != null)
-            {
-                command.Parameters.Add("@fileName", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Evidence.FileName;
-                command.Parameters.Add("@path", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Evidence.Path;
-
-            }
+            
+                command.Parameters.Add("@fileName", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.FileNameEvidence;
+                command.Parameters.Add("@path", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.PathEvidence;
+ 
             command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = reportDtlEntry.IdReport;
             command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.TitleUpdate;
             command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Description;
@@ -164,16 +162,16 @@ namespace DumyReportes.Data
          @"
             SELECT RDE.[IdReportDtlEntry]
                   ,RDE.[IdReport]
-                  ,E.IdEvidence
+                  
                   ,RDE.[TitleUpdate]
                   ,RDE.[Description]
                   ,RDE.[DTUpdate]
                   ,RDE.[isOwnerUpdate]
-	              ,E.[FileName]
-	              ,E.[Path]
+	              ,RDE.[FileNameEvidence]
+	              ,RDE.[PathEvidence]
 
               FROM [ReportDtlEntry]  RDE
-              LEFT JOIN Evidence E on RDE.IdEvidence = E.IdEvidence
+
               Where RDE.IdReport = @IdReport
               Order by DTUpdate ASC
             ";
@@ -215,26 +213,20 @@ namespace DumyReportes.Data
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
-            Evidence evidence = null;
+             
 
-            evidence = reader["IdEvidence"] == null ? null : new Evidence(
-                (int)reader["IdEvidence"],
-                reader["FileName"].ToString(),
-                reader["Path"].ToString()
-                ); ;
+            ReportDtlEntry reportDtlEntry = new ReportDtlEntry()
+            {
+                IdReport = (int)reader["IdReport"],
+                IdReportUpdate = (int)reader["IdReportDtlEntry"],
+                TitleUpdate = reader["TitleUpdate"].ToString(),
+                Description = reader["Description"].ToString(),
+                IsOwnerUpdate = (bool)reader["isOwnerUpdate"],
+                DTUpdate = DateTime.Parse(reader["DTUpdate"].ToString()),
+                FileNameEvidence = reader["FileNameEvidence"].ToString(),
+                PathEvidence = reader["PathEvidence"].ToString()
+            };
 
-            ReportDtlEntry reportDtlEntry = new ReportDtlEntry
-                (
-                (int)reader["IdReportDtlEntry"],
-                (int)reader["IdReport"],
-                evidence,
-                reader["TitleUpdate"].ToString(),
-                reader["Description"].ToString(),
-                (bool)reader["isOwnerUpdate"],
-                 DateTime.Parse(reader["DTUpdate"].ToString())
-
-
-                );
 
             return reportDtlEntry;
         }
