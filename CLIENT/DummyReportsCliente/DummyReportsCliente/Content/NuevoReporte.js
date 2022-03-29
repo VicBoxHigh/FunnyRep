@@ -80,7 +80,7 @@ btnGuardar.addEventListener("click", (e) => {
     let d = {
         a: 1,
         IdReport: 0,
-        IdUserWhoNotified: 12,
+        IdUserWhoNotified: 1,
         Location: {
             IdLocation: 0,
             Description: txtLugar.val(),

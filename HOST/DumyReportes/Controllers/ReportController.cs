@@ -96,7 +96,7 @@ namespace DumyReportes.Controllers
             if (report == null) return BadRequest("Objeo nulo");
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
-            string fileName = Guid.NewGuid().ToString();
+            string fileName = Guid.NewGuid().ToString() + ".png";
             string path = $"C:\\imgs\\";
             File.WriteAllBytes(path + fileName , Convert.FromBase64String(report.Pic64));
          

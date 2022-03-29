@@ -75,7 +75,7 @@ namespace DumyReportes.Data
                             ,[Title]
                             ,[Description]
                             ,[FileNameEvidence]
-                            [PathEvidence]
+                            ,[PathEvidence]
                             )
                         VALUES
                             (
@@ -116,7 +116,6 @@ namespace DumyReportes.Data
                 
 
                 command.Connection = connection;
-                command.Transaction = transaction;
                 try
                 {
                     command.Connection = connection;
