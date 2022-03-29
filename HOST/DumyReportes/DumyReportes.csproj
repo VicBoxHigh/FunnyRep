@@ -204,7 +204,7 @@
     <Compile Include="Results\AuthenticationFailureResult.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Filters\IdentityBasicAuthenticationAttribute.cs" />
-    <Compile Include="Filters\VicAuth.cs" />
+    <Compile Include="Filters\VicAuth2.cs" />
     <Compile Include="Filters\BaseAuthenticationAttr.cs" />
     <Compile Include="Flags\Flags.cs" />
     <Compile Include="Global.asax.cs">
@@ -220,7 +220,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results\AddChallengeOnUnauthorizedResult.cs" />
     <Compile Include="Util\LoginValidatorHelper.cs" />
-    <Compile Include="Util\TokenGenerator.cs" />
+    <Compile Include="Util\TokenHelper.cs" />
     <Compile Include="Util\TokenValidatorHelper.cs" />
   </ItemGroup>
   <ItemGroup>

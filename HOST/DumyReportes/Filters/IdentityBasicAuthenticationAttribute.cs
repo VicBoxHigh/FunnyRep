@@ -20,26 +20,48 @@ namespace DumyReportes.Filters
 
 
 
-        //credentials are got on super, here just need to validate them against DB or your storage
-        public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string userName, string password, CancellationToken cancellationToken)
+        //credentials are got on super, here just need to validate them against DB or your storage to know the 
+        public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string userName, string pass, CancellationToken cancellationToken)
         {
-
             bool validCredential = true;// new LoginValidatorHelper(userName, password).Validate(out User user);
+            LoginValidatorHelper loginValidatorHelper = new LoginValidatorHelper(userName, pass);
             GenericPrincipal genericPrincipal = null;
-            if (true)
-            {
-                var identity = new GenericIdentity(userName);
-                genericPrincipal = new GenericPrincipal(identity, null);
-            }
-            else if (validCredential /*&& user != null*/)
-            {
-                var identity = new GenericIdentity(userName);
-                genericPrincipal = new GenericPrincipal(identity, null);
-            }
 
+            if (loginValidatorHelper.Validate(out User user))//false? entonces no access a user, 
+            {
+                genericPrincipal = createPrincipal(user);
+                
+            }
+            
 
             return genericPrincipal;
 
         }
+
+        //identifica las propiedades del principal para así asignar su rol o algo más
+        private GenericPrincipal createPrincipal(User user)
+        {
+            var identity = new GenericIdentity(user.UserName);
+            GenericPrincipal genericPrincipal = new GenericPrincipal(identity, new string[] { user.AccessLevel.ToString() });
+
+            return genericPrincipal;
+        }
+
+        public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken)
+        {
+
+            User user = TokenHelper.ValidateToke(token);
+
+            GenericPrincipal genericPrincipal = null;
+            
+            if(user != null)
+            {
+                genericPrincipal = createPrincipal(user);
+            }
+
+            return genericPrincipal;
+        }
+
+
     }
 }

@@ -15,6 +15,7 @@ namespace DumyReportes.Filters
     {
         public bool AllowMultiple => throw new NotImplementedException();
 
+        //para indicar usuario valido, ErrorResult remains null? 
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
             System.Net.Http.HttpRequestMessage request = context.Request;
@@ -22,8 +23,7 @@ namespace DumyReportes.Filters
 
             if (authorization == null) return;
 
-            //Autenticación siempre vendrá por usuario/pass
-            if (authorization.Scheme != "Basic") return;
+            IPrincipal principal = null;
 
             if (String.IsNullOrEmpty(authorization.Parameter))
             {
@@ -31,22 +31,47 @@ namespace DumyReportes.Filters
                 return;
             }
 
-            Tuple<string, string> userPass = ExtractUserNameAndPassword(authorization.Parameter);
-
-            if(userPass == null)
+            if (!authorization.Scheme.Equals("Basic") || !authorization.Scheme.Equals("Bearer"))
             {
-                context.ErrorResult = new AuthenticationFailureResult("Credenciales nos válidas", request);
+
                 return;
             }
 
+            if (authorization.Scheme.Equals("Basic"))//Login
+            {
+                Tuple<string, string> userPass = ExtractUserNameAndPassword(authorization.Parameter);
 
-            var user = userPass.Item1;
-            var pass = userPass.Item2;
+                if (userPass == null)
+                {
+                    context.ErrorResult = new AuthenticationFailureResult("Credenciales nos válidas", request);
+                    return;
+                }
+                var user = userPass.Item1;
+                var pass = userPass.Item2;
+
+                principal = await AuthenticateAsync(context, user, pass, cancellationToken);
+
+            }
+            else if(authorization.Scheme.Equals("Bearer"))//Any othe actiona
+            {
+                string token = Convert.FromBase64String(authorization.Parameter);
+
+                principal = await AuthenticateAsync(context, token, cancellationToken);
+            }
+            else //cualquier otra
+            {
+                return;
+            }
+
+           
+
+           
+
+           
 
             //https://racineennis.ca/2018/07/02/how-to-basic-authentication-filter-aspnet-web-api
             //https://www.youtube.com/watch?v=BZnmhyZzKgs
             //call specific implementation of this class
-            IPrincipal principal = await AuthenticateAsync(context, user, pass, cancellationToken);
 
             //Task myTask = AuthenticateAsync(context, user, pass, cancellationToken);
 
@@ -59,8 +84,8 @@ namespace DumyReportes.Filters
             }
             else
             {
-                Thread.CurrentPrincipal = principal;
-                context.Principal = principal;
+                /*Thread.CurrentPrincipal = principal;
+                context.Principal = principal;*/
                 HttpContext.Current.User = principal;
             }
 
@@ -69,11 +94,12 @@ namespace DumyReportes.Filters
         }
 
         public abstract Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string user, string pass, CancellationToken cancellationToken);
-        
+
+        public abstract Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken);
 
 
 
-       
+
 
         private static Tuple<string, string> ExtractUserNameAndPassword(string authorizationParameter)
         {

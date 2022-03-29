@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Principal;
+using System.Web;
 using System.Web.Http;
 
 namespace DumyReportes.Controllers
@@ -31,8 +33,8 @@ namespace DumyReportes.Controllers
 
         }
 
-        [Authorize]
-        [VicAuth]
+       /* [Authorize]
+        [VicAuth]*/
         // GET: api/User/5
         /// [Route("~/api/User/{authorId:int}/books")]
         public IHttpActionResult Get(int id)
@@ -62,6 +64,31 @@ namespace DumyReportes.Controllers
 
 
         }
+
+        [Route("~/api/User/LoginUser/{numEmpleado:int}, {pass:string]}")]
+        public IHttpActionResult Post([FromUri]int numEmpleado, [FromUri] string pass)
+        {
+            if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
+
+            GenericIdentity genericIdentity = HttpContext.Current.User.Identity as GenericIdentity;
+
+            genericIdentity.
+
+        }
+
+
+
+        [Route("~/api/User/LoginAdm/{numEmpleado:int}, {pass:string]}")]
+        public IHttpActionResult Post([FromUri] string usuario, [FromUri] string pass)
+        {
+            if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
+
+
+
+
+
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public IHttpActionResult Post(int a)

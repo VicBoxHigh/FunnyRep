@@ -1,15 +1,57 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using DumyReportes.Data;
+using DumyReportes.Models;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Web;
 
 namespace DumyReportes.Util
 {
-    public class TokenGenerator
+    public class TokenHelper
     {
+
+        public static string GenerateToken (User user)
+        {
+            StringBuilder dummyToken = new StringBuilder();
+
+            dummyToken.Append(user.IdUser);
+            dummyToken.Append(";");
+            dummyToken.Append(user.UserName);
+            dummyToken.Append(";");
+            dummyToken.Append(user.AccessLevel.ToString());
+            dummyToken.Append(";");
+            dummyToken.Append(DateTime.Now);
+
+
+
+            return dummyToken.ToString();
+        }
+
+
+        
+        /*
+         Si el token es valido retorna el objeto usuario
+         */
+        public static  User  ValidateToke(string token)
+        {
+            string[] tokenProperties = token.Split(';');
+            IReportObject repoObj = null;//basado en el 
+            UserDataContext userDataCtx = new UserDataContext();
+            if (!String.IsNullOrEmpty(token)) return null;
+
+            int idUser = int.Parse(tokenProperties[0]);
+            userDataCtx.Get(idUser, out repoObj, out string error);
+
+            User user = repoObj as User;
+
+
+            return user;
+        }
+
         public static string GenerateToken(string userName)
         {
             var secretKey = ConfigurationManager.AppSettings["JWT_SECRET_KEY"];

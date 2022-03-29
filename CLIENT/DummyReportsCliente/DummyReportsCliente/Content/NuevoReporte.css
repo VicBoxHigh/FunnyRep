@@ -1,0 +1,7 @@
+﻿body {
+}
+.containerNewReport{
+    display:flex;
+    flex-direction:column;
+
+}

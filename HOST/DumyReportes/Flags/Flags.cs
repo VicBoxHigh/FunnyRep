@@ -22,7 +22,8 @@ namespace DumyReportes.Flags
         ERROR_NO_AFECTED_RECORDS,
         ERROR_RESULT,
         ERROR_DENIED_OPERATION,
-        ERROR_NO_UPDATED_RECORDS
+        ERROR_NO_UPDATED_RECORDS,
+        ERROR_INVALID_CREDENTIALS
 
     }
 

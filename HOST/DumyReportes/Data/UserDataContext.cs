@@ -316,7 +316,33 @@ namespace DumyReportes.Data
 
         }
 
+        public static string QUERY_EXISTS =
+           @"SELECT TOP (1) * FROM [ReportApp].[dbo].[User] Where [User].UserName =  @IdUser and [User].Pass ) = @Pass";
+        public ErrorFlag Exist(string userName, string pass, out User user)
+        {
 
+            ErrorFlag result;
+            SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
+            command.Parameters.Add("@IdUser", System.Data.SqlDbType.VarChar).Value = userName;
+            command.Parameters.Add("@Pass", System.Data.SqlDbType.VarChar).Value = pass;
+            user = null;
+            result = ErrorFlag.ERROR_OK_RESULT;
+            try
+            {
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                    user = InstanceFromReader(reader) as User;
+                else result = ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+            }
+            catch (SqlException ex) { 
+                result = ErrorFlag.ERROR_CONNECTION_DB;
+            }
+
+
+            return result;
+
+        }
 
 
     }
