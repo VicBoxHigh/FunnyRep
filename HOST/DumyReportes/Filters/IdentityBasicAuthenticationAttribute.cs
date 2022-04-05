@@ -23,25 +23,35 @@ namespace DumyReportes.Filters
         //credentials are got on super, here just need to validate them against DB or your storage to know the 
         public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string userName, string pass, CancellationToken cancellationToken)
         {
-            bool validCredential = true;// new LoginValidatorHelper(userName, password).Validate(out User user);
             LoginValidatorHelper loginValidatorHelper = new LoginValidatorHelper(userName, pass);
             GenericPrincipal genericPrincipal = null;
+            try
+            {
 
             if (loginValidatorHelper.Validate(out User user))//false? entonces no access a user, 
             {
-                genericPrincipal = createPrincipal(user);
-                
+                genericPrincipal = createPrincipal(user, "Basic");
+                string token = TokenHelper.GenerateToken(user);
+                user.CurrentToke = token;
+
             }
-            
+            }
+            catch( Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
 
             return genericPrincipal;
 
         }
 
         //identifica las propiedades del principal para así asignar su rol o algo más
-        private GenericPrincipal createPrincipal(User user)
+        private GenericPrincipal createPrincipal(User user, string authType)
         {
-            var identity = new GenericIdentity(user.UserName);
+
+            var identity = new UserIdentiy(user, authType);
+            
             GenericPrincipal genericPrincipal = new GenericPrincipal(identity, new string[] { user.AccessLevel.ToString() });
 
             return genericPrincipal;
@@ -53,10 +63,10 @@ namespace DumyReportes.Filters
             User user = TokenHelper.ValidateToke(token);
 
             GenericPrincipal genericPrincipal = null;
-            
-            if(user != null)
+
+            if (user != null)
             {
-                genericPrincipal = createPrincipal(user);
+                genericPrincipal = createPrincipal(user,"Bearer");
             }
 
             return genericPrincipal;

@@ -93,7 +93,7 @@ namespace DumyReportes.Controllers
         // POST: api/Report
         public IHttpActionResult Post( [FromBody]Report report )
         {
-            if (report == null) return BadRequest("Objeo nulo");
+            if (report == null) return BadRequest("Objeto nulo");
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
             string fileName = Guid.NewGuid().ToString() + ".png";

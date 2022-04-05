@@ -31,7 +31,7 @@ namespace DumyReportes.Filters
                 return;
             }
 
-            if (!authorization.Scheme.Equals("Basic") || !authorization.Scheme.Equals("Bearer"))
+            if (!authorization.Scheme.Equals("Basic") && !authorization.Scheme.Equals("Bearer"))
             {
 
                 return;
@@ -54,9 +54,9 @@ namespace DumyReportes.Filters
             }
             else if(authorization.Scheme.Equals("Bearer"))//Any othe actiona
             {
-                string token = Convert.FromBase64String(authorization.Parameter);
+                //string token = Convert.FromBase64String(authorization.Parameter);
 
-                principal = await AuthenticateAsync(context, token, cancellationToken);
+                principal = await AuthenticateAsync(context, authorization.Parameter,cancellationToken);
             }
             else //cualquier otra
             {

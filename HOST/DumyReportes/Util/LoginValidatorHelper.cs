@@ -1,4 +1,5 @@
 ﻿using DumyReportes.Data;
+using DumyReportes.Flags;
 using DumyReportes.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace DumyReportes.Util
         private string userName;
         private string password;
 
-        private readonly UserDataContext _UserDataContext = new UserDataContext(); 
+        private readonly UserDataContext _UserDataContext = new UserDataContext();
 
 
         public LoginValidatorHelper(string userName, string password)
@@ -25,7 +26,11 @@ namespace DumyReportes.Util
         {
 
             //call db context
-            user = this._UserDataContext.CredentialsExist(this.userName, this.password);
+            ErrorFlag result = this._UserDataContext.CredentialsExist(this.userName, this.password, out user);
+
+            if (result != ErrorFlag.ERROR_OK_RESULT & result != ErrorFlag.ERROR_RECORD_EXISTS)
+                throw new Exception(result.ToString());
+
 
             return user != null;
 

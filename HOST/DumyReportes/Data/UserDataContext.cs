@@ -41,28 +41,41 @@ namespace DumyReportes.Data
 
         public static string QUERY_CREDENTIALS_EXIST =
             @"
-               SELECT * FROM User Where User = @user and  Pass =  @pass and IsEnabled = 1 );
+               SELECT * FROM [User] Where UserName = @user and  Pass =  @pass and IsEnabled = 1  ;
  
             ";
 
-        internal User CredentialsExist(string userName, string password)
+        internal ErrorFlag CredentialsExist(string userName, string password, out User userResult)
         {
+            userResult = null;
+            ErrorFlag operationResult = ErrorFlag.ERROR_OK_RESULT;
 
             SqlCommand command = new SqlCommand(QUERY_CREDENTIALS_EXIST, ConexionBD.getConexion());
+            command.Parameters.Add("@user", System.Data.SqlDbType.VarChar).Value = userName;
+            command.Parameters.Add("@pass", System.Data.SqlDbType.VarChar).Value = password;
 
-            User userResult = null;
+            try
+            {
+                using (command)
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
 
-            using (SqlDataReader reader = command.ExecuteReader())
+                    if (!reader.HasRows) operationResult = ErrorFlag.ERROR_RECORD_EXISTS;
+                    if (reader.Read())
+                        userResult = (User)InstanceFromReader(reader);
+
+                }
+
+            }
+            catch (SqlException ex)
             {
 
-
-                userResult = (User)InstanceFromReader(reader);
+                operationResult = ErrorFlag.ERROR_CONNECTION_DB;
 
             }
 
 
-
-            return userResult;
+            return operationResult;
 
 
         }
@@ -190,6 +203,7 @@ namespace DumyReportes.Data
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
+
             User user = new User(
                    (string)reader["NumEmpleado"],
                    (string)reader["UserName"],
@@ -335,7 +349,8 @@ namespace DumyReportes.Data
                     user = InstanceFromReader(reader) as User;
                 else result = ErrorFlag.ERROR_RECORD_NOT_EXISTS;
             }
-            catch (SqlException ex) { 
+            catch (SqlException ex)
+            {
                 result = ErrorFlag.ERROR_CONNECTION_DB;
             }
 

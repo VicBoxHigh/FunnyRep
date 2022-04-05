@@ -14,7 +14,7 @@ namespace DumyReportes.Util
     public class TokenHelper
     {
 
-        public static string GenerateToken (User user)
+        public static string GenerateToken(User user)
         {
             StringBuilder dummyToken = new StringBuilder();
 
@@ -26,27 +26,49 @@ namespace DumyReportes.Util
             dummyToken.Append(";");
             dummyToken.Append(DateTime.Now);
 
+            string tokenb64 = Convert.ToBase64String(
+                Encoding.UTF8.GetBytes(dummyToken.ToString())
+                );
 
-
-            return dummyToken.ToString();
+            return tokenb64;
         }
 
 
-        
+
         /*
          Si el token es valido retorna el objeto usuario
          */
-        public static  User  ValidateToke(string token)
-        {
-            string[] tokenProperties = token.Split(';');
-            IReportObject repoObj = null;//basado en el 
-            UserDataContext userDataCtx = new UserDataContext();
-            if (!String.IsNullOrEmpty(token)) return null;
 
+        public static int MINUTES_VALID_TOKEN = 120;
+        public static User ValidateToke(string token)
+        {
+            if (String.IsNullOrEmpty(token)) return null;
+
+            byte[] tokenBytesDecrypted = Convert.FromBase64String(token);
+
+            if (tokenBytesDecrypted == null || tokenBytesDecrypted.Length == 0) return null;
+
+            string tokenStr = Encoding.UTF8.GetString(tokenBytesDecrypted);
+
+            string[] tokenProperties = tokenStr.Split(';');
+
+            if (tokenProperties == null || tokenProperties.Length == 0) return null;
+
+            UserDataContext userDataCtx = new UserDataContext();
+
+            DateTime dateTime = DateTime.Parse(tokenProperties[3]);
             int idUser = int.Parse(tokenProperties[0]);
+
+            if (dateTime.Subtract(DateTime.Now).TotalMinutes > MINUTES_VALID_TOKEN)
+            {
+                return null;
+            }
+
+            IReportObject repoObj = null;//basado en el 
             userDataCtx.Get(idUser, out repoObj, out string error);
 
             User user = repoObj as User;
+            user.CurrentToke = token;
 
 
             return user;

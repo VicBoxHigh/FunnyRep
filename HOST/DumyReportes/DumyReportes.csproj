@@ -16,7 +16,7 @@
     <AssemblyName>DumyReportes</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44381</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
@@ -201,6 +201,7 @@
     <Compile Include="Data\ReportDataContext.cs" />
     <Compile Include="Data\ReportDtlContext.cs" />
     <Compile Include="Data\UserDataContext.cs" />
+    <Compile Include="Models\UserIdentiy.cs" />
     <Compile Include="Results\AuthenticationFailureResult.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Filters\IdentityBasicAuthenticationAttribute.cs" />
@@ -327,7 +328,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57995</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://dumyhost.com:8003</IISUrl>
+          <IISUrl>http://localhost:57995/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

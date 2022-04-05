@@ -1,6 +1,7 @@
 ﻿using DumyReportes.Data;
 using DumyReportes.Filters;
 using DumyReportes.Models;
+using DumyReportes.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +10,18 @@ using System.Net.Http;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace DumyReportes.Controllers
 {
-    [IdentityBasicAuthentication]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UserController : ApiController
     {
 
         private readonly UserDataContext _UserDataContext = new UserDataContext();
         // GET: api/User
         [Route("~/api/User/all")]
-        public /*IEnumerable<string>*/ IHttpActionResult Get()
+         public /*IEnumerable<string>*/ IHttpActionResult Get()
         {
 
             Flags.ErrorFlag result = _UserDataContext.GetAll(out List<IReportObject> users, out string error);
@@ -33,10 +35,12 @@ namespace DumyReportes.Controllers
 
         }
 
-       /* [Authorize]
-        [VicAuth]*/
+        /* [Authorize]
+         [VicAuth]*/
         // GET: api/User/5
         /// [Route("~/api/User/{authorId:int}/books")]
+        /// 
+       
         public IHttpActionResult Get(int id)
         {
             if (id < 1) return BadRequest("ID no válido");
@@ -65,38 +69,55 @@ namespace DumyReportes.Controllers
 
         }
 
-        [Route("~/api/User/LoginUser/{numEmpleado:int}, {pass:string]}")]
-        public IHttpActionResult Post([FromUri]int numEmpleado, [FromUri] string pass)
-        {
-            if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
-
-            GenericIdentity genericIdentity = HttpContext.Current.User.Identity as GenericIdentity;
-
-            genericIdentity.
-
-        }
-
-
-
-        [Route("~/api/User/LoginAdm/{numEmpleado:int}, {pass:string]}")]
-        public IHttpActionResult Post([FromUri] string usuario, [FromUri] string pass)
-        {
-            if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
 
 
 
 
-
-        }
-
+        // [Route("~/api/User/ ")]
+        [IdentityBasicAuthentication]
         [HttpPost]
-        [AllowAnonymous]
-        public IHttpActionResult Post(int a)
+        public IHttpActionResult Post(/*[FromUri]int numEmpleado, [FromUri] string pass*/)
+        {
+            //if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
+
+            UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
+
+            if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
+
+             
+
+            return Ok(new
+            {
+                token = genericIdentity.user.CurrentToke
+
+            });
+
+        }
+
+        /*
+                [Route("~/api/User/LoginAdm/{numEmpleado:int}, {pass:string]}")]
+                public IHttpActionResult Post([FromUri] string usuario, [FromUri] string pass)
+                {
+                    if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
+
+
+
+
+
+                }
+        */
+        [HttpPost]
+        /*   [AllowAnonymous]*/
+
+         
+         [Route("~/api/User/V ")]
+        public IHttpActionResult OK(int a)
         {
             return Ok("ok");
         }
 
         // POST: api/User
+     
         public IHttpActionResult Post(/*[FromBody]*/string numEmpleado, string userName, string pass, bool isEnable, int accessLevel)
         {
 
@@ -125,6 +146,7 @@ namespace DumyReportes.Controllers
         //including user disabling 
         // PUT: api/User/5
         [HttpPut]
+         
         public IHttpActionResult Put(int id, [FromBody] User user)
         {
             bool isValid = user.Validate();
@@ -143,6 +165,7 @@ namespace DumyReportes.Controllers
 
         [HttpDelete]
         // DELETE: api/User/5
+        
         public IHttpActionResult Delete(int id)
         {
 

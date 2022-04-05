@@ -24,6 +24,15 @@ namespace DumyReportes
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            /*  config.Routes.MapHttpRoute(
+                  name: "APIByName",
+                  routeTemplate: "api/{controller}/{action}/{id}",
+                  defaults: new { id = RouteParameter.Optional }
+
+
+                  );*/
+
         }
     }
 }

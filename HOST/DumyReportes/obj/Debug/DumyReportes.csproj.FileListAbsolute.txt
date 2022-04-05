@@ -130,7 +130,9 @@ C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\Newtonsoft.Jso
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\Owin.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Net.Http.Formatting.dll
+C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Cors.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Helpers.dll
+C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Http.Cors.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Http.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Http.WebHost.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Mvc.dll
@@ -148,6 +150,7 @@ C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\Microsoft.Iden
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\Microsoft.IdentityModel.Logging.xml
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\Microsoft.IdentityModel.Tokens.xml
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Http.Cors.xml
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\Newtonsoft.Json.xml
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Net.Http.Formatting.xml
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Helpers.xml
@@ -171,11 +174,8 @@ C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\es\System.Web.
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\es\System.Web.WebPages.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\es\System.Web.WebPages.Deployment.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\es\System.Web.WebPages.Razor.resources.dll
-C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.csproj.AssemblyReference.cache
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.csproj.CoreCompileInputs.cache
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.pdb
-C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Cors.dll
-C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Http.Cors.dll
-C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\bin\System.Web.Http.Cors.xml
+C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.csproj.AssemblyReference.cache
