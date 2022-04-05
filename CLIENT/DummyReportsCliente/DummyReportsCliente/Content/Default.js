@@ -23,6 +23,7 @@ btnLogin.on("click", (e) => {
     if (txtNumEmpleado.val() == "") {
 
         alert("Ingrese su número de empleado por favor");
+
         return;
     }
 
@@ -34,11 +35,11 @@ btnLogin.on("click", (e) => {
     }
 
 
-    loginAdmin(numEmpleado, pass);
-    /*    if (checkAdmin.is(':checked'))
-        else
-            loginUser(numEmpleado);
-    */
+    if (checkAdmin.is(':checked'))
+        loginAdmin(numEmpleado, pass);
+    else
+        loginUser(numEmpleado);
+
 
 
 
@@ -72,7 +73,7 @@ const corsObjs = {
 const loginAdmin = (numEmpleado, pass) => {
 
     $.ajax({
-        type: "POST",
+        type: "GET",
         url: "http://localhost:57995/api/User/",
         contentType: "application/json",
         crossDomain: true,
@@ -94,21 +95,27 @@ const loginAdmin = (numEmpleado, pass) => {
 
 };
 
+const KEY_TOKEN_NAME = "SESSIONTOKEN";
+
 //manejo del token
-const successPromiseLog = (result) => {
+const successPromiseLog = (data, textStatus, xhr) => {
 
 
-    if (result.token)
+    if (data.token) {
+
+
         //if (localStorage.getItem("sessionToken"))
-        localStorage.setItem("sessionToken", result.token);
-    else {
+        localStorage.setItem(KEY_TOKEN_NAME, data.token);
+        window.location.href = "/Default.aspx"
+
+    } else {
         alert("Algo salió mal.")
     }
 }
 
-const failPromiseLog = (result) => {
-
-    alert("Falló la solicitud al servidor, intenta más tarde.")
+const failPromiseLog = (xhr, textStatus) => {
+    localStorage.removeItem(KEY_TOKEN_NAME)
+    alert("Falló la solicitud al servidor." + xhr.responseText)
 
 }
 

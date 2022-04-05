@@ -1,4 +1,5 @@
 ﻿using DumyReportes.Data;
+using DumyReportes.Filters;
 using DumyReportes.Models;
 using System;
 using System.Collections.Generic;
@@ -6,12 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
 namespace DumyReportes.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [IdentityBasicAuthentication]
     public class ReportController : ApiController
     {
 
@@ -21,15 +24,15 @@ namespace DumyReportes.Controllers
 
         private readonly ReportDataContext _ReportDataContext = new ReportDataContext();
 
-        // GET: api/Report //get ALL reports //get report header data only
-        [Route("~/api/Report/all")]
-        public IHttpActionResult Get()
-        {
+        /* // GET: api/Report //get ALL reports //get report header data only
+         [Route("~/api/Report/all")]
+         public IHttpActionResult Get()
+         {
 
 
 
-            return StatusCode(HttpStatusCode.NotImplemented);
-        }
+             return StatusCode(HttpStatusCode.NotImplemented);
+         }*/
 
 
 
@@ -39,12 +42,33 @@ namespace DumyReportes.Controllers
         //  Assigned | Created
         //So, the function can get all the header reports , by owner or not, depending on the IdUser
 
-        public IHttpActionResult Get(bool isOwner, int idUser)
+        ///Como se implementó autenticación, ya es posible hacerlo si estos parametros.
+
+        [HttpGet]
+        public IHttpActionResult Get(/*bool isOwner, int idUser*/)
         {
-            if (idUser < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
+            //los usuarios se dividen en niveles 0/10/20, 
+            //todo empleado de Marves ya es 0, 
+            //10 y 20 son asignados manualmente, y son independientes al usuario nivel 0.
+            //Si el usuario es > 0, entonces se traerán los ReportesHeads asignados a ese user
+            //en caso contrario, se traerán los creados por ese usuario/empleado
+            UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
+
+            if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
+
+            User user = genericIdentity.user;
+
+
+
+            // if (idUser < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
             Flags.ErrorFlag result =
-                _ReportDataContext.GetAllBy(isOwner, idUser, out List<IReportObject> reportObjs, out string error);
+                _ReportDataContext.GetAllBy(
+                    isOwner: user.AccessLevel != Flags.AccessLevel.PUBLIC,
+                    idUser: user.IdUser,
+                    reportObjects: out List<IReportObject> reportObjs,
+                    error: out string error
+                    );
 
             if (result != Flags.ErrorFlag.ERROR_OK_RESULT)
                 return StatusCode(HttpStatusCode.NotFound);
@@ -91,15 +115,15 @@ namespace DumyReportes.Controllers
 
         //Crea ReportHeader
         // POST: api/Report
-        public IHttpActionResult Post( [FromBody]Report report )
+        public IHttpActionResult Post([FromBody] Report report)
         {
             if (report == null) return BadRequest("Objeto nulo");
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
             string fileName = Guid.NewGuid().ToString() + ".png";
             string path = $"C:\\imgs\\";
-            File.WriteAllBytes(path + fileName , Convert.FromBase64String(report.Pic64));
-         
+            File.WriteAllBytes(path + fileName, Convert.FromBase64String(report.Pic64));
+
             report.FileNameEvidence = fileName;
             report.PathEvidence = path;
 
@@ -117,7 +141,7 @@ namespace DumyReportes.Controllers
 
                 throw new HttpResponseException(httpResponseMessage);*/
                 return StatusCode(HttpStatusCode.NotModified);
-                
+
                 //return Content<string>(HttpStatusCode.NotModified, resultCreation.ToString());
 
             }

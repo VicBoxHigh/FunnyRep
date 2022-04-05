@@ -1,4 +1,5 @@
 ﻿using DumyReportes.Data;
+using DumyReportes.Flags;
 using DumyReportes.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -25,6 +26,8 @@ namespace DumyReportes.Util
             dummyToken.Append(user.AccessLevel.ToString());
             dummyToken.Append(";");
             dummyToken.Append(DateTime.Now);
+            dummyToken.Append(";");
+            dummyToken.Append(10 * (int)user.AccessLevel);
 
             string tokenb64 = Convert.ToBase64String(
                 Encoding.UTF8.GetBytes(dummyToken.ToString())
@@ -40,39 +43,92 @@ namespace DumyReportes.Util
          */
 
         public static int MINUTES_VALID_TOKEN = 120;
-        public static User ValidateToke(string token)
+        public static ErrorFlag ValidateToke(string token, out User user)
         {
-            if (String.IsNullOrEmpty(token)) return null;
+            user = null;
+            if (String.IsNullOrEmpty(token)) return ErrorFlag.ERROR_INVALID_TOKEN;
 
             byte[] tokenBytesDecrypted = Convert.FromBase64String(token);
 
-            if (tokenBytesDecrypted == null || tokenBytesDecrypted.Length == 0) return null;
+            if (tokenBytesDecrypted == null || tokenBytesDecrypted.Length == 0) return ErrorFlag.ERROR_INVALID_TOKEN;
 
             string tokenStr = Encoding.UTF8.GetString(tokenBytesDecrypted);
 
-            string[] tokenProperties = tokenStr.Split(';');
+            ErrorFlag resultUFAT = UserFromArrayToken(tokenStr, out User userCredentialsLogin);
 
-            if (tokenProperties == null || tokenProperties.Length == 0) return null;
 
             UserDataContext userDataCtx = new UserDataContext();
 
-            DateTime dateTime = DateTime.Parse(tokenProperties[3]);
-            int idUser = int.Parse(tokenProperties[0]);
-
-            if (dateTime.Subtract(DateTime.Now).TotalMinutes > MINUTES_VALID_TOKEN)
-            {
-                return null;
-            }
-
             IReportObject repoObj = null;//basado en el 
-            userDataCtx.Get(idUser, out repoObj, out string error);
+            ErrorFlag resultGetUser = userDataCtx.Get(userCredentialsLogin.IdUser, out repoObj, out string error);
 
-            User user = repoObj as User;
+            if (resultGetUser != ErrorFlag.ERROR_OK_RESULT) return resultGetUser;
+
+
             user.CurrentToke = token;
 
 
-            return user;
+            if (!UserCredentialAgainstDB(userCredentialsLogin, repoObj))
+            {
+                return ErrorFlag.ERROR_INVALID_TOKEN;
+            }
+            user = repoObj as User;
+            //TODO
+            //if(tokenProperties == user) return ok else return null
+
+
+
+            return ErrorFlag.ERROR_OK_RESULT;
         }
+
+        private static bool UserCredentialAgainstDB(User userCredentialsLogin, IReportObject repoObj)
+        {
+
+            if (userCredentialsLogin == null) return false;
+            if (repoObj == null) return false;
+
+
+            User userDb = repoObj as User;
+
+            return userDb.IsEnabled 
+                && userDb.IdUser == userCredentialsLogin.IdUser 
+                && userCredentialsLogin.UserName.Equals(userDb.UserName);
+
+
+
+        }
+
+        private static ErrorFlag UserFromArrayToken(string token, out User user)
+        {
+
+            user = null;
+            string[] tokenProperties = token.Split(';');
+
+
+
+            if (tokenProperties == null || tokenProperties.Length == 0 || tokenProperties.Length != 5) return ErrorFlag.ERROR_INVALID_TOKEN;
+            DateTime dateTime = DateTime.Parse(tokenProperties[3]);
+
+            if (dateTime.Subtract(DateTime.Now).TotalMinutes > MINUTES_VALID_TOKEN)
+            {
+                return ErrorFlag.ERROR_EXPIRED_TOKEN;
+            }
+
+            user = new User()
+            {
+                IdUser = int.Parse(tokenProperties[0]),
+                UserName = tokenProperties[1],
+                AccessLevel = (Flags.AccessLevel)int.Parse(tokenProperties[4])
+
+
+            };
+
+
+
+            return ErrorFlag.ERROR_OK_RESULT;
+
+        }
+
 
         public static string GenerateToken(string userName)
         {

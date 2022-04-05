@@ -1,37 +1,58 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="DummyReportsCliente._Default" %>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+        <link rel="stylesheet" href="Content/Default.css">
+</head>
+<body>
+    <div class="main-container">
 
-<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
- 
-    <div id="cntNewRep" class="containerNewReport">
+        <div id="cntRepHeads" class="container-heads">
+            <div class="item-report-head">
+                <div class="item-report-head__idReport">#999 </div>
+                <div class="item-report-head__title">Titulo</div>
+                <div class="item-report-head__title">Pequeña descripción.</div>
+                <div class="item-report-head__date"></div>
+                <div class="item-report-head__numEmpleado"></div>
 
-        <input id="txtTitle" type="text" name="title" id="titleReport" placeholder="Titulo"></input>
+            </div>
+        </div>
 
-        <textarea type="text" rows="5" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
+        <div id="cntNewRep" class="containerNewReport">
 
-        <input type="text" id="txtLugar" placeholder="Lugar" />
+            <input id="txtTitle" type="text" name="title" id="titleReport" placeholder="Titulo" />
 
-        <input type="button" id="btnGetLocation" value="Marcar ubicacion" />
+            <textarea type="text" rows="5" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
+
+            <input type="text" id="txtLugar" placeholder="Lugar" />
+
+            <input type="button" id="btnGetLocation" value="Marcar ubicacion" />
+
+            <div>
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="canvas" class="d-none"></canvas>
+
+            </div>
+
+            <input id="buttonSnap" type="button" value="Tomar foto" />
 
 
-        <span>
-            <video id="webcam" autoplay playsinline></video>
-            <canvas id="canvas" class="d-none"></canvas>
+            <input type="button" id="btnGuardar" value="Guardar" />
 
-        </span>
+        </div>
 
-
-        <input id="buttonSnap" type="button" value="Tomar foto" />
-
-
-        <input type="button" id="btnGuardar" value="Guardar" />
-
+        
     </div>
 
-
     <!-- <script src="webcam.js" type="text/javascript"></script> -->
+    <script src="Content/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script
         type="text/javascript"
         src="Content/webcam-easyV.js"></script>
     <script src="Content/NuevoReporte.js" type="text/javascript"></script>
 
-</asp:Content>
+
+</body>
+</html>
+
+

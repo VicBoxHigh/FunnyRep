@@ -1,14 +1,16 @@
-let containerRep = document.getElementById("cntNewRep");
+const containerRep = document.getElementById("cntNewRep");
 
-let txtTitle = $("#txtTitle");
-let txtDescription = $("#txtDescriptionReport");
-let txtLugar = $("#txtLugar");
+const txtTitle = $("#txtTitle");
+const txtDescription = $("#txtDescriptionReport");
+const txtLugar = $("#txtLugar");
 
-let btnGetLocation = $("#btnGetLocation");
+const btnGetLocation = $("#btnGetLocation");
+const repHeadsContainer = $("#cntRepHeads");
 
-let btnGuardar = document.getElementById("btnGuardar");
+const btnGuardar = document.getElementById("btnGuardar");
 
-let iframeMap = document.createElement("iframe");
+const iframeMap = document.createElement("iframe");
+
 
 let lat = 0;
 let lon = 0;
@@ -49,36 +51,49 @@ const getLocation = () => {
 btnGetLocation.on("click", () => {
     getLocation();
 });
+const KEY_TOKEN_NAME = "SESSIONTOKEN";
 
 btnGuardar.addEventListener("click", (e) => {
-    /*let d =
-    {
 
-        IdUserWhoNotified: 2,
-        Location: {
-            Description: "Ventas",
-            lat: 2.453216,
-            lon: 1.54513,
+    //might be invalid token or not exists
+    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
+    if (!currentToken) {
+        alert("Inicie sesión primero.")
+        return;
+    }
+
+    let data = extractReportData();
+    let dataStr = JSON.stringify(data);
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:57995/api/Report",
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
         },
-        IdStatus: 0,
-        NotifiedDT: "2022-03-01 00:00:00",
-        Title: "Lavabo roto",
-        Description: "Se rompió la manija de la puerta",
-        Pic64: "jjffh8jf98h4"
-    };
-    let dataStr = JSON.stringify(d);*/
-    /*  let d = { userTyped: userTypedd, passTyped: passTypedd };
-      let jsonStr = JSON.stringify(d);
-    
-      $.ajax({
-          type: "POST",
-          url: "Login.aspx/loginSubmit",
-          data: jsonStr,
-          contentType: "application/json; charset=utf-8",
-          dataType: "JSON",
-      });*/
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
+        data: dataStr,
+        succes: function (data, textStatus, xhr) {
+            alert(data);
+        },
+        error: function (xhr, textStatus) {
+            alert("Error en la solicitud" + xhr.responseText);
+        },
+    });
+    /*  webcam.stop(); */
+});
+
+const extractReportData = () => {
     let d = {
-        a: 1,
+
         IdReport: 0,
         IdUserWhoNotified: 1,
         Location: {
@@ -98,13 +113,28 @@ btnGuardar.addEventListener("click", (e) => {
         Title: txtTitle.val(),
         Description: txtDescription.val(),
     };
-    let dataStr = JSON.stringify(d);
+
+    return d;
+}
+
+
+const getRepsByUser = () => {
+
+    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
+
+    if (!currentToken) {
+        alert("Inicie sesión primero")
+    }
+
     $.ajax({
-        type: "POST",
-        url: "http://dumyhost.com:8003/api/Report/",
+        type: "Get",
+        url: "http://localhost:57995/api/Report",
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": "true",
@@ -112,29 +142,26 @@ btnGuardar.addEventListener("click", (e) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-        /*  user: "vperez",
-          password: "vperez", */
         data: dataStr,
-        succes: function (data) {
+        succes: function (data, textStatus, xhr) {
             alert(data);
         },
-        error: function (err) {
-            alert(err);
+        error: function (xhr, textStatus) {
+            alert("Error en la solicitud" + xhr.responseText);
         },
     });
-    /*  webcam.stop(); */
-});
+}
 
-const snapF = () => {
+/*const snapF = () => {
     alert("snap");
 
-    /*  let picture = webcam.snap();
-   
-    document.querySelector("#download-photo").href = picture;
-    document.querySelector("#download-photo").download = "foto1F.png"; */
+    *//*  let picture = webcam.snap();
+ 
+document.querySelector("#download-photo").href = picture;
+document.querySelector("#download-photo").download = "foto1F.png"; *//*
 };
 butonSnap.addEventListener("click", snapF, false);
-
+*/
 webcam
     .start()
     .then((result) => {
@@ -143,3 +170,6 @@ webcam
     .catch((err) => {
         console.log(err);
     });
+
+
+

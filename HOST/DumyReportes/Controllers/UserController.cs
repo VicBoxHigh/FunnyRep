@@ -21,7 +21,7 @@ namespace DumyReportes.Controllers
         private readonly UserDataContext _UserDataContext = new UserDataContext();
         // GET: api/User
         [Route("~/api/User/all")]
-         public /*IEnumerable<string>*/ IHttpActionResult Get()
+         public /*IEnumerable<string>*/ IHttpActionResult Get([FromBody] bool something)
         {
 
             Flags.ErrorFlag result = _UserDataContext.GetAll(out List<IReportObject> users, out string error);
@@ -75,11 +75,10 @@ namespace DumyReportes.Controllers
 
         // [Route("~/api/User/ ")]
         [IdentityBasicAuthentication]
-        [HttpPost]
-        public IHttpActionResult Post(/*[FromUri]int numEmpleado, [FromUri] string pass*/)
+        [HttpGet]
+        public IHttpActionResult Get(/*[FromUri]int numEmpleado, [FromUri] string pass*/)
         {
             //if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
-
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();

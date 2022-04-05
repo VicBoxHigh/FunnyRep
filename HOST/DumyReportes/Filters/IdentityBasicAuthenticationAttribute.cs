@@ -12,6 +12,7 @@ using System.Security.Principal;
 using System.Security.Claims;
 using DumyReportes.Util;
 using DumyReportes.Models;
+using DumyReportes.Flags;
 
 namespace DumyReportes.Filters
 {
@@ -60,11 +61,14 @@ namespace DumyReportes.Filters
         public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken)
         {
 
-            User user = TokenHelper.ValidateToke(token);
+            ErrorFlag resultValidate = TokenHelper.ValidateToke(token, out User user);
+
 
             GenericPrincipal genericPrincipal = null;
 
-            if (user != null)
+            if (resultValidate != ErrorFlag.ERROR_OK_RESULT) return genericPrincipal;//null
+
+            if ( user != null)
             {
                 genericPrincipal = createPrincipal(user,"Bearer");
             }

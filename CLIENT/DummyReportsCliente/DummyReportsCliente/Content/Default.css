@@ -1,0 +1,32 @@
+﻿body {
+}
+
+.main-container {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.main-container > * {
+
+    max-width:50%;
+    display:flex;
+    flex-flow:column nowrap;
+
+}
+
+
+.container-heads {
+    max-height:95%;
+    overflow-y:scroll;
+}
+
+.containerNewReport {
+}
+
+.item-report-head{
+    border-style:solid;
+    border-color: black;
+    margin: 1rem;
+    padding:1rem;
+    cursor:pointer;
+}

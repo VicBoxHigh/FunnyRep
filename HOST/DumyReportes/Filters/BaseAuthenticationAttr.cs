@@ -49,7 +49,9 @@ namespace DumyReportes.Filters
                 var user = userPass.Item1;
                 var pass = userPass.Item2;
 
-                principal = await AuthenticateAsync(context, user, pass, cancellationToken);
+                Task<IPrincipal> task = AuthenticateAsync(context, user, pass, cancellationToken);
+
+                principal = await task;
 
             }
             else if(authorization.Scheme.Equals("Bearer"))//Any othe actiona
