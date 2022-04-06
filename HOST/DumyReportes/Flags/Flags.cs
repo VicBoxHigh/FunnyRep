@@ -16,7 +16,7 @@ namespace DumyReportes.Flags
         ERROR_INVALID_OBJECT,
         ERROR_INVALID_ID,
         ERROR_INVALID_TOKEN,
-        ERROR_RECORD_NOT_EXISTS,
+        ERROR_NOT_EXISTS,
         ERROR_RECORD_EXISTS,
         ERROR_DATABASE,
         ERROR_NO_DELETED_RECORDS,
@@ -25,7 +25,9 @@ namespace DumyReportes.Flags
         ERROR_DENIED_OPERATION,
         ERROR_NO_UPDATED_RECORDS,
         ERROR_INVALID_CREDENTIALS,
-        ERROR_EXPIRED_TOKEN
+        ERROR_EXPIRED_TOKEN,
+        ERROR_NO_FILE_TO_WRITE,
+        ERROR_NO_FILE_TO_READ
     }
 
     public enum ReportStatus

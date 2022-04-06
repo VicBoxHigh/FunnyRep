@@ -2,9 +2,10 @@
 <html>
 <head>
     <title></title>
-        <link rel="stylesheet" href="Content/Default.css">
+    <link rel="stylesheet" href="Content/Default.css">
 </head>
 <body>
+    <input id="btnTogleNewRep" type="button" value="Nuevo Reporte" />
     <div class="main-container">
 
         <div id="cntRepHeads" class="container-heads">
@@ -41,7 +42,49 @@
 
         </div>
 
-        
+
+        <div id="cntRepDtl" class="container-repdtl">
+
+            <div id="cntRepHeadExpand" class="container-headexpand">
+
+                <div class="container-headexpand__idReport">#999</div>
+                <div class="container-headexpand__title">#Se rompió lavabo</div>
+                <div class="container-headexpand__description">#Se rompió el.</div>
+
+                <div class="container-headexpand__numEmpleadoNotif">#NumEmpleado</div>
+                <div class="container-headexpand__location">LOCATION</div>
+                <div class="container-headexpand__status">0</div>
+                <div class="container-headexpand__FileNameEvidence">Evidence.jpg</div>
+                <div class="container-headexpand__notifiedDt">#999</div>
+
+            </div>
+
+            <div id="cntRepDtlEntries" class="container-reportDtlEntries  " >
+
+                <div class="container-reportDtlEntry entry-owner">
+
+                    <div class="container-reportDtlEntry__fileNameEvidence">Mi evidencia1.jpeg</div>
+                    <div class="container-reportDtlEntry__title">Evidencia Owner</div>
+                    <div class="container-reportDtlEntry__description">Descripcion del Owner</div>
+                    <div class="container-reportDtlEntry__fechaHoraEntry">2021-1-4 12:34:00</div>
+
+                </div>
+
+                
+                <div class="container-reportDtlEntry ">
+
+                    <div class="container-reportDtlEntry__fileNameEvidence">Mi evidencia2.jpeg</div>
+                    <div class="container-reportDtlEntry__title">Evidencia </div>
+                    <div class="container-reportDtlEntry__description">Descripcion Normal</div>
+                    <div class="container-reportDtlEntry__fechaHoraEntry">2021-1-4 12:34:00</div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
     </div>
 
     <!-- <script src="webcam.js" type="text/javascript"></script> -->

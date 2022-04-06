@@ -1,6 +1,8 @@
 ﻿using DumyReportes.Data;
 using DumyReportes.Filters;
+using DumyReportes.Flags;
 using DumyReportes.Models;
+using DumyReportes.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +16,7 @@ using System.Web.Http.Cors;
 namespace DumyReportes.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
-    [IdentityBasicAuthentication]
+    [IdentityBasicAuthenticationAttribute]
     public class ReportController : ApiController
     {
 
@@ -58,10 +60,6 @@ namespace DumyReportes.Controllers
 
             User user = genericIdentity.user;
 
-
-
-            // if (idUser < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
-
             Flags.ErrorFlag result =
                 _ReportDataContext.GetAllBy(
                     isOwner: user.AccessLevel != Flags.AccessLevel.PUBLIC,
@@ -70,11 +68,11 @@ namespace DumyReportes.Controllers
                     error: out string error
                     );
 
-            if (result != Flags.ErrorFlag.ERROR_OK_RESULT)
+            if (result != ErrorFlag.ERROR_OK_RESULT)
                 return StatusCode(HttpStatusCode.NotFound);
 
-            if (reportObjs.Count == 0) return StatusCode(HttpStatusCode.NoContent);
-
+            if (reportObjs.Count == 0) return StatusCode(HttpStatusCode.NoContent); 
+            
             return Ok(
                 new
                 {
@@ -119,35 +117,47 @@ namespace DumyReportes.Controllers
         {
             if (report == null) return BadRequest("Objeto nulo");
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
+            
+            UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
+            if (user != null && !user.IsAuthenticated) return Unauthorized();
 
-            string fileName = Guid.NewGuid().ToString() + ".png";
-            string path = $"C:\\imgs\\";
-            File.WriteAllBytes(path + fileName, Convert.FromBase64String(report.Pic64));
+            ErrorFlag resultCreateEvidence = EvidenceHelper.CreateEvidenceImg(report);
 
-            report.FileNameEvidence = fileName;
-            report.PathEvidence = path;
+            if (resultCreateEvidence != ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultCreateEvidence);
 
-            Flags.ErrorFlag resultCreation = _ReportDataContext.Create(report, out string error);
-
-
+            ErrorFlag resultCreation = _ReportDataContext.Create(report, out string error);
 
             if (resultCreation != Flags.ErrorFlag.ERROR_OK_RESULT)
             {
-                /*HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NotModified)
-                {
-                    Content = new StringContent("No hubo cambios."),
-                    ReasonPhrase = resultCreation.ToString()
-                };
-
-                throw new HttpResponseException(httpResponseMessage);*/
-                return StatusCode(HttpStatusCode.NotModified);
-
-                //return Content<string>(HttpStatusCode.NotModified, resultCreation.ToString());
-
+                return ValidateResult(resultCreation);
             }
-
+            
             return StatusCode(HttpStatusCode.Created);
 
+
+        }
+
+        private IHttpActionResult ValidateResult(ErrorFlag resultCreateEvidence)
+        {
+            IHttpActionResult result;
+            switch (resultCreateEvidence)
+            {
+                case ErrorFlag.ERROR_NO_FILE_TO_WRITE:
+                    
+                    result = InternalServerError(new Exception("No es posible escribir el archivo. Operación abortada."));
+                    break;
+                case ErrorFlag.ERROR_NOT_EXISTS:
+                    result = NotFound();
+                    break;
+                case ErrorFlag.ERROR_NO_AFECTED_RECORDS:
+                    result = InternalServerError(new Exception("Error en base de datos"));
+                    break;
+                default:
+                    result = BadRequest("Error desconocido");
+                    break;
+            }
+
+            return result;
 
         }
 

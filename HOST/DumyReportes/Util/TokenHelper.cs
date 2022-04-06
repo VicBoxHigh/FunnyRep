@@ -65,7 +65,6 @@ namespace DumyReportes.Util
             if (resultGetUser != ErrorFlag.ERROR_OK_RESULT) return resultGetUser;
 
 
-            user.CurrentToke = token;
 
 
             if (!UserCredentialAgainstDB(userCredentialsLogin, repoObj))
@@ -73,6 +72,7 @@ namespace DumyReportes.Util
                 return ErrorFlag.ERROR_INVALID_TOKEN;
             }
             user = repoObj as User;
+            user.CurrentToke = token;
             //TODO
             //if(tokenProperties == user) return ok else return null
 

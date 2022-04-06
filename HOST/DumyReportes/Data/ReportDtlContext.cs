@@ -189,7 +189,7 @@ namespace DumyReportes.Data
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
 
-                    if (!reader.HasRows) return ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                    if (!reader.HasRows) return ErrorFlag.ERROR_NOT_EXISTS;
 
                     while (reader.Read())
                     {

@@ -137,7 +137,7 @@ namespace DumyReportes.Data
                 using (SqlDataReader sqlDataReader = command.ExecuteReader())
                 {
 
-                    if (!sqlDataReader.HasRows) result = Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                    if (!sqlDataReader.HasRows) result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
                     else result = Flags.ErrorFlag.ERROR_OK_RESULT;
 
                     while (sqlDataReader.Read())
@@ -175,7 +175,7 @@ namespace DumyReportes.Data
                 using (SqlDataReader sqlDataReader = command.ExecuteReader())
                 {
 
-                    if (!sqlDataReader.HasRows) return Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                    if (!sqlDataReader.HasRows) return Flags.ErrorFlag.ERROR_NOT_EXISTS;
 
                     if (sqlDataReader.Read())
                     {
@@ -184,7 +184,7 @@ namespace DumyReportes.Data
                     }
                     else
                     {
-                        result = Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                        result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
                     }
 
                 }
@@ -282,7 +282,7 @@ namespace DumyReportes.Data
             try
             {
                 int rowsModified = command.ExecuteNonQuery();
-                if (rowsModified == 0) result = Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                if (rowsModified == 0) result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
                 result = ErrorFlag.ERROR_OK_RESULT;
 
             }
@@ -310,7 +310,7 @@ namespace DumyReportes.Data
             try
             {
                 int a = command.ExecuteNonQuery();
-                if (a == 0) result = ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                if (a == 0) result = ErrorFlag.ERROR_NOT_EXISTS;
                 else result = ErrorFlag.ERROR_OK_RESULT;
             }
             catch (SqlException ex)
@@ -347,7 +347,7 @@ namespace DumyReportes.Data
 
                 if (reader.HasRows)
                     user = InstanceFromReader(reader) as User;
-                else result = ErrorFlag.ERROR_RECORD_NOT_EXISTS;
+                else result = ErrorFlag.ERROR_NOT_EXISTS;
             }
             catch (SqlException ex)
             {

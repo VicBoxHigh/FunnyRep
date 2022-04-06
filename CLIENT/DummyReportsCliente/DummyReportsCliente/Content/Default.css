@@ -6,27 +6,59 @@
     flex-flow: row wrap;
 }
 
-.main-container > * {
+    .main-container > * {
+        max-width: 50%;
+        display: flex;
+        flex-flow: column nowrap;
+    }
 
-    max-width:50%;
-    display:flex;
-    flex-flow:column nowrap;
-
+.no-render {
+    display: none;
 }
-
 
 .container-heads {
-    max-height:95%;
-    overflow-y:scroll;
+    max-height: 95%;
+    overflow-y: scroll;
 }
+
+
 
 .containerNewReport {
 }
 
-.item-report-head{
-    border-style:solid;
+.container-repdtl {
+    width: 50%;
+    /*Flex heredado*/
+}
+.container-headexpand {
+  /*  width: 100%;*/
+    align-self: center;
+}
+
+.container-reportDtlEntries {
+    width: 100%;
+}
+
+.item-report-head {
+    border-style: solid;
     border-color: black;
     margin: 1rem;
-    padding:1rem;
-    cursor:pointer;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.container-reportDtlEntries {
+    display: flex;
+    flex-flow: column nowrap;
+    overflow-y: scroll;
+}
+
+.container-reportDtlEntry {
+    margin: 1rem;
+    padding: 1rem;
+    align-self: end;
+}
+
+.entry-owner {
+    align-self: start;
 }

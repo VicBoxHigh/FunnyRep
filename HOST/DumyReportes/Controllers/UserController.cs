@@ -49,7 +49,7 @@ namespace DumyReportes.Controllers
             Flags.ErrorFlag result = _UserDataContext.Get(id, out  IReportObject user  , out string error);
             /*userOut = user as User;*/
 
-            if (result == Flags.ErrorFlag.ERROR_RECORD_NOT_EXISTS)
+            if (result == Flags.ErrorFlag.ERROR_NOT_EXISTS)
             {
                 return Content(HttpStatusCode.NotFound, result.ToString());
             
@@ -71,7 +71,7 @@ namespace DumyReportes.Controllers
 
 
 
-
+        private static int HIDING_FACTOR = 54 * 13 * 4;
 
         // [Route("~/api/User/ ")]
         [IdentityBasicAuthentication]
@@ -83,13 +83,14 @@ namespace DumyReportes.Controllers
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
 
-             
+
 
             return Ok(new
             {
-                token = genericIdentity.user.CurrentToke
+                token = genericIdentity.user.CurrentToke,
+                levelUser = (int)genericIdentity.user.AccessLevel * HIDING_FACTOR
 
-            });
+            }); ;
 
         }
 

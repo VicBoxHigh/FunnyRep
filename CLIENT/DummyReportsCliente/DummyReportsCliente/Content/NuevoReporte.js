@@ -1,4 +1,7 @@
-const containerRep = document.getElementById("cntNewRep");
+const containerNewRep = $("#cntNewRep");
+const containerRepDtl = $("#cntRepDtl");
+
+const btnToogleNewRep = $("#btnTogleNewRep")
 
 const txtTitle = $("#txtTitle");
 const txtDescription = $("#txtDescriptionReport");
@@ -91,6 +94,30 @@ btnGuardar.addEventListener("click", (e) => {
     /*  webcam.stop(); */
 });
 
+btnToogleNewRep.on("click", () => {
+
+    
+    if (containerNewRep.hasClass("no-render")) {
+
+        containerNewRep.removeClass("no-render");
+
+        containerRepDtl.addClass("no-render")
+
+        
+    }
+    else {
+
+        containerNewRep.addClass("no-render");
+
+        containerRepDtl.removeClass("no-render")
+
+
+    }
+
+
+
+});
+
 const extractReportData = () => {
     let d = {
 
@@ -162,14 +189,46 @@ document.querySelector("#download-photo").download = "foto1F.png"; *//*
 };
 butonSnap.addEventListener("click", snapF, false);
 */
-webcam
-    .start()
-    .then((result) => {
-        console.log("webcam started");
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+const initCam = () => {
+    webcam
+        .start()
+        .then((result) => {
+            console.log("webcam started");
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
 
+
+//Si el usuario
+const checkSessionLevel = () => {
+    let lu = localStorage.getItem("LevelUser");
+
+    if (!lu == undefined) alert("ERROR");
+
+    //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
+    //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
+    if (lu != 0)
+        btnToogleNewRep.addClass("no-render")
+
+
+    //Por defecto el contenedor Nuevo reporte será escondido, no importa el usuario
+
+    containerNewRep.addClass("no-render");
+
+    containerRepDtl.removeClass("no-render")
+
+
+
+}
+
+const init = () => {
+    checkSessionLevel();
+    //  getRepsByUser();
+    // initCam();
+}
+
+init();
 
 

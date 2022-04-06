@@ -28,48 +28,44 @@ btnLogin.on("click", (e) => {
     }
 
 
-    if (!isNaN(txtNumEmpleado.val())) {
+    if (checkAdmin.is(':checked')  && !isNaN(txtNumEmpleado.val())) {
 
         alert("Ingrese solamente digitos");
         return;
     }
 
+    loginUser(numEmpleado, checkAdmin.is(':checked') ? pass : numEmpleado);
 
-    if (checkAdmin.is(':checked'))
-        loginAdmin(numEmpleado, pass);
-    else
-        loginUser(numEmpleado);
 
 
 
 
 })
 
-const loginUser = (numEmpleado) => {
+const loginUser = (numEmpleado, pass) => {
 
     $.ajax({
-        type: "POST",
-        url: "http://dumyhost.com:8003/api/User/LoginUser/",
+        type: "GET",
+        url: "http://localhost:57995/api/User/",
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
-        headers: corsObjs.headers,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
         beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `Basic ${numEmpleado}:${numEmpleado}`)
+            xhr.setRequestHeader("Authorization", `Basic ${btoa(numEmpleado + ":" + pass)}`)
         },
         success: successPromiseLog,
         error: failPromiseLog,
     });
 
 }
-const corsObjs = {
-    headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-        "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-    },
-}
+/*
 const loginAdmin = (numEmpleado, pass) => {
 
     $.ajax({
@@ -93,7 +89,7 @@ const loginAdmin = (numEmpleado, pass) => {
     });
 
 
-};
+};*/
 
 const KEY_TOKEN_NAME = "SESSIONTOKEN";
 
@@ -106,6 +102,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 
         //if (localStorage.getItem("sessionToken"))
         localStorage.setItem(KEY_TOKEN_NAME, data.token);
+        localStorage.setItem("LevelUser", data.levelUser);
         window.location.href = "/Default.aspx"
 
     } else {
@@ -114,7 +111,8 @@ const successPromiseLog = (data, textStatus, xhr) => {
 }
 
 const failPromiseLog = (xhr, textStatus) => {
-    localStorage.removeItem(KEY_TOKEN_NAME)
+    localStorage.removeItem(KEY_TOKEN_NAME);
+    localStorage.removeItem("LevelUser");
     alert("Falló la solicitud al servidor." + xhr.responseText)
 
 }
