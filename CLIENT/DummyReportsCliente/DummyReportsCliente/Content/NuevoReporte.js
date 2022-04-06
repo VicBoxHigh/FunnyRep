@@ -96,14 +96,14 @@ btnGuardar.addEventListener("click", (e) => {
 
 btnToogleNewRep.on("click", () => {
 
-    
+
     if (containerNewRep.hasClass("no-render")) {
 
         containerNewRep.removeClass("no-render");
 
         containerRepDtl.addClass("no-render")
 
-        
+
     }
     else {
 
@@ -169,15 +169,47 @@ const getRepsByUser = () => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-        data: dataStr,
-        succes: function (data, textStatus, xhr) {
-            alert(data);
+        success: function (data, textStatus, xhr) {
+            //alert(data);
+            renderRepHeads(data.reports)
         },
         error: function (xhr, textStatus) {
             alert("Error en la solicitud" + xhr.responseText);
         },
     });
 }
+
+
+const renderRepHeads = (repHeads) => {
+
+    for (let currentRep in repHeads) {
+        repHeadsContainer.append(generateRepHead(repHeads[currentRep]))
+
+    }
+
+
+}
+
+const generateRepHead = (individualRepHead) => {
+
+    let repHead = $(`
+
+            <div class="item-report-head">
+                <div class="item-report-head__idReport">#${individualRepHead.IdReport} </div>
+                <div class="item-report-head__title">${individualRepHead.Title}</div>
+                <div class="item-report-head__title">${individualRepHead.Description}</div>
+                <div class="item-report-head__date">${individualRepHead.DTCreation}</div>
+                <div class="item-report-head__numEmpleado">${individualRepHead.IdUserWhoNotified}</div>
+
+            </div>
+
+`);
+
+    return repHead;
+
+
+}
+
 
 /*const snapF = () => {
     alert("snap");
@@ -205,7 +237,7 @@ const initCam = () => {
 const checkSessionLevel = () => {
     let lu = localStorage.getItem("LevelUser");
 
-    if (!lu == undefined) alert("ERROR");
+    if (lu == undefined) alert("ERROR");
 
     //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
     //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
@@ -225,7 +257,7 @@ const checkSessionLevel = () => {
 
 const init = () => {
     checkSessionLevel();
-    //  getRepsByUser();
+    getRepsByUser();
     // initCam();
 }
 

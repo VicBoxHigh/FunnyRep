@@ -271,7 +271,7 @@ namespace DumyReportes.Data
 
             Location location = new Location(
                 (int)reader["IdLocation"],
-                reader["Loc.Description"].ToString(),
+                reader["Description"].ToString(),
                 (decimal)reader["lat"],
                 (decimal)reader["long"]
                 );
@@ -282,8 +282,8 @@ namespace DumyReportes.Data
                 location,
                 (ReportStatus)reader["IdStatus"],
                 (DateTime)reader["NotifiedDT"],
-                reader["Rep.Title"].ToString(),
-                reader["Rep.Description"].ToString()
+                reader["Title"].ToString(),
+                reader["Description"].ToString()
 
                 );
 
