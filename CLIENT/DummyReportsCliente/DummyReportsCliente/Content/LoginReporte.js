@@ -64,32 +64,7 @@ const loginUser = (numEmpleado, pass) => {
         error: failPromiseLog,
     });
 
-}
-/*
-const loginAdmin = (numEmpleado, pass) => {
-
-    $.ajax({
-        type: "GET",
-        url: "http://localhost:57995/api/User/",
-        contentType: "application/json",
-        crossDomain: true,
-        datatype: "json",
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-        },
-
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `Basic ${btoa(numEmpleado + ":" + pass)}`)
-        },
-        success: successPromiseLog,
-        error: failPromiseLog,
-    });
-
-
-};*/
+} 
 
 const KEY_TOKEN_NAME = "SESSIONTOKEN";
 

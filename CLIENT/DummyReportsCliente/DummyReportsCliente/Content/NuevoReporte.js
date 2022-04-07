@@ -192,14 +192,15 @@ const renderRepHeads = (repHeads) => {
 }
 
 //el callback para cuando se de click en una de las tarjetas Head de un reporte
-const clickReportHead = (event, individualRepHead) => {
+const clickReportHead =async (event, individualRepHead) => {
 
     clearReportDtl()//limpia el Head expanded y las entries
 
     reFillReportDtl(individualRepHead);//llena el head expanded
 
 
-     getRepDtlEntries(individualRepHead);
+    let data = await getRepDtlEntries(individualRepHead);
+    individualRepHead.ReportUpdates = data.reportDtlEntries;
      reFillReportDtlEntries(individualRepHead);//llena las entries;
 
 }
@@ -235,7 +236,7 @@ const reFillReportDtlEntries = (individualRepHead) => {
 
     let entriesContainer = containerRepDtl.children(".container-reportDtlEntries");
 
-    let currentSession = localStorage.getItem("LevelUser");
+    let sessionLevel = localStorage.getItem("LevelUser");
 
     for (let currentEntryIndex in individualRepHead.ReportUpdates) {
 
@@ -246,7 +247,7 @@ const reFillReportDtlEntries = (individualRepHead) => {
         let entryPositionClass = "";//default is right (end)
 
         entryPositionClass =
-            (currentSession > 0 && !currentEnry.IsOwnerUpdate) || (currentSession == 0 && currentEnry.IsOwnerUpdate)
+            (sessionLevel > 0 && !currentEnry.IsOwnerUpdate) || (sessionLevel == 0 && currentEnry.IsOwnerUpdate)
                 ? "entry-left"
                 : "";
 
@@ -283,7 +284,7 @@ const getRepDtlEntries = (individualRepHead) => {
         return; 
     }
 
-    $.ajax({
+   return $.ajax({
         type: "Get",
         url: `http://localhost:57995/api/ReportDtl/${individualRepHead.IdReport}`,
         contentType: "application/json",
@@ -299,14 +300,13 @@ const getRepDtlEntries = (individualRepHead) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-        success: function (data, textStatus, xhr) {
-            //alert(data);
-            individualRepHead.ReportUpdates = data.reportDtlEntries;
+        /*success: function (data, textStatus, xhr) {
+             individualRepHead.ReportUpdates = data.reportDtlEntries;
              
         },
         error: function (xhr, textStatus) {
             alert("Error en la solicitud" + xhr.responseText);
-        },
+        },*/
     })
 
 
