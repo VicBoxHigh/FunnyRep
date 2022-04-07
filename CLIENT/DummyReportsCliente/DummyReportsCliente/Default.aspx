@@ -60,8 +60,8 @@
             </div>
 
             <div id="cntRepDtlEntries" class="container-reportDtlEntries  " >
-
-                <div class="container-reportDtlEntry entry-left">
+                AÚN NO HAY ENTRADAS EN EL REPORTE
+                <%--<div class="container-reportDtlEntry entry-left">
 
                     <div class="container-reportDtlEntry__fileNameEvidence">Mi evidencia1.jpeg</div>
                     <div class="container-reportDtlEntry__title">Evidencia Owner</div>
@@ -78,9 +78,16 @@
                     <div class="container-reportDtlEntry__description">Descripcion Normal</div>
                     <div class="container-reportDtlEntry__fechaHoraEntry">2021-1-4 12:34:00</div>
 
-                </div>
+                </div>--%>
 
             </div>
+
+
+            <div id="cntRepDtlUserInput" class="container-repdtl__user-input">
+                <textarea id="txtRepDtlUserInput" class="container-repdtl__user-input"  rows="5" cols="50"></textarea>
+                <input id="btnSendRepDtlUpdate" type="button" class="container-repdtl__send" value="Enviar" />
+            </div>
+
 
         </div>
 

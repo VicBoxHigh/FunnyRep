@@ -39,6 +39,9 @@ namespace DumyReportes.Models
         [DataMember]
         public string PathEvidence { get; set; }
 
+ 
+        public string Pic64 { get; set; }
+
         public ReportDtlEntry()
         {
 

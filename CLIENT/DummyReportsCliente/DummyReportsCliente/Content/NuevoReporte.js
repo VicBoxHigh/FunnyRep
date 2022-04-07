@@ -11,6 +11,10 @@ const txtLugar = $("#txtLugar");
 const btnGetLocation = $("#btnGetLocation");
 const repHeadsContainer = $("#cntRepHeads");
 
+const txtRepDtlUserInput = $("#txtRepDtlUserInput")
+const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
+
+
 const btnGuardar = document.getElementById("btnGuardar");
 
 const iframeMap = document.createElement("iframe");
@@ -199,7 +203,15 @@ const clickReportHead =async (event, individualRepHead) => {
     reFillReportDtl(individualRepHead);//llena el head expanded
 
 
-    let data = await getRepDtlEntries(individualRepHead);
+    let taskGetEntries = getRepDtlEntries(individualRepHead);
+
+    //do animation loading?
+  /*  {
+
+    }*/
+
+    let data = await taskGetEntries;//unvelop the entries from the promise
+
     individualRepHead.ReportUpdates = data.reportDtlEntries;
      reFillReportDtlEntries(individualRepHead);//llena las entries;
 
@@ -285,7 +297,7 @@ const getRepDtlEntries = (individualRepHead) => {
     }
 
    return $.ajax({
-        type: "Get",
+        type: "GET",
         url: `http://localhost:57995/api/ReportDtl/${individualRepHead.IdReport}`,
         contentType: "application/json",
         crossDomain: true,
@@ -333,6 +345,27 @@ const generateRepHead = (individualRepHead) => {
 
 }
 
+const enviarActualización = (actualizacionData) => {
+
+
+    return $.ajax({
+        type: "POST",
+        url: `http://localhost:57995/api/ReportDtl/`,
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+    })
+
+}
 
 /*const snapF = () => {
     alert("snap");
