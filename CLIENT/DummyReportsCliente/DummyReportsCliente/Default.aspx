@@ -61,7 +61,7 @@
 
             <div id="cntRepDtlEntries" class="container-reportDtlEntries  " >
 
-                <div class="container-reportDtlEntry entry-owner">
+                <div class="container-reportDtlEntry entry-left">
 
                     <div class="container-reportDtlEntry__fileNameEvidence">Mi evidencia1.jpeg</div>
                     <div class="container-reportDtlEntry__title">Evidencia Owner</div>

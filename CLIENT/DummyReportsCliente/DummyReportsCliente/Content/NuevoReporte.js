@@ -1,3 +1,4 @@
+
 const containerNewRep = $("#cntNewRep");
 const containerRepDtl = $("#cntRepDtl");
 
@@ -190,11 +191,133 @@ const renderRepHeads = (repHeads) => {
 
 }
 
+//el callback para cuando se de click en una de las tarjetas Head de un reporte
+const clickReportHead = (event, individualRepHead) => {
+
+    clearReportDtl()//limpia el Head expanded y las entries
+
+    reFillReportDtl(individualRepHead);//llena el head expanded
+
+
+     getRepDtlEntries(individualRepHead);
+     reFillReportDtlEntries(individualRepHead);//llena las entries;
+
+}
+
+
+const clearReportDtl = () => {
+
+    containerRepDtl.children(".container-reportDtlEntries").children().remove();
+    let containerHeadExpanded = containerRepDtl.children(".container-headexpand");
+
+    containerHeadExpanded.children().remove();
+
+}
+
+const reFillReportDtl = (individualRepHead) => {
+
+    let reportDtlHeadExpanded = $(`
+                <div class="container-headexpand__idReport">${individualRepHead.IdReport}</div>
+                <div class="container-headexpand__title">${individualRepHead.Title}</div>
+                <div class="container-headexpand__description">${individualRepHead.Description}</div>
+                <div class="container-headexpand__numEmpleadoNotif">${individualRepHead.IdUserWhoNotified}</div>
+                <div class="container-headexpand__location">${individualRepHead.Location}</div>
+                <div class="container-headexpand__status">${individualRepHead.IdStatus}</div>
+                <div class="container-headexpand__FileNameEvidence">${individualRepHead.FileNameEvidence}</div>
+                <div class="container-headexpand__notifiedDt">${individualRepHead.DTCreation}</div>
+    `)
+
+    containerRepDtl.children(".container-headexpand").append(reportDtlHeadExpanded);
+
+}
+
+const reFillReportDtlEntries = (individualRepHead) => {
+
+    let entriesContainer = containerRepDtl.children(".container-reportDtlEntries");
+
+    let currentSession = localStorage.getItem("LevelUser");
+
+    for (let currentEntryIndex in individualRepHead.ReportUpdates) {
+
+        let currentEnry = individualRepHead.ReportUpdates[currentEntryIndex]
+        //Si la sesión es PUBLIC, el owner va a la izquierda -> 
+        //SI la sesión de NO PUBLIC, el owner va a la derecha
+
+        let entryPositionClass = "";//default is right (end)
+
+        entryPositionClass =
+            (currentSession > 0 && !currentEnry.IsOwnerUpdate) || (currentSession == 0 && currentEnry.IsOwnerUpdate)
+                ? "entry-left"
+                : "";
+
+
+        entriesContainer.append(`
+                <div class="container-reportDtlEntry ${entryPositionClass} ">
+
+                    <div class="container-reportDtlEntry__title">${currentEnry.TitleUpdate}</div>
+                    <div class="container-reportDtlEntry__description">${currentEnry.Description}</div>
+                    <div class="container-reportDtlEntry__fileNameEvidence">${currentEnry.FileNameEvidence}</div>
+                    <div class="container-reportDtlEntry__fechaHoraEntry">${currentEnry.DTUpdate}</div>
+
+                </div>
+        `);
+
+    }
+
+
+
+
+
+
+
+
+
+};
+
+
+const getRepDtlEntries = (individualRepHead) => {
+
+    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);;
+    if (!currentToken) {
+        alert("Inicie sesión primero.")
+        return; 
+    }
+
+    $.ajax({
+        type: "Get",
+        url: `http://localhost:57995/api/ReportDtl/${individualRepHead.IdReport}`,
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
+        success: function (data, textStatus, xhr) {
+            //alert(data);
+            individualRepHead.ReportUpdates = data.reportDtlEntries;
+             
+        },
+        error: function (xhr, textStatus) {
+            alert("Error en la solicitud" + xhr.responseText);
+        },
+    })
+
+
+}
+
+//genera cada uno de las vistas básicas del Head
 const generateRepHead = (individualRepHead) => {
 
     let repHead = $(`
 
-            <div class="item-report-head">
+            <div class="item-report-head"    >
                 <div class="item-report-head__idReport">#${individualRepHead.IdReport} </div>
                 <div class="item-report-head__title">${individualRepHead.Title}</div>
                 <div class="item-report-head__title">${individualRepHead.Description}</div>
@@ -204,7 +327,7 @@ const generateRepHead = (individualRepHead) => {
             </div>
 
 `);
-
+    repHead.on("click", (e) => { clickReportHead(e, individualRepHead) });
     return repHead;
 
 

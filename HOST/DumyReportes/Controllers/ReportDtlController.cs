@@ -1,17 +1,22 @@
 ﻿using DumyReportes.Data;
+using DumyReportes.Filters;
+using DumyReportes.Flags;
 using DumyReportes.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
 namespace DumyReportes.Controllers
 {
-    
 
+
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [IdentityBasicAuthenticationAttribute]
     public class ReportDtlController : ApiController
     {
         readonly ReportDtlContext _ReportDtlContext = new ReportDtlContext();
@@ -20,9 +25,9 @@ namespace DumyReportes.Controllers
         {
             return StatusCode(HttpStatusCode.NotImplemented);
 
-            Flags.ErrorFlag resultGet = _ReportDtlContext.GetAll(out List<IReportObject> reportObjects, out string error);
+            ErrorFlag resultGet = _ReportDtlContext.GetAll(out List<IReportObject> reportObjects, out string error);
 
-            if (resultGet != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resultGet.ToString());
+            if (resultGet != ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resultGet.ToString());
 
             return Ok(
                     new
@@ -40,14 +45,21 @@ namespace DumyReportes.Controllers
         public IHttpActionResult Get([FromUri]int idRH)
         {
             if (idRH < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
+
+
+            UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
+
+            if (user == null || !user.IsAuthenticated) return Unauthorized();
+
             Flags.ErrorFlag resultGet = _ReportDtlContext.GetAll(idRH, out List<IReportObject> reportObjects, out string error);
 
+            if (resultGet == ErrorFlag.ERROR_NOT_EXISTS) return StatusCode(HttpStatusCode.NoContent);
             if (resultGet != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resultGet.ToString());
 
             return Ok(
                     new
                     {
-                        reportsDtl = reportObjects
+                        reportDtlEntries = reportObjects
                     }
 
                 );
@@ -62,6 +74,9 @@ namespace DumyReportes.Controllers
         [HttpPost]
         public IHttpActionResult Post([FromBody] ReportDtlEntry reportDtlEntry)
         {
+            UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
+
+            if (user == null || !user.IsAuthenticated) return Unauthorized();
 
             if (!reportDtlEntry.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 

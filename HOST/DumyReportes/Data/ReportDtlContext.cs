@@ -48,22 +48,10 @@ namespace DumyReportes.Data
 
         public static string QUERY_INSERT_EVIDENCE_AND_REPORT =
             @"
-
-            BEGIN TRY
-
-	            BEGIN TRANSACTION CreateReportDtlTran;
-
-		            INSERT INTO [dbo].[Evidence]
-                                    ([FileName]
-                                    ,[Path])
-                                VALUES(
-                                    @fileName
-                                    ,@path);
-
-		
 		            INSERT INTO [dbo].[ReportDtlEntry]
                                     ([IdReport]
-                                    ,[IdEvidence]
+                                    ,[PathEvidence]
+                                    ,[FileNameEvidence]
                                     ,[TitleUpdate]
                                     ,[Description]
                                     ,[DTUpdate]
@@ -71,21 +59,14 @@ namespace DumyReportes.Data
                                 VALUES
                                     (
 		                            @idReport
-                                    ,(SELECT SCOPE_IDENTITY())
+                                    ,@path
+                                    ,@fileName
                                     ,@titleUpdate
                                     ,@description
                                     ,@dtUpdate
                                     ,@isOwnerUpdate
 		                            );
 
-
-	            COMMIT TRANSACTION CreateReportDtlTran;
-
-            END TRY
-            BEGIN CATCH
-                SELECT ERROR_MESSAGE() ERROR;
-	            ROLLBACK TRANSACTION CreateReportDtlTran;
-            END CATCH
             ";
 
         public ErrorFlag Create(IReportObject reportObject, out string error)
@@ -107,7 +88,7 @@ namespace DumyReportes.Data
             command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = reportDtlEntry.DTUpdate;
             command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.IsOwnerUpdate;
 
-
+            using(command)
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 try
@@ -115,16 +96,8 @@ namespace DumyReportes.Data
 
                     result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
 
-                    if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
-                    //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
-                    if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
-                    {
-                        result = ErrorFlag.ERROR_CREATION_ENITITY;
-                        //result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
-                        //if (reader.Read())
-
-                    }
-
+                    if (reader.RecordsAffected == 1) result = ErrorFlag.ERROR_OK_RESULT;
+                    //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query                   
 
                 }
                 catch (SqlException ex)
@@ -162,13 +135,13 @@ namespace DumyReportes.Data
          @"
             SELECT RDE.[IdReportDtlEntry]
                   ,RDE.[IdReport]
-                  
+	              ,RDE.[FileNameEvidence]
+	              ,RDE.[PathEvidence]
                   ,RDE.[TitleUpdate]
                   ,RDE.[Description]
                   ,RDE.[DTUpdate]
                   ,RDE.[isOwnerUpdate]
-	              ,RDE.[FileNameEvidence]
-	              ,RDE.[PathEvidence]
+                  
 
               FROM [ReportDtlEntry]  RDE
 
