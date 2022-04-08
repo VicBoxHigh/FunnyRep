@@ -72,6 +72,10 @@ namespace DumyReportes.Filters
             {
                 genericPrincipal = createPrincipal(user,"Bearer");
             }
+            else
+            {
+                Console.WriteLine("F");
+            }
 
             return genericPrincipal;
         }

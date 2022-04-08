@@ -306,18 +306,18 @@ namespace DumyReportes.Data
             ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = id;
-
-            try
-            {
-                int a = command.ExecuteNonQuery();
-                if (a == 0) result = ErrorFlag.ERROR_NOT_EXISTS;
-                else result = ErrorFlag.ERROR_OK_RESULT;
-            }
-            catch (SqlException ex)
-            {
-                error = ex.Message;
-                result = ErrorFlag.ERROR_CONNECTION_DB;
-            }
+            using (command)
+                try
+                {
+                    int a = command.ExecuteNonQuery();
+                    if (a == 0) result = ErrorFlag.ERROR_NOT_EXISTS;
+                    else result = ErrorFlag.ERROR_OK_RESULT;
+                }
+                catch (SqlException ex)
+                {
+                    error = ex.Message;
+                    result = ErrorFlag.ERROR_CONNECTION_DB;
+                }
 
 
             return result;
@@ -343,11 +343,14 @@ namespace DumyReportes.Data
             result = ErrorFlag.ERROR_OK_RESULT;
             try
             {
-                SqlDataReader reader = command.ExecuteReader();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
 
-                if (reader.HasRows)
-                    user = InstanceFromReader(reader) as User;
-                else result = ErrorFlag.ERROR_NOT_EXISTS;
+                    if (reader.HasRows)
+                        user = InstanceFromReader(reader) as User;
+                    else result = ErrorFlag.ERROR_NOT_EXISTS;
+                }
+
             }
             catch (SqlException ex)
             {

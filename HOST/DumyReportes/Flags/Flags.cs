@@ -28,7 +28,8 @@ namespace DumyReportes.Flags
         ERROR_EXPIRED_TOKEN,
         ERROR_NO_FILE_TO_WRITE,
         ERROR_NO_FILE_TO_READ,
-        ERROR_UNAUTHORIZED_ACCESS
+        ERROR_UNAUTHORIZED_ACCESS,
+        FATAL
     }
 
     public enum ReportStatus

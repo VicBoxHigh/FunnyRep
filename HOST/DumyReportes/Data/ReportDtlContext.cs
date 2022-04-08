@@ -101,10 +101,10 @@ namespace DumyReportes.Data
 
 
             SqlConnection connection = ConexionBD.getConexion();
-            
+            using(connection)
             using (SqlCommand command = connection.CreateCommand())
-            using (SqlTransaction transaction = connection.BeginTransaction("INSERT REPORT DTL ENTRY"))
             {
+                SqlTransaction transaction = connection.BeginTransaction("INSERT REPORT DTL ENTRY");
                 command.Connection = connection;
                 command.Transaction = transaction;
 
@@ -129,11 +129,19 @@ namespace DumyReportes.Data
                     int rowsAffected2 = command.ExecuteNonQuery();
                     transaction.Commit();
                     result = ErrorFlag.ERROR_OK_RESULT;
+
+                    transaction.Dispose();
+
+
                 }
                 catch (SqlException ex)
                 {
                     transaction.Rollback();
                     result = ErrorFlag.ERROR_CREATION_ENITITY;
+                }
+                catch (Exception ex)
+                {
+                    result = ErrorFlag.FATAL;
                 }
             }
 

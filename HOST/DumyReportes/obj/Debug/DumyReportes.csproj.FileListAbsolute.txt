@@ -178,4 +178,3 @@ C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyRepo
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.dll
 C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.pdb
-C:\Users\progjun2\source\repos\DumyReportes\HOST\DumyReportes\obj\Debug\DumyReportes.csproj.AssemblyReference.cache

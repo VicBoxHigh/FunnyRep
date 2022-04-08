@@ -216,7 +216,7 @@ namespace DumyReportes.Data
 	            LEFT JOIN [Report] Rep ON Rep.IdReport = UOR.IdReport 
 	            LEFT JOIN [Location] Loc on Rep.IdLocation = Loc.IdLocation
 	            Left JOIN ReportStatus RS ON Rep.IdStatus = RS.IdStatus
-	            LEFT JOIN [User] U ON Rep.IdUserWhoNotified = U.IdUser
+	            LEFT JOIN [User] U ON UOR.IdUser = U.IdUser
 	        Where U.IdUser= @IdUser
 
             ";
@@ -226,19 +226,21 @@ namespace DumyReportes.Data
             error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(isOwner ? QUERY_GET_REPORT_BY_OWNER : QUERY_GET_REPORT_BY_USER_WHONOTIFIED, ConexionBD.getConexion());
-
+            
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = idUser;
 
             reportObjects = new List<IReportObject>();
 
             try
             {
-
+                using(command)
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (!reader.HasRows) result = ErrorFlag.ERROR_OK_RESULT;
                     else
                     {
+                        //bool reading = reader.Read(); 
+                        
                         while (reader.Read())
                         {
                             reportObjects.Add(InstanceFromReader(reader));
@@ -268,14 +270,14 @@ namespace DumyReportes.Data
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
-
+             
             Location location = new Location(
                 (int)reader["IdLocation"],
                 reader["Description"].ToString(),
                 (decimal)reader["lat"],
                 (decimal)reader["long"]
                 );
-
+       //     reader.GetInt32(1);
             Report report = new Report(
                 (int)reader["IdReport"],
                 (int)reader["IdUserWhoNotified"],

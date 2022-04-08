@@ -217,9 +217,16 @@ const clickReportHead = async (event, individualRepHead) => {
     individualRepHead.ReportUpdates = data.reportDtlEntries;
     reFillReportDtlEntries(individualRepHead);//llena las entries;
 
+    btnSendRepDtlUpdate.off("click");
     btnSendRepDtlUpdate.on("click", async (e) => {
-        let task = sendNewEntry(individualRepHead);
-        let value = await task;
+
+        try {
+            let value = await sendNewEntry(individualRepHead);
+            
+
+        } catch (err) {
+            console.log("Error al actualizar los detalles locales del reporte.");
+        }
         event.target.click();
     });
 
@@ -266,13 +273,7 @@ const sendNewEntry = (newEntry) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-        success: function (data, textStatus, xhr) {
-            //alert(data);
-            //Entry enviada
-        },
-        error: function (xhr, textStatus) {
-            alert("Error en la solicitud" + xhr.responseText);
-        },
+      
     });
 
 

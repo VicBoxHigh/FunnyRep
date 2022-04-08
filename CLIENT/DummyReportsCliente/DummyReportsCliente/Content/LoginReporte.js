@@ -27,8 +27,8 @@ btnLogin.on("click", (e) => {
         return;
     }
 
-
-    if (checkAdmin.is(':checked')  && !isNaN(txtNumEmpleado.val())) {
+    //Si es checked, entoces el logeo es admin
+    if (checkAdmin.is(':checked')  && !numEmpleado) {
 
         alert("Ingrese solamente digitos");
         return;

@@ -11,7 +11,7 @@
     <form id="form1" runat="server">
         <div>
             <label for="checkToogleAdmn" title="Admin login"></label>
-            <input id="chekToogleAdmn" name="checkToogleAdmn" type="checkbox" value ="Admin"  />
+            <input id="chekToogleAdmn" name="checkToogleAdmn" checked type="checkbox" value ="Admin"  />
         </div>
         <div>
             <input id="txtUser" type="text" placeholder="Usuario" />

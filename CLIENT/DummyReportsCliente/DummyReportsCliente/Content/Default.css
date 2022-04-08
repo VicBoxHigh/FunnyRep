@@ -28,6 +28,8 @@
 
 .container-repdtl {
     width: 50%;
+    height: 99vh;
+    max-height: 99vh;
     /*Flex heredado*/
 }
 .container-headexpand {
