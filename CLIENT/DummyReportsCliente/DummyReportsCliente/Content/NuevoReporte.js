@@ -188,7 +188,9 @@ const getRepsByUser = () => {
 const renderRepHeads = (repHeads) => {
 
     for (let currentRep in repHeads) {
-        repHeadsContainer.append(generateRepHead(repHeads[currentRep]))
+        repHeadsContainer.append(
+            generateRepHead(repHeads[currentRep])
+        )
 
     }
 
@@ -196,24 +198,83 @@ const renderRepHeads = (repHeads) => {
 }
 
 //el callback para cuando se de click en una de las tarjetas Head de un reporte
-const clickReportHead =async (event, individualRepHead) => {
+const clickReportHead = async (event, individualRepHead) => {
 
     clearReportDtl()//limpia el Head expanded y las entries
-
+    txtRepDtlUserInput.val("");
     reFillReportDtl(individualRepHead);//llena el head expanded
 
 
     let taskGetEntries = getRepDtlEntries(individualRepHead);
 
     //do animation loading?
-  /*  {
-
-    }*/
+    /*  {
+  
+      }*/
 
     let data = await taskGetEntries;//unvelop the entries from the promise
 
     individualRepHead.ReportUpdates = data.reportDtlEntries;
-     reFillReportDtlEntries(individualRepHead);//llena las entries;
+    reFillReportDtlEntries(individualRepHead);//llena las entries;
+
+    btnSendRepDtlUpdate.on("click", async (e) => {
+        let task = sendNewEntry(individualRepHead);
+        let value = await task;
+        event.target.click();
+    });
+
+}
+
+const sendNewEntry = (newEntry) => {
+
+    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
+    let userLvl = localStorage.getItem("LevelUser");
+
+    if (!currentToken) {
+        alert("Inicie sesión primero")
+    }
+
+    let data = {
+        IdReport: newEntry.IdReport,//ese Id es colocado cuando se da click en el head
+        TitleUpdate: "",
+        Description: txtRepDtlUserInput.val(),
+        IsOwnerUpdate: userLvl == 0 ? false : true/*newEntry.IsOwnerUpdate*/,
+        DTUpdate: new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace("/-/g", "/")
+            .replace("T", " "),
+        Pic64: ""//Pendiente
+    }
+
+    let dataStr = JSON.stringify(data);
+
+    return $.ajax({
+        type: "POST",
+        url: "http://localhost:57995/api/ReportDtl",
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        data: dataStr,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
+        success: function (data, textStatus, xhr) {
+            //alert(data);
+            //Entry enviada
+        },
+        error: function (xhr, textStatus) {
+            alert("Error en la solicitud" + xhr.responseText);
+        },
+    });
+
 
 }
 
@@ -282,9 +343,6 @@ const reFillReportDtlEntries = (individualRepHead) => {
 
 
 
-
-
-
 };
 
 
@@ -293,10 +351,10 @@ const getRepDtlEntries = (individualRepHead) => {
     let currentToken = localStorage.getItem(KEY_TOKEN_NAME);;
     if (!currentToken) {
         alert("Inicie sesión primero.")
-        return; 
+        return;
     }
 
-   return $.ajax({
+    return $.ajax({
         type: "GET",
         url: `http://localhost:57995/api/ReportDtl/${individualRepHead.IdReport}`,
         contentType: "application/json",
@@ -347,6 +405,15 @@ const generateRepHead = (individualRepHead) => {
 
 const enviarActualización = (actualizacionData) => {
 
+    let repDtlEntry = {
+        "IdReport": 3,
+        "FileNameEvidence": "NoMyFile.jpeg",
+        "PathEvidence": "C:/files/evidences/",
+        "TitleUpdate": " Gracias",
+        "Description": " De nada segunda description ",
+        "IsOwnerUpdate": true,
+        "DTUpdate": "2021-03-14 02:40:15"
+    }
 
     return $.ajax({
         type: "POST",

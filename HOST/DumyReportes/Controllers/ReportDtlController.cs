@@ -2,6 +2,7 @@
 using DumyReportes.Filters;
 using DumyReportes.Flags;
 using DumyReportes.Models;
+using DumyReportes.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace DumyReportes.Controllers
         //Todas las entries de un ReportHeader, es independiente del usuario, ya que es gobernado por el IdReport (Header)
         // GET: api/ReportDtl
         [Route("~/api/ReportDtl/{idRH}")]
-        public IHttpActionResult Get([FromUri]int idRH)
+        public IHttpActionResult Get([FromUri] int idRH)
         {
             if (idRH < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
@@ -80,14 +81,52 @@ namespace DumyReportes.Controllers
 
             if (!reportDtlEntry.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
+            ErrorFlag resultCreateEvidence = EvidenceHelper.CreateEvidenceImg(reportDtlEntry);
+
+            if (resultCreateEvidence != ErrorFlag.ERROR_OK_RESULT && resultCreateEvidence != ErrorFlag.ERROR_NO_FILE_TO_WRITE) return ValidateResult(resultCreateEvidence);
+
             Flags.ErrorFlag resultCreate = _ReportDtlContext.Create(reportDtlEntry, out string error);
 
-            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return Conflict();
+
+            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultCreate);
 
 
             return StatusCode(HttpStatusCode.Created);
 
         }
+
+        private IHttpActionResult ValidateResult(ErrorFlag resultCreateEvidence)
+        {
+            IHttpActionResult result;
+            switch (resultCreateEvidence)
+            {
+                case ErrorFlag.ERROR_NO_FILE_TO_WRITE:
+
+                    result = InternalServerError(new Exception("No es posible escribir el archivo. Operación abortada."));
+                    break;
+                case ErrorFlag.ERROR_NOT_EXISTS:
+                    result = NotFound();
+                    break;
+                case ErrorFlag.ERROR_NO_AFECTED_RECORDS:
+                    result = InternalServerError(new Exception("Error en base de datos"));
+                    break;
+                case ErrorFlag.ERROR_UNAUTHORIZED_ACCESS:
+                    result = Unauthorized();
+                    break;
+                case ErrorFlag.ERROR_CONNECTION_DB:
+                    result = InternalServerError(new Exception("Error al conectar la base de datos"));
+                    break;
+                    
+                default:
+                    result = BadRequest("Error desconocido");
+                    break;
+            }
+
+            return result;
+
+        }
+
+
 
         // PUT: api/ReportDtl/5
         public IHttpActionResult Put(int id, [FromBody] string value)

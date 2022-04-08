@@ -46,8 +46,31 @@ namespace DumyReportes.Data
             ";*/
 
 
-        public static string QUERY_INSERT_EVIDENCE_AND_REPORT =
+        public static string QUERY_CHECK_EXISTENCE_OWNER_OR_CREATE =
             @"
+
+            IF NOT EXISTS (SELECT TOP(1) * FROM ReportApp.dbo.UserOwner_Report UOR where UOR.IdReport = @idReport order by DT DESC)
+            BEGIN 
+	            
+	            INSERT INTO [dbo].[UserOwner_Report]
+                       ([IdReport]
+                       ,[IdUser]
+                       ,[DT])
+	            VALUES (
+	                @idReport,
+	                (SELECT TOP (1) IdReport FROM Report R Where R.IdReport = @idReport),
+	                GETDATE()
+                )
+
+
+            END
+
+            ";
+
+        public static string QUERY_INSERT_REPORT_DTL =
+            @"
+
+
 		            INSERT INTO [dbo].[ReportDtlEntry]
                                     ([IdReport]
                                     ,[PathEvidence]
@@ -72,42 +95,52 @@ namespace DumyReportes.Data
         public ErrorFlag Create(IReportObject reportObject, out string error)
         {
             ReportDtlEntry reportDtlEntry = reportObject as ReportDtlEntry;
-             
+
             error = "";
             ErrorFlag result;
 
-            SqlCommand command = new SqlCommand(QUERY_INSERT_EVIDENCE_AND_REPORT, ConexionBD.getConexion());
 
+            SqlConnection connection = ConexionBD.getConexion();
             
-                command.Parameters.Add("@fileName", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.FileNameEvidence;
-                command.Parameters.Add("@path", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.PathEvidence;
- 
-            command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = reportDtlEntry.IdReport;
-            command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.TitleUpdate;
-            command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Description;
-            command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = reportDtlEntry.DTUpdate;
-            command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.IsOwnerUpdate;
-
-            using(command)
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (SqlCommand command = connection.CreateCommand())
+            using (SqlTransaction transaction = connection.BeginTransaction("INSERT REPORT DTL ENTRY"))
             {
+                command.Connection = connection;
+                command.Transaction = transaction;
+
                 try
                 {
+                    command.CommandText = QUERY_CHECK_EXISTENCE_OWNER_OR_CREATE;
+                    command.Parameters.Add("@idReport", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.IdReport;
 
-                    result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
+                    int rowsAffected = command.ExecuteNonQuery();
 
-                    if (reader.RecordsAffected == 1) result = ErrorFlag.ERROR_OK_RESULT;
-                    //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query                   
+                    //si no hay entries, ese Reporte no tiene OWNER, por lo tanto se asignará al usuario que actualice primero.
 
+                    command.CommandText = QUERY_INSERT_REPORT_DTL;
+                    command.Parameters.Add("@fileName", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.FileNameEvidence;
+                    command.Parameters.Add("@path", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.PathEvidence;
+
+                    //command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = reportDtlEntry.IdReport;
+                    command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.TitleUpdate;
+                    command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Description;
+                    command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = reportDtlEntry.DTUpdate;
+                    command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.IsOwnerUpdate;
+                    int rowsAffected2 = command.ExecuteNonQuery();
+                    transaction.Commit();
+                    result = ErrorFlag.ERROR_OK_RESULT;
                 }
                 catch (SqlException ex)
                 {
-                    result = ErrorFlag.ERROR_CONNECTION_DB;
+                    transaction.Rollback();
+                    result = ErrorFlag.ERROR_CREATION_ENITITY;
                 }
-
-                return result;
-
             }
+
+
+
+            return result;
+
         }
 
 
@@ -186,7 +219,7 @@ namespace DumyReportes.Data
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
-             
+
 
             ReportDtlEntry reportDtlEntry = new ReportDtlEntry()
             {
