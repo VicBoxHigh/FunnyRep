@@ -223,7 +223,7 @@ const clickReportHead = async (event, individualRepHead) => {
     btnSendRepDtlUpdate.on("click", async (e) => {
 
         if (individualRepHead.IdStatus == 2) {
-            alert("El reporte está marcado como completado. No se realizarán cambios.")
+            alert("El reporte está marcado como completado. No se realizarán cambios.");
             return
         }
 
