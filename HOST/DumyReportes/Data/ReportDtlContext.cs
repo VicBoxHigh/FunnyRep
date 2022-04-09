@@ -66,7 +66,12 @@ namespace DumyReportes.Data
             END
 
             ";
+     /*   if (SELECT TOP(1) IdStatus FROM Report Where Report.IdReport =  1) != 2
+BEGIN
 
+SELECT  ;
+
+END*/
         public static string QUERY_INSERT_REPORT_DTL =
             @"
 

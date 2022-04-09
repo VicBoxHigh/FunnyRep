@@ -60,7 +60,7 @@
             </div>
 
             <div id="cntRepDtlEntries" class="container-reportDtlEntries  " >
-                AÚN NO HAY ENTRADAS EN EL REPORTE
+                <div>AÚN NO HAY ENTRADAS EN EL REPORTE</div>
                 <%--<div class="container-reportDtlEntry entry-left">
 
                     <div class="container-reportDtlEntry__fileNameEvidence">Mi evidencia1.jpeg</div>
@@ -86,6 +86,12 @@
             <div id="cntRepDtlUserInput" class="container-repdtl__user-input">
                 <textarea id="txtRepDtlUserInput" class="container-repdtl__user-input"  rows="5" cols="50"></textarea>
                 <input id="btnSendRepDtlUpdate" type="button" class="container-repdtl__send" value="Enviar" />
+                <select name="selStat" id="selStat" >
+                    <option value="0">PENDIENTE</option>
+                    <option value="1">EN PROCESO</option>
+                    <option value="2">COMPLETADO</option>
+                </select>
+                <input id="btnSaveStatus" type="button" value="Guardar"/>
             </div>
 
 

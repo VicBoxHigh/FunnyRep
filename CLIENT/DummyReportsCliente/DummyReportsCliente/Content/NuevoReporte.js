@@ -1,4 +1,4 @@
-
+ 
 const containerNewRep = $("#cntNewRep");
 const containerRepDtl = $("#cntRepDtl");
 
@@ -14,6 +14,8 @@ const repHeadsContainer = $("#cntRepHeads");
 const txtRepDtlUserInput = $("#txtRepDtlUserInput")
 const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
 
+const selStatusRep = $("#selStat");
+const btnSaveStatus = $("#btnSaveStatus");
 
 const btnGuardar = document.getElementById("btnGuardar");
 
@@ -220,6 +222,11 @@ const clickReportHead = async (event, individualRepHead) => {
     btnSendRepDtlUpdate.off("click");
     btnSendRepDtlUpdate.on("click", async (e) => {
 
+        if (individualRepHead.IdStatus == 2) {
+            alert("El reporte está marcado como completado. No se realizarán cambios.")
+            return
+        }
+
         try {
             let value = await sendNewEntry(individualRepHead);
             
@@ -303,7 +310,55 @@ const reFillReportDtl = (individualRepHead) => {
     `)
 
     containerRepDtl.children(".container-headexpand").append(reportDtlHeadExpanded);
+    selStatusRep.val(individualRepHead.IdStatus);
 
+    btnSaveStatus.off("click");
+    btnSaveStatus.on("click", async (event) => {
+        let task = saveStatus(individualRepHead);
+
+        try {
+            let result = await individualRepHead;
+        }
+        catch (ex) {
+            alert("Error: " + ex)
+        }
+    })
+}
+
+const saveStatus = (individualRepHead) => {
+
+    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
+    let userLvl = localStorage.getItem("LevelUser");
+
+    if (!currentToken) {
+        alert("Inicie sesión primero")
+    }
+
+    if (!userLvl || userLvl == 0) alert("No tiene permiso para realizar esta acción.");
+
+    individualRepHead.IdStatus = selStatusRep.val();
+    let d = JSON.stringify(individualRepHead);
+
+
+    return $.ajax({
+        type: "PUT",
+        url: `http://localhost:57995/api/Report/${individualRepHead.IdReport}`,
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        data: d,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
+         
+    })
 }
 
 const reFillReportDtlEntries = (individualRepHead) => {
@@ -324,7 +379,6 @@ const reFillReportDtlEntries = (individualRepHead) => {
             (sessionLevel > 0 && !currentEnry.IsOwnerUpdate) || (sessionLevel == 0 && currentEnry.IsOwnerUpdate)
                 ? "entry-left"
                 : "";
-
 
         entriesContainer.append(`
                 <div class="container-reportDtlEntry ${entryPositionClass} ">

@@ -294,8 +294,42 @@ namespace DumyReportes.Data
 
         }
 
+
+        private static string QUERY_UPDATE_STATUS =
+            @"
+                UPDATE [dbo].[Report]
+                   SET 
+                      [IdStatus] = @newStat
+
+                 WHERE [IdReport] = @idReport
+            ";
+
         public ErrorFlag Update(IReportObject reportObject, out string error)
         {
+            Report report = reportObject as Report;
+            ErrorFlag resultOp;
+            error = "";
+            SqlCommand command = new SqlCommand(QUERY_UPDATE_STATUS, ConexionBD.getConexion());
+            command.Parameters.Add("@newStat", System.Data.SqlDbType.Int).Value = (int)report.IdStatus;
+            command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = report.IdReport;
+
+
+            try
+            {
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                resultOp = ErrorFlag.ERROR_OK_RESULT;
+
+
+            }catch(SqlException ex)
+            {
+                resultOp = ErrorFlag.ERROR_CONNECTION_DB;
+            }
+
+
+            return resultOp;
+
             throw new NotImplementedException();
         }
     }

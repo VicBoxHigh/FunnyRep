@@ -119,7 +119,7 @@ namespace DumyReportes.Controllers
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
             
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
-            if (user != null && !user.IsAuthenticated) return Unauthorized();
+            if (user == null || !user.IsAuthenticated) return Unauthorized();
 
             ErrorFlag resultCreateEvidence = EvidenceHelper.CreateEvidenceImg(report);
 
@@ -150,7 +150,10 @@ namespace DumyReportes.Controllers
                     result = NotFound();
                     break;
                 case ErrorFlag.ERROR_NO_AFECTED_RECORDS:
-                    result = InternalServerError(new Exception("Error en base de datos"));
+                    result = Content(HttpStatusCode.NotModified, "Sin cambios");
+                    break;
+                case ErrorFlag.ERROR_CONNECTION_DB:
+                    result = InternalServerError(new Exception("Error den base de datos"));
                     break;
                 default:
                     result = BadRequest("Error desconocido");
@@ -165,12 +168,16 @@ namespace DumyReportes.Controllers
         // PUT: api/Report/5
         public IHttpActionResult Put(int id, [FromBody] Report report)
         {
+            UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
+            if (user == null || !user.IsAuthenticated  || user.user.AccessLevel.Equals(AccessLevel.PUBLIC)) return Unauthorized();
+
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_VALIDATION_ENTITY.ToString());
             if (id != report.IdReport) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
+
             Flags.ErrorFlag resulUpdate = _ReportDataContext.Update(report, out string error);
 
-            if (resulUpdate != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resulUpdate.ToString());
+            if (resulUpdate != Flags.ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resulUpdate);
 
 
 
