@@ -17,6 +17,10 @@ namespace DumyReportes.Models
         public int IdReport { get; set; }
         [DataMember]
         public int IdUserWhoNotified { get; set; }
+
+        [DataMember]
+        public string NumEmpleadoWhoNotified { get; set; }
+
         [DataMember]
         public Location Location { get; set;  }
         [DataMember]

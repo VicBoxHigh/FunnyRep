@@ -1,7 +1,7 @@
-  CREATE DATABASE ReportApp2;
+  CREATE DATABASE ReportApp;
   GO 
 
-  USE ReportApp2;
+  USE ReportApp;
  GO
 
 CREATE TABLE AccessLevel(
@@ -45,8 +45,8 @@ CREATE TABLE [Location](
 
 	IdLocation INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	[Description] varchar (100) NOT NULL,
-	lat decimal NOT NULL,
-	long decimal NOT null
+	lat decimal(18,8) NOT NULL,
+	long decimal(18,8) NOT null
 
 );
 
@@ -56,14 +56,7 @@ CREATE TABLE ReportStatus(
 	titleStatus varchar(25)
 
 );
-CREATE TABLE Evidence(
-	
-	IdEvidence int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	[FileName] varchar(45),
-	[Path] varchar(256)
-
-
-);
+ 
 CREATE TABLE Report(
 
 	IdReport INT NOT NULL IDENTITY ( 1,1) PRIMARY KEY,
@@ -77,8 +70,8 @@ CREATE TABLE Report(
 	IdStatus int NOT NULL,
 	FOREIGN KEY(IdStatus) REFERENCES ReportStatus(IdStatus),
 
-	IdEvidence int,
-	FOREIGN kEY(IdEvidence) REFERENCES Evidence(IdEvidence),
+	FileNameEvidence varchar(50),
+	PathEvidence varchar(256),
 
 	NotifiedDT datetime NOT NULL,
 	 
@@ -111,9 +104,6 @@ CREATE TABLE ReportDtlEntry (
 	IdReport int NOT NULL,
 	FOREIGN KEY(IdReport ) REFERENCES [Report](IdReport ),
 
-	IdEvidence int ,
-	FOREIGN KEY(IdEvidence) REFERENCES Evidence(IdEvidence),
-
 	TitleUpdate varchar(45) NOT NULL,
 	[Description] varchar(512) NOT NULL,
 
@@ -121,6 +111,8 @@ CREATE TABLE ReportDtlEntry (
 
 	isOwnerUpdate bit NOT NULL,
 
+	FileNameEvidence varchar(50),
+	PathEvidence varchar(256),
 
 
 );

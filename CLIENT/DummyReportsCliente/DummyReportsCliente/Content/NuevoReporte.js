@@ -1,4 +1,4 @@
- 
+
 const containerNewRep = $("#cntNewRep");
 const containerRepDtl = $("#cntRepDtl");
 
@@ -109,14 +109,17 @@ btnToogleNewRep.on("click", () => {
         containerNewRep.removeClass("no-render");
 
         containerRepDtl.addClass("no-render")
-
-
+        btnToogleNewRep.val("Mis Reportes")
+        initCam();
     }
     else {
 
         containerNewRep.addClass("no-render");
 
         containerRepDtl.removeClass("no-render")
+
+        btnToogleNewRep.val("Nuevo Reporte");
+        stopCam();
 
 
     }
@@ -178,7 +181,9 @@ const getRepsByUser = () => {
 
         success: function (data, textStatus, xhr) {
             //alert(data);
-            renderRepHeads(data.reports)
+            if (data)
+                if (data.reports)
+                    renderRepHeads(data.reports)
         },
         error: function (xhr, textStatus) {
             alert("Error en la solicitud" + xhr.responseText);
@@ -215,6 +220,7 @@ const clickReportHead = async (event, individualRepHead) => {
       }*/
 
     let data = await taskGetEntries;//unvelop the entries from the promise
+    if (taskGetEntries.statusText == 'No Content') return;
 
     individualRepHead.ReportUpdates = data.reportDtlEntries;
     reFillReportDtlEntries(individualRepHead);//llena las entries;
@@ -229,7 +235,7 @@ const clickReportHead = async (event, individualRepHead) => {
 
         try {
             let value = await sendNewEntry(individualRepHead);
-            
+
 
         } catch (err) {
             console.log("Error al actualizar los detalles locales del reporte.");
@@ -280,7 +286,7 @@ const sendNewEntry = (newEntry) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-      
+
     });
 
 
@@ -297,16 +303,30 @@ const clearReportDtl = () => {
 }
 
 const reFillReportDtl = (individualRepHead) => {
+    let statusRepStr = individualRepHead.IdStatus == 0 ? "EN ESPERA" : individualRepHead.IdStatus == 1 ? "EN PROCESO" : "COMPLETADA";
+
+    let dateRep = new Date(individualRepHead.DTCreation);
+    let hora = dateRep.getHours();
+    let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear() + " " +
+        (hora > 12 ? hora - 12 : hora) + ":" + dateRep.getMinutes() + (hora > 12 ? " PM" : " AM");
+
 
     let reportDtlHeadExpanded = $(`
-                <div class="container-headexpand__idReport">${individualRepHead.IdReport}</div>
-                <div class="container-headexpand__title">${individualRepHead.Title}</div>
-                <div class="container-headexpand__description">${individualRepHead.Description}</div>
-                <div class="container-headexpand__numEmpleadoNotif">${individualRepHead.IdUserWhoNotified}</div>
-                <div class="container-headexpand__location">${individualRepHead.Location}</div>
-                <div class="container-headexpand__status">${individualRepHead.IdStatus}</div>
-                <div class="container-headexpand__FileNameEvidence">${individualRepHead.FileNameEvidence}</div>
-                <div class="container-headexpand__notifiedDt">${individualRepHead.DTCreation}</div>
+                <div>
+                    <div class="container-headexpand__title">${individualRepHead.Title}</div>
+                    <div class="container-headexpand__idReport">Reporte #${individualRepHead.IdReport}</div>
+                    <div class="container-headexpand__numEmpleadoNotif">Empleado que notificó: ${individualRepHead.NumEmpleadoWhoNotified}</div>
+                    <div class="container-headexpand__description">${individualRepHead.Description}</div>
+                    <div class="container-headexpand__location">
+                        <a target="_blank"
+                        href="https://www.google.com/maps?q=${individualRepHead.Location.lat + ',' + individualRepHead.Location.lon}">
+                         ${individualRepHead.Location.Description}
+                        </a>
+                    </div>
+                    <div class="container-headexpand__status">${statusRepStr}</div>
+                    <div class="container-headexpand__notifiedDt">${dateRepStr}</div>
+                </div>
+                <img class="container-headexpand__EvidencePic" src="data:image/png;base64,${individualRepHead.Pic64}"  ></img>
     `)
 
     containerRepDtl.children(".container-headexpand").append(reportDtlHeadExpanded);
@@ -357,7 +377,7 @@ const saveStatus = (individualRepHead) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-         
+
     })
 }
 
@@ -392,10 +412,6 @@ const reFillReportDtlEntries = (individualRepHead) => {
         `);
 
     }
-
-
-
-
 
 
 };
@@ -440,14 +456,18 @@ const getRepDtlEntries = (individualRepHead) => {
 //genera cada uno de las vistas básicas del Head
 const generateRepHead = (individualRepHead) => {
 
+    let dateRep = new Date(individualRepHead.DTCreation);
+    let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear();
+
+
     let repHead = $(`
 
             <div class="item-report-head"    >
-                <div class="item-report-head__idReport">#${individualRepHead.IdReport} </div>
+                <div class="item-report-head__idReport"> Reporte #${individualRepHead.IdReport} </div>
                 <div class="item-report-head__title">${individualRepHead.Title}</div>
-                <div class="item-report-head__title">${individualRepHead.Description}</div>
-                <div class="item-report-head__date">${individualRepHead.DTCreation}</div>
-                <div class="item-report-head__numEmpleado">${individualRepHead.IdUserWhoNotified}</div>
+                <div class="item-report-head__description">${individualRepHead.Description}</div>
+                <div class="item-report-head__date">${dateRepStr}</div>
+                <div class="item-report-head__numEmpleado">${individualRepHead.NumEmpleadoWhoNotified}</div>
 
             </div>
 
@@ -510,6 +530,12 @@ const initCam = () => {
         });
 }
 
+const stopCam = () => {
+
+    webcam.stop();
+
+}
+
 
 //Si el usuario
 const checkSessionLevel = () => {
@@ -519,10 +545,15 @@ const checkSessionLevel = () => {
 
     //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
     //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
-    if (lu != 0)
+    if (lu != 0) {
         btnToogleNewRep.addClass("no-render")
 
+    } else {
 
+        selStatusRep.addClass("no-render");
+        btnSaveStatus.addClass("no-render");
+
+    }
     //Por defecto el contenedor Nuevo reporte será escondido, no importa el usuario
 
     containerNewRep.addClass("no-render");

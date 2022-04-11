@@ -1,5 +1,6 @@
 ﻿using DumyReportes.Flags;
 using DumyReportes.Models;
+using DumyReportes.Util;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -98,7 +99,7 @@ namespace DumyReportes.Data
 	            ROLLBACK TRANSACTION CreateReportDtlTran;
             END CATCH
             ";
- 
+
 
 
 
@@ -113,7 +114,7 @@ namespace DumyReportes.Data
 
             using (SqlCommand command = connection.CreateCommand())
             {
-                
+
 
                 command.Connection = connection;
                 try
@@ -149,9 +150,9 @@ namespace DumyReportes.Data
 
                         }
                     }
-              
 
-                   
+
+
                 }
                 catch (SqlException ex)
                 {
@@ -189,7 +190,7 @@ namespace DumyReportes.Data
 
         public static string QUERY_GET_REPORT_BY_USER_WHONOTIFIED =
             @"
-                SELECT Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title,
+                SELECT Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title,Rep.Description RepDescription,FileNameEvidence,
                 Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
                 RS.IdStatus, RS.titleStatus,
                 U.IdUser, U.NumEmpleado, U.Level
@@ -207,7 +208,8 @@ namespace DumyReportes.Data
         public static string QUERY_GET_REPORT_BY_OWNER =
             @"
             SELECT
-	            Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title,
+	            Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title, Rep.Description RepDescription,Rep.FileNameEvidence,
+                
 	            Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
 	            RS.IdStatus, RS.titleStatus,
 	            U.IdUser, U.NumEmpleado, U.[Level],        
@@ -226,24 +228,28 @@ namespace DumyReportes.Data
             error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(isOwner ? QUERY_GET_REPORT_BY_OWNER : QUERY_GET_REPORT_BY_USER_WHONOTIFIED, ConexionBD.getConexion());
-            
+
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = idUser;
 
             reportObjects = new List<IReportObject>();
 
             try
             {
-                using(command)
+                using (command)
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (!reader.HasRows) result = ErrorFlag.ERROR_OK_RESULT;
                     else
                     {
                         //bool reading = reader.Read(); 
-                        
+
                         while (reader.Read())
                         {
-                            reportObjects.Add(InstanceFromReader(reader));
+                            Report report = InstanceFromReader(reader) as Report;
+                            
+                            ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(report.FileNameEvidence, out string base64Img);
+                            report.Pic64 = base64Img;
+                            reportObjects.Add(report);
                         }
                     }
                     result = ErrorFlag.ERROR_OK_RESULT;
@@ -270,14 +276,14 @@ namespace DumyReportes.Data
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
-             
+
             Location location = new Location(
                 (int)reader["IdLocation"],
                 reader["Description"].ToString(),
                 (decimal)reader["lat"],
                 (decimal)reader["long"]
                 );
-       //     reader.GetInt32(1);
+            //     reader.GetInt32(1);
             Report report = new Report(
                 (int)reader["IdReport"],
                 (int)reader["IdUserWhoNotified"],
@@ -285,10 +291,11 @@ namespace DumyReportes.Data
                 (ReportStatus)reader["IdStatus"],
                 (DateTime)reader["NotifiedDT"],
                 reader["Title"].ToString(),
-                reader["Description"].ToString()
+                reader["RepDescription"].ToString()
 
                 );
-
+            report.NumEmpleadoWhoNotified = reader["NumEmpleado"].ToString();
+            report.FileNameEvidence = reader["FileNameEvidence"].ToString();
             return report;
 
 
@@ -322,7 +329,8 @@ namespace DumyReportes.Data
                 resultOp = ErrorFlag.ERROR_OK_RESULT;
 
 
-            }catch(SqlException ex)
+            }
+            catch (SqlException ex)
             {
                 resultOp = ErrorFlag.ERROR_CONNECTION_DB;
             }

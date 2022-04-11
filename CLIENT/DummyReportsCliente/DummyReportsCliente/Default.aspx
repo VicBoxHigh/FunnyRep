@@ -10,7 +10,7 @@
 
         <div id="cntRepHeads" class="container-heads">
             <div class="item-report-head">
-                <div class="item-report-head__idReport">#999 </div>
+                <div class="item-report-head__idReport">Reporte #999 </div>
                 <div class="item-report-head__title">Titulo</div>
                 <div class="item-report-head__title">Pequeña descripción.</div>
                 <div class="item-report-head__date"></div>
@@ -35,7 +35,7 @@
 
             </div>
 
-            <input id="buttonSnap" type="button" value="Tomar foto" />
+          <!--  <input id="buttonSnap" type="button" value="Tomar foto" /> -->
 
 
             <input type="button" id="btnGuardar" value="Guardar" />
@@ -46,7 +46,7 @@
         <div id="cntRepDtl" class="container-repdtl">
 
             <div id="cntRepHeadExpand" class="container-headexpand">
-
+               <!--
                 <div class="container-headexpand__idReport">#999</div>
                 <div class="container-headexpand__title">#Se rompió lavabo</div>
                 <div class="container-headexpand__description">#Se rompió el.</div>
@@ -54,9 +54,9 @@
                 <div class="container-headexpand__numEmpleadoNotif">#NumEmpleado</div>
                 <div class="container-headexpand__location">LOCATION</div>
                 <div class="container-headexpand__status">0</div>
-                <div class="container-headexpand__FileNameEvidence">Evidence.jpg</div>
                 <div class="container-headexpand__notifiedDt">#999</div>
-
+                <div class="container-headexpand__evidence">Evidence.jpg</div>
+               -->
             </div>
 
             <div id="cntRepDtlEntries" class="container-reportDtlEntries  " >

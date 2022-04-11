@@ -1,4 +1,4 @@
-USE [ReportApp2]
+USE [ReportApp]
 GO
 
 INSERT INTO [dbo].[AccessLevel]
@@ -10,6 +10,10 @@ GO
 INSERT INTO [dbo].[ReportStatus]
            ([IdStatus]
            ,[titleStatus])
-     VALUES(0,'EN ESPERA'),(2,'EN PROCESO'),(3, 'COMPLETADA')
+     VALUES(0,'EN ESPERA'),(1,'EN PROCESO'),(2, 'COMPLETADA')
 GO
 
+INSERT INTO dbo.[User]
+(NumEmpleado,UserName,Pass,IsEnabled,[Level])
+VALUES('3088','3088','3088',1,0)
+GO

@@ -26,7 +26,7 @@ namespace DumyReportes.Util
                 report.PathEvidence = path;
 
             }
-            
+
             return resultCreation;
 
 
@@ -46,7 +46,7 @@ namespace DumyReportes.Util
 
 
             }
-            
+
             return resultCreation;
 
         }
@@ -88,10 +88,10 @@ namespace DumyReportes.Util
 
             ErrorFlag resultRead = ErrorFlag.ERROR_OK_RESULT;
 
+            if (String.IsNullOrEmpty(fileName)) { base64Img = ""; return resultRead; }
             base64Img = null;
 
             byte[] imgBytes = null;
-
             try
             {
                 imgBytes = File.ReadAllBytes(PATH_IMGS + fileName);
