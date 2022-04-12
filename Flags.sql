@@ -15,5 +15,5 @@ GO
 
 INSERT INTO dbo.[User]
 (NumEmpleado,UserName,Pass,IsEnabled,[Level])
-VALUES('3088','3088','3088',1,0)
+VALUES('3088','vperez','vperez',1,20)
 GO

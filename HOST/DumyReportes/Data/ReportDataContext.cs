@@ -193,7 +193,7 @@ namespace DumyReportes.Data
                 SELECT Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title,Rep.Description RepDescription,FileNameEvidence,
                 Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
                 RS.IdStatus, RS.titleStatus,
-                U.IdUser, U.NumEmpleado, U.Level
+                U.IdUser,  U.NumEmpleado NumEmpNotified , U.Level
                 FROM 
 	                [Report] Rep
                   LEFT JOIN [Location] Loc
@@ -205,24 +205,65 @@ namespace DumyReportes.Data
                 Where U.IdUser = @IdUser
             ";
 
+        //todos los reportes donde el dueño sea  @IdUser, y todos los reportes que no tengan owner aún
         public static string QUERY_GET_REPORT_BY_OWNER =
-            @"
-            SELECT
-	            Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title, Rep.Description RepDescription,Rep.FileNameEvidence,
-                
-	            Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
-	            RS.IdStatus, RS.titleStatus,
-	            U.IdUser, U.NumEmpleado, U.[Level],        
-	            UOR.[DT]
-	        FROM [ReportApp].[dbo].[UserOwner_Report] UOR
-	            LEFT JOIN [Report] Rep ON Rep.IdReport = UOR.IdReport 
-	            LEFT JOIN [Location] Loc on Rep.IdLocation = Loc.IdLocation
-	            Left JOIN ReportStatus RS ON Rep.IdStatus = RS.IdStatus
-	            LEFT JOIN [User] U ON UOR.IdUser = U.IdUser
-	        Where U.IdUser= @IdUser
+        /*  @"
+          SELECT
+              Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title, Rep.Description RepDescription,Rep.FileNameEvidence,
 
-            ";
+              Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
+              RS.IdStatus, RS.titleStatus,
+              U.IdUser, U.NumEmpleado, U.[Level],        
+              UOR.[DT]
+          FROM [ReportApp].[dbo].[UserOwner_Report] UOR
+              LEFT JOIN [Report] Rep ON Rep.IdReport = UOR.IdReport 
+              LEFT JOIN [Location] Loc on Rep.IdLocation = Loc.IdLocation
+              Left JOIN ReportStatus RS ON Rep.IdStatus = RS.IdStatus
+              LEFT JOIN [User] U ON UOR.IdUser = U.IdUser
+          Where U.IdUser= @IdUser
 
+          ";*/
+        /*        @"
+                   SELECT
+                          Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title, Rep.Description RepDescription,Rep.FileNameEvidence,
+
+                          Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
+                          RS.IdStatus, RS.titleStatus,
+                          U.IdUser, U.NumEmpleado, U.[Level],        
+                          UOR.[DT]
+                      FROM Report Rep
+                          LEFT JOIN  [UserOwner_Report] UOR ON Rep.IdReport = UOR.IdReport 
+                          LEFT JOIN [Location] Loc on Rep.IdLocation = Loc.IdLocation
+                          Left JOIN ReportStatus RS ON Rep.IdStatus = RS.IdStatus
+                          LEFT JOIN [User] U ON UOR.IdUser = U.IdUser
+                      Where U.IdUser= @IdUser or U.IdUser is NULL;
+
+
+      ";*/
+
+        @"
+        SELECT SpecificUserReports.*,UOR.*,U.NumEmpleado NumEmpOwner ,
+	        Loc.IdLocation, Loc.[Description], Loc.lat, Loc.long, 
+	        RS.IdStatus, RS.titleStatus,
+	        U.IdUser, U.NumEmpleado, U.[Level],        
+	        UOR.[DT]
+        FROM
+	
+         (SELECT
+	        Rep.IdReport, Rep.IdUserWhoNotified, Rep.IdLocation,Rep.IdStatus, U.NumEmpleado NumEmpNotified, Rep.NotifiedDT,Rep.Title, Rep.Description RepDescription,Rep.FileNameEvidence
+               FROM Report Rep
+	           LEFT JOIN [User] U ON  Rep.IdUserWhoNotified = U.IdUser
+	          
+	           ) SpecificUserReports 
+	           LEFT JOIN  [UserOwner_Report] UOR ON UOR.IdReport = SpecificUserReports.IdReport
+	           LEFT JOIN [User] U ON UOR.IdUser = U.IdUser
+	           LEFT JOIN [Location] Loc on SpecificUserReports.IdLocation = Loc.IdLocation
+	           LEFT JOIN ReportStatus RS ON SpecificUserReports.IdStatus = RS.IdStatus
+        WHERE UOR.IdUser = @IdUser or UOR.IdReport is NULL
+
+
+
+        ";
         public ErrorFlag GetAllBy(bool isOwner, int idUser, out List<IReportObject> reportObjects, out string error)
         {
             error = "";
@@ -294,7 +335,7 @@ namespace DumyReportes.Data
                 reader["RepDescription"].ToString()
 
                 );
-            report.NumEmpleadoWhoNotified = reader["NumEmpleado"].ToString();
+            report.NumEmpleadoWhoNotified = reader["NumEmpNotified"].ToString();
             report.FileNameEvidence = reader["FileNameEvidence"].ToString();
             return report;
 

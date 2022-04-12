@@ -1,14 +1,9 @@
-
+const API_URL = "http://172.16.9.118:57995/";
 const containerNewRep = $("#cntNewRep");
 const containerRepDtl = $("#cntRepDtl");
 
 const btnToogleNewRep = $("#btnTogleNewRep")
 
-const txtTitle = $("#txtTitle");
-const txtDescription = $("#txtDescriptionReport");
-const txtLugar = $("#txtLugar");
-
-const btnGetLocation = $("#btnGetLocation");
 const repHeadsContainer = $("#cntRepHeads");
 
 const txtRepDtlUserInput = $("#txtRepDtlUserInput")
@@ -17,92 +12,10 @@ const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
 const selStatusRep = $("#selStat");
 const btnSaveStatus = $("#btnSaveStatus");
 
-const btnGuardar = document.getElementById("btnGuardar");
-
-const iframeMap = document.createElement("iframe");
-
-
-let lat = 0;
-let lon = 0;
-
-const webcamElement = document.getElementById("webcam");
-const canvasElement = document.getElementById("canvas");
-const butonSnap = document.getElementById("buttonSnap");
-//const snapSoundElement = document.getElementById("snapSound");
-const webcam = new Webcam(webcamElement, "user", canvasElement, null);
-
-/* const webcam = new Webcam(
-  webcamElement,
-  "user",
-  canvasElement,
-  snapSoundElement
-); */
-
-/* const generarMapa = (position) => {
-  let lat = position.coords.latitude;
-  let lon = position.coords.longitude;
-
-  cntMap.after(iframeMap);
-}; */
-
-const guardarLocation = (position) => {
-    lat = position.coords.latitude;
-    lon = position.coords.longitude;
-};
-/* https://www.google.com/maps?q=19.4185605,-102.045651 */
-const getLocation = () => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(guardarLocation);
-    } else {
-        alert("La ubicación no es soportada o no se encuentra disponible");
-    }
-};
-
-btnGetLocation.on("click", () => {
-    getLocation();
-});
 const KEY_TOKEN_NAME = "SESSIONTOKEN";
 
-btnGuardar.addEventListener("click", (e) => {
-
-    //might be invalid token or not exists
-    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
-    if (!currentToken) {
-        alert("Inicie sesión primero.")
-        return;
-    }
-
-    let data = extractReportData();
-    let dataStr = JSON.stringify(data);
-    $.ajax({
-        type: "POST",
-        url: "http://localhost:57995/api/Report",
-        contentType: "application/json",
-        crossDomain: true,
-        datatype: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-        },
-
-        data: dataStr,
-        succes: function (data, textStatus, xhr) {
-            alert(data);
-        },
-        error: function (xhr, textStatus) {
-            alert("Error en la solicitud" + xhr.responseText);
-        },
-    });
-    /*  webcam.stop(); */
-});
 
 btnToogleNewRep.on("click", () => {
-
 
     if (containerNewRep.hasClass("no-render")) {
 
@@ -121,38 +34,9 @@ btnToogleNewRep.on("click", () => {
         btnToogleNewRep.val("Nuevo Reporte");
         stopCam();
 
-
     }
 
-
-
 });
-
-const extractReportData = () => {
-    let d = {
-
-        IdReport: 0,
-        IdUserWhoNotified: 1,
-        Location: {
-            IdLocation: 0,
-            Description: txtLugar.val(),
-            lat: lat,
-            lon: lon,
-        },
-        IdStatus: 0,
-        Pic64: webcam.snap().substring(22),
-        DTCreation: new Date()
-            .toISOString()
-            .slice(0, 19)
-            .replace("/-/g", "/")
-            .replace("T", " "),
-        ReportUpdates: [],
-        Title: txtTitle.val(),
-        Description: txtDescription.val(),
-    };
-
-    return d;
-}
 
 
 const getRepsByUser = () => {
@@ -161,11 +45,12 @@ const getRepsByUser = () => {
 
     if (!currentToken) {
         alert("Inicie sesión primero")
+        return
     }
 
     $.ajax({
         type: "Get",
-        url: "http://localhost:57995/api/Report",
+        url: API_URL + "api/Report",
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -186,7 +71,7 @@ const getRepsByUser = () => {
                     renderRepHeads(data.reports)
         },
         error: function (xhr, textStatus) {
-            alert("Error en la solicitud" + xhr.responseText);
+            alert("Error en la solicitud1" + xhr.responseText + textStatus);
         },
     });
 }
@@ -194,6 +79,7 @@ const getRepsByUser = () => {
 
 const renderRepHeads = (repHeads) => {
 
+    repHeadsContainer.children().remove();
     for (let currentRep in repHeads) {
         repHeadsContainer.append(
             generateRepHead(repHeads[currentRep])
@@ -205,6 +91,7 @@ const renderRepHeads = (repHeads) => {
 }
 
 //el callback para cuando se de click en una de las tarjetas Head de un reporte
+//event es la entidad que regresa el head al darle clic, sirve para invocar
 const clickReportHead = async (event, individualRepHead) => {
 
     clearReportDtl()//limpia el Head expanded y las entries
@@ -220,10 +107,12 @@ const clickReportHead = async (event, individualRepHead) => {
       }*/
 
     let data = await taskGetEntries;//unvelop the entries from the promise
-    if (taskGetEntries.statusText == 'No Content') return;
+    if (taskGetEntries.statusText == 'Ok' || taskGetEntries.statusText == 'OK') {
+        individualRepHead.ReportUpdates = data.reportDtlEntries;
+        reFillReportDtlEntries(individualRepHead);//llena las entries;
 
-    individualRepHead.ReportUpdates = data.reportDtlEntries;
-    reFillReportDtlEntries(individualRepHead);//llena las entries;
+
+    }
 
     btnSendRepDtlUpdate.off("click");
     btnSendRepDtlUpdate.on("click", async (e) => {
@@ -234,13 +123,14 @@ const clickReportHead = async (event, individualRepHead) => {
         }
 
         try {
-            let value = await sendNewEntry(individualRepHead);
+            let promiseV = await sendNewEntry(individualRepHead);
 
+            //  let value = await promiseV;
 
         } catch (err) {
             console.log("Error al actualizar los detalles locales del reporte.");
         }
-        event.target.click();
+        event.target.click();//click en el HEAD para que actualicé
     });
 
 }
@@ -252,6 +142,7 @@ const sendNewEntry = (newEntry) => {
 
     if (!currentToken) {
         alert("Inicie sesión primero")
+        return
     }
 
     let data = {
@@ -271,7 +162,7 @@ const sendNewEntry = (newEntry) => {
 
     return $.ajax({
         type: "POST",
-        url: "http://localhost:57995/api/ReportDtl",
+        url: API_URL + "api/ReportDtl",
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -320,7 +211,7 @@ const reFillReportDtl = (individualRepHead) => {
                     <div class="container-headexpand__location">
                         <a target="_blank"
                         href="https://www.google.com/maps?q=${individualRepHead.Location.lat + ',' + individualRepHead.Location.lon}">
-                         ${individualRepHead.Location.Description}
+                         ${individualRepHead.Location.Description ? individualRepHead.Location.Description:"Ubicación"}
                         </a>
                     </div>
                     <div class="container-headexpand__status">${statusRepStr}</div>
@@ -352,6 +243,7 @@ const saveStatus = (individualRepHead) => {
 
     if (!currentToken) {
         alert("Inicie sesión primero")
+        return
     }
 
     if (!userLvl || userLvl == 0) alert("No tiene permiso para realizar esta acción.");
@@ -362,7 +254,7 @@ const saveStatus = (individualRepHead) => {
 
     return $.ajax({
         type: "PUT",
-        url: `http://localhost:57995/api/Report/${individualRepHead.IdReport}`,
+        url: API_URL + `api/Report/${individualRepHead.IdReport}`,
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -398,7 +290,15 @@ const reFillReportDtlEntries = (individualRepHead) => {
         entryPositionClass =
             (sessionLevel > 0 && !currentEnry.IsOwnerUpdate) || (sessionLevel == 0 && currentEnry.IsOwnerUpdate)
                 ? "entry-left"
-                : "";
+                : "entry-right";
+
+
+        let dateEntry = new Date(currentEnry.DTUpdate);
+        let hora = dateEntry.getHours();
+        let minutos = dateEntry.getMinutes();
+        let dateEntryStr = dateEntry.getDate() + "/" + dateEntry.getMonth() + "/" + dateEntry.getFullYear() + " " +
+            (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 12 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
+
 
         entriesContainer.append(`
                 <div class="container-reportDtlEntry ${entryPositionClass} ">
@@ -406,7 +306,7 @@ const reFillReportDtlEntries = (individualRepHead) => {
                     <div class="container-reportDtlEntry__title">${currentEnry.TitleUpdate}</div>
                     <div class="container-reportDtlEntry__description">${currentEnry.Description}</div>
                     <div class="container-reportDtlEntry__fileNameEvidence">${currentEnry.FileNameEvidence}</div>
-                    <div class="container-reportDtlEntry__fechaHoraEntry">${currentEnry.DTUpdate}</div>
+                    <div class="container-reportDtlEntry__fechaHoraEntry">${dateEntryStr}</div>
 
                 </div>
         `);
@@ -427,7 +327,7 @@ const getRepDtlEntries = (individualRepHead) => {
 
     return $.ajax({
         type: "GET",
-        url: `http://localhost:57995/api/ReportDtl/${individualRepHead.IdReport}`,
+        url: API_URL + `api/ReportDtl/${individualRepHead.IdReport}`,
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -441,13 +341,6 @@ const getRepDtlEntries = (individualRepHead) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
 
-        /*success: function (data, textStatus, xhr) {
-             individualRepHead.ReportUpdates = data.reportDtlEntries;
-             
-        },
-        error: function (xhr, textStatus) {
-            alert("Error en la solicitud" + xhr.responseText);
-        },*/
     })
 
 
@@ -492,7 +385,7 @@ const enviarActualización = (actualizacionData) => {
 
     return $.ajax({
         type: "POST",
-        url: `http://localhost:57995/api/ReportDtl/`,
+        url: API_URL + `api/ReportDtl/`,
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -506,33 +399,6 @@ const enviarActualización = (actualizacionData) => {
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
     })
-
-}
-
-/*const snapF = () => {
-    alert("snap");
-
-    *//*  let picture = webcam.snap();
- 
-document.querySelector("#download-photo").href = picture;
-document.querySelector("#download-photo").download = "foto1F.png"; *//*
-};
-butonSnap.addEventListener("click", snapF, false);
-*/
-const initCam = () => {
-    webcam
-        .start()
-        .then((result) => {
-            console.log("webcam started");
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-}
-
-const stopCam = () => {
-
-    webcam.stop();
 
 }
 

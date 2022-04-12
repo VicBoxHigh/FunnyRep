@@ -1,0 +1,223 @@
+﻿body {
+    font-family: sans-serif;
+    font-size: 20px;
+    height: 100%;
+}
+
+.main-container {
+    display: flex;
+    flex-flow: row wrap;
+    height: 100%;
+    max-height: 100%;
+    position: relative;
+}
+
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    margin: 0.8rem 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+input[type=button] {
+    background-color: #c42c2c;
+    color: white;
+    padding: 1rem 1.5rem;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+  
+    border-radius: 4px;
+}
+
+    input[type=button]:hover {
+        opacity: 0.8;
+    }
+
+
+.containerNewReport, .container-repdtl {
+    max-width: 50%;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.no-render {
+    display: none;
+}
+
+.newrep-btn-container {
+    position: absolute;
+    left: 4rem;
+    top: 1rem;
+    height: 3rem;
+    width: 3rem;
+}
+
+    .newrep-btn-container img {
+        width: 3rem;
+    }
+
+.container-heads {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: scroll;
+    transition: transform 0.5s ease-in-out;
+    background-color: #FFF;
+}
+
+.list-btn-container {
+    height: 99vh;
+    max-height: 99vh;
+    position: absolute;
+}
+
+    .list-btn-container img, .list-btn-container .checkbox {
+        display: none;
+    }
+
+@media screen and (max-device-width:380px) {
+    .list-btn-container {
+        display: block;
+    }
+
+        .list-btn-container img, 
+        .list-btn-container .checkbox {
+            display: block;
+        }
+
+        .list-btn-container img {
+            height: 3rem;
+            width: 3rem;
+        }
+
+    .container-heads {
+        position: absolute;
+        transform: translate(-150%);
+    }
+
+    .list-btn-container .checkbox:checked ~ .container-heads { /*sibling*/
+        transform: translateX(0);
+    }
+}
+
+
+.list-btn-container .checkbox {
+    position: absolute;
+    display: block;
+    top: 1rem;
+    left: 1rem;
+    z-index: 5;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.list-btn-container .hamburger-lines {
+    display: block;
+    height: 3rem;
+    width: 3rem;
+    top: 1rem;
+    left: 1rem;
+    z-index: 2;
+    display: flex;
+}
+
+ 
+
+@media screen and (max-device-width:380px){
+    .containerNewReport {
+        width: 90%;
+        max-width: 90%;
+    }
+}
+
+
+.container-repdtl {
+    width: 50%;
+    height: 100%;
+    max-height: 100%;
+    /*Flex heredado*/
+    justify-content: space-between;
+}
+
+.container-headexpand {
+    /*  width: 100%;*/
+    align-self: center;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+}
+
+.container-headexpand__EvidencePic {
+    max-height: 15rem;
+    margin: 0 1rem;
+}
+
+.container-reportDtlEntries {
+    width: 100%;
+}
+
+.item-report-head {
+    border-style: solid;
+    border-color: black;
+    margin: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.container-reportDtlEntries {
+    display: flex;
+    flex-flow: column nowrap;
+    overflow-y: scroll;
+    flex-grow: 1;
+}
+
+.container-reportDtlEntry {
+    margin: 1rem 1rem 2rem 1rem;
+    padding: 1rem 1.5rem 1rem 1.5rem;
+    /* align-self: end;*/
+    background-color: rgb(255 1 1 / 0.63);
+    position: relative;
+    border-radius: 6px;
+}
+
+    .container-reportDtlEntry::after {
+    }
+
+
+.entry-left {
+    align-self: start;
+}
+
+    .entry-left::after {
+        content: '';
+        width: 0px;
+        height: 0px;
+        border-left: 0 solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 20px solid rgb(255 1 1 / 0.63);
+        display: inline-block;
+        margin-top: 1rem;
+        position: absolute;
+    }
+
+.entry-right {
+    align-self: end;
+    background-color: rgb(1 201 255 / 0.63);
+}
+
+    .entry-right::after {
+        content: '';
+        width: 0px;
+        height: 0px;
+        border-left: 20px solid transparent;
+        border-right: 0 solid transparent;
+        border-top: 20px solid rgb(1 201 255 / 0.63);
+        display: inline-block;
+        margin-top: 1rem;
+        position: absolute;
+        right: 2rem;
+    }

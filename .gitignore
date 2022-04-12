@@ -1,1 +1,4 @@
 Host/packages/EntityFramework.6.1.3
+.vs
+CLIENT\DummyReportsCliente\.vs
+HOST\.vs

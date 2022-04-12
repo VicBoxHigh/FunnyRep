@@ -46,61 +46,8 @@ C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyRepo
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\System.Web.Optimization.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\Microsoft.AspNet.FriendlyUrls.resources.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.AssemblyReference.cache
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CoreCompileInputs.cache
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.pdb
-C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.AssemblyReference.cache
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\DummyReportsCliente.dll.config
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\DummyReportsCliente.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\DummyReportsCliente.pdb
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\csc.exe
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\csc.exe.config
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\csc.rsp
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\csi.exe
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\csi.rsp
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.CodeAnalysis.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.CSharp.Core.targets
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\Microsoft.VisualBasic.Core.targets
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\System.AppContext.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\System.Collections.Immutable.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\System.Diagnostics.StackTrace.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\System.IO.FileSystem.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\System.IO.FileSystem.Primitives.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\System.Reflection.Metadata.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\vbc.exe
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\vbc.exe.config
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\vbc.rsp
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\VBCSCompiler.exe
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\VBCSCompiler.exe.config
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Antlr3.Runtime.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AspNet.ScriptManager.bootstrap.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AspNet.ScriptManager.jQuery.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.AspNet.FriendlyUrls.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.AspNet.Web.Optimization.WebForms.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.ScriptManager.MSAjax.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.ScriptManager.WebForms.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.Web.Infrastructure.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Newtonsoft.Json.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Web.Optimization.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\WebGrease.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Web.Optimization.xml
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Newtonsoft.Json.xml
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Antlr3.Runtime.pdb
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.AspNet.FriendlyUrls.xml
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\System.Web.Optimization.resources.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\Microsoft.AspNet.FriendlyUrls.resources.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.AssemblyReference.cache
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CoreCompileInputs.cache
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CopyComplete
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.dll
-D:\Dummy rep\FunnyRep\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.pdb

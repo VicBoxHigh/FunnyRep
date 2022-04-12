@@ -1,4 +1,5 @@
-﻿
+﻿const API_URL = "http://172.16.9.118:57995/";
+
 const btnLogin = $("#btnLogin");
 const txtNumEmpleado = $("#txtUser");
 const txtPass = $("#txtPass");
@@ -46,7 +47,7 @@ const loginUser = (numEmpleado, pass) => {
 
     $.ajax({
         type: "GET",
-        url: "http://localhost:57995/api/User/",
+        url: API_URL + "api/User/",
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -78,7 +79,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
         //if (localStorage.getItem("sessionToken"))
         localStorage.setItem(KEY_TOKEN_NAME, data.token);
         localStorage.setItem("LevelUser", data.levelUser);
-        window.location.href = "/Default.aspx"
+        window.location.href = "./Default.aspx"
 
     } else {
         alert("Algo salió mal.")
@@ -88,7 +89,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
-    alert("Falló la solicitud al servidor." + xhr.responseText)
+    alert("Falló la solicitud al servidor 2" + xhr.responseText, +textStatus )
 
 }
 

@@ -66,12 +66,12 @@ namespace DumyReportes.Data
             END
 
             ";
-     /*   if (SELECT TOP(1) IdStatus FROM Report Where Report.IdReport =  1) != 2
-BEGIN
+        /*   if (SELECT TOP(1) IdStatus FROM Report Where Report.IdReport =  1) != 2
+   BEGIN
 
-SELECT  ;
+   SELECT  ;
 
-END*/
+   END*/
         public static string QUERY_INSERT_REPORT_DTL =
             @"
 
@@ -96,8 +96,8 @@ END*/
 		                            );
 
             ";
-
-        public ErrorFlag Create(IReportObject reportObject, out string error)
+        //Si el reporte aun no tiene un owner (persona asignada), relacionará el Owner que añada una entrada 
+        public ErrorFlag Create(IReportObject reportObject, User user, out string error)
         {
             ReportDtlEntry reportDtlEntry = reportObject as ReportDtlEntry;
 
@@ -106,7 +106,7 @@ END*/
 
 
             SqlConnection connection = ConexionBD.getConexion();
-            using(connection)
+            using (connection)
             using (SqlCommand command = connection.CreateCommand())
             {
                 SqlTransaction transaction = connection.BeginTransaction("INSERT REPORT DTL ENTRY");
@@ -118,10 +118,15 @@ END*/
                     command.CommandText = QUERY_CHECK_EXISTENCE_OWNER_OR_CREATE;
                     command.Parameters.Add("@idReport", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.IdReport;
 
-                    int rowsAffected = command.ExecuteNonQuery();
 
                     //si no hay entries, ese Reporte no tiene OWNER, por lo tanto se asignará al usuario que actualice primero.
+                    //siempre que no sea un usuario level 0
 
+                    if (!user.AccessLevel.Equals(Flags.AccessLevel.PUBLIC))
+                    {
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                    }
                     command.CommandText = QUERY_INSERT_REPORT_DTL;
                     command.Parameters.Add("@fileName", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.FileNameEvidence;
                     command.Parameters.Add("@path", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.PathEvidence;
@@ -251,6 +256,11 @@ END*/
         }
 
         public ErrorFlag Update(IReportObject reportObject, out string error)
+        {
+            throw new NotImplementedException();
+        }
+
+        ErrorFlag IDataOperation.Create(IReportObject reportObject, out string error)
         {
             throw new NotImplementedException();
         }

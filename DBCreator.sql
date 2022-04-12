@@ -80,8 +80,18 @@ CREATE TABLE Report(
 	[Description] varchar (256 )
 
 );
+/*
+ALTER TABLE Report
+DROP CONSTRAINT  FK__Report__IdLocati__33D4B598
 
+SELECT * 
+FROM sys.foreign_keys
+WHERE referenced_object_id = object_id('IdLocation')
+*/
 
+/*ALTER TABLE Report
+ADD FOREIGN KEY(IdLocation) REFERENCES [Location](IdLocation)
+*/
 
 CREATE TABLE UserOwner_Report(
 

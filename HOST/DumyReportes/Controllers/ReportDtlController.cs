@@ -85,7 +85,7 @@ namespace DumyReportes.Controllers
 
             if (resultCreateEvidence != ErrorFlag.ERROR_OK_RESULT && resultCreateEvidence != ErrorFlag.ERROR_NO_FILE_TO_WRITE) return ValidateResult(resultCreateEvidence);
 
-            Flags.ErrorFlag resultCreate = _ReportDtlContext.Create(reportDtlEntry, out string error);
+            Flags.ErrorFlag resultCreate = _ReportDtlContext.Create(reportDtlEntry, user.user,  out string error);
 
 
             if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultCreate);

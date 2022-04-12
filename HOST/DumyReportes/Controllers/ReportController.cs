@@ -121,6 +121,8 @@ namespace DumyReportes.Controllers
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
             if (user == null || !user.IsAuthenticated) return Unauthorized();
 
+            report.IdUserWhoNotified = user.user.IdUser;
+
             ErrorFlag resultCreateEvidence = EvidenceHelper.CreateEvidenceImg(report);
 
             if (resultCreateEvidence != ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultCreateEvidence);
@@ -153,7 +155,7 @@ namespace DumyReportes.Controllers
                     result = Content(HttpStatusCode.NotModified, "Sin cambios");
                     break;
                 case ErrorFlag.ERROR_CONNECTION_DB:
-                    result = InternalServerError(new Exception("Error den base de datos"));
+                    result = InternalServerError(new Exception("Error en base de datos"));
                     break;
                 default:
                     result = BadRequest("Error desconocido");
