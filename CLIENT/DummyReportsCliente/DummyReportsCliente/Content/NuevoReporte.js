@@ -22,7 +22,7 @@ btnToogleNewRep.on("click", () => {
         containerNewRep.removeClass("no-render");
 
         containerRepDtl.addClass("no-render")
-        btnToogleNewRep.val("Mis Reportes")
+        btnToogleNewRep.val("Detalle")
         initCam();
     }
     else {

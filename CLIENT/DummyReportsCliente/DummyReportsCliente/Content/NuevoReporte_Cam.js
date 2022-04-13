@@ -11,9 +11,10 @@ let lon = 0;
 
 const webcamElement = document.getElementById("webcam");
 const canvasElement = document.getElementById("canvas");
+const btnFlipCamera = document.getElementById("btnFlipCamera");
 //const butonSnap = document.getElementById("buttonSnap");
 //const snapSoundElement = document.getElementById("snapSound");
-const webcam = new Webcam(webcamElement, "user", canvasElement, null);
+let webcam //= new Webcam(webcamElement, "user", canvasElement, null);
 
 
 const iframeMap = document.createElement("iframe");
@@ -89,6 +90,13 @@ btnGuardar.addEventListener("click", (e) => {
     /*  webcam.stop(); */
 });
 
+btnFlipCamera.addEventListener("click", (e) => {
+    if (webcam) {
+        webcam.flip()
+        webcam.start()
+
+    }
+})
 
 const extractReportData = () => {
     let d = {
@@ -117,13 +125,16 @@ const extractReportData = () => {
 }
 
 const initCam = () => {
+    webcam = new Webcam(webcamElement, "environment", canvasElement, null);
     webcam
         .start()
         .then((result) => {
-            console.log("webcam started");
+            //alert("Webcam started")
+            
         })
         .catch((err) => {
             console.log(err);
+            alert("Error abriendo la cámara" + err)
         });
 }
 

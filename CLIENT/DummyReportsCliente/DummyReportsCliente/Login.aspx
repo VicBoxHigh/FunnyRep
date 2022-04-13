@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title></title>
+    <link rel="stylesheet" href="Content/normalize.css">
     <link rel="stylesheet" href="Content/Login.css" />
 </head>
 <body>

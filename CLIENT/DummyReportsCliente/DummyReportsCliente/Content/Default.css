@@ -67,6 +67,7 @@ input[type=button] {
     left: 0;
     position: relative;
     height: 100%;
+    max-height: 100vh;
     align-self: flex-start;
 }
 
@@ -88,10 +89,10 @@ input[type=button] {
     transform: translateX(-300%);
     transition: transform 0.5s;
     padding: 1rem 1.5rem;
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: scroll;
     z-index: 1000;
-    box-shadow: 0 10px 10px 3px #929292;
+    box-shadow: 0 10px 10px 3px rgb(0 0 0 / 0.36);
     border-radius: 0 4px 4px 0;
 }
 
@@ -119,22 +120,22 @@ input[type=button] {
     max-width: 100%;
 }
 
-.container-headexpand, .container-repdtl__user-input {
-    display: flex;
-    flex-flow: column nowrap;
-    max-width: 100%;
-    padding: 0.3rem 1rem;
-}
-
+.container-headexpand,
+.container-repdtl__user-input,
 .container-reportDtlEntries {
     display: flex;
     flex-flow: column nowrap;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 0.3rem 1rem;
+    max-width: 1000px;
+    padding: 1rem;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+}
+
+    .container-headexpand > * {
+    
+        margin-top:1rem;
+    }
+
+.container-reportDtlEntries {
 }
 
 .container-reportDtlEntry {
@@ -142,32 +143,38 @@ input[type=button] {
     border: 2px solid #dedede;
     border-radius: 5px;
     padding: 10px;
-    border: 2px solid ;
+    border: 2px solid;
 }
-
-
-@media screen and (max-device-width:380px) {
+.container-reportDtlEntry > *{
+    margin:0.25rem;
+}
     .containerNewReport {
-        width: 90%;
-        max-width: 90%;
-        overflow-x: scroll;
-    }
-
-
-    input[type=text],
-    input[type=password],
-    textarea {
-        width: 100%
-    }
-
-    input[type=checkbox]:checked ~ .container-heads {
-        transform: translateX(0);
-    }
-
-    input[type=checkbox]:checked ~ .menu-item {
-        background-color: rgb(255 88 88 / 0.36);
-    }
+    width: 90%;
+    max-width: 90%;
+    overflow-x: scroll;
 }
+
+
+input[type=text],
+input[type=password],
+textarea {
+    width: 100%
+}
+
+input[type=checkbox]:checked ~ .container-heads {
+    transform: translateX(0);
+}
+
+input[type=checkbox]:checked ~ .menu-item {
+    background-color: rgb(255 88 88 / 0.36);
+}
+
+video, canvas {
+    max-width: 100%;
+    width: 100%;
+    padding: 1rem;
+}
+
 
 .no-render {
     display: none;
@@ -183,4 +190,7 @@ input[type=button] {
     align-self: flex-end;
     border-color: #ccc;
     background-color: #ddd;
+}
+
+.flip {
 }

@@ -40,7 +40,7 @@
 
             <input type="button" id="btnGetLocation" value="Marcar ubicacion" />
 
-
+            <input type="button" id="btnFlipCamera" value="Cambiar camara" />
             <video id="webcam" autoplay playsinline></video>
             <canvas id="canvas" class="d-none"></canvas>
 

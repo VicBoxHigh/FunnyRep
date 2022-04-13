@@ -47,7 +47,9 @@
 
     /* Get media constraints */
     getMediaConstraints() {
-        var videoConstraints = {};
+        var videoConstraints = { /*width: { exact: 1280 }, height: { exact: 720 }*/ };
+
+
         if (this._selectedDeviceId == '') {
             videoConstraints.facingMode = this._facingMode;
         } else {
@@ -64,7 +66,7 @@
     selectCamera() {
         for (let webcam of this._webcamList) {
             if ((this._facingMode == 'user' && webcam.label.toLowerCase().includes('front'))
-                || (this._facingMode == 'enviroment' && webcam.label.toLowerCase().includes('back'))
+                || (this._facingMode == 'environment' && webcam.label.toLowerCase().includes('back'))
             ) {
                 this._selectedDeviceId = webcam.deviceId;
                 break;
@@ -74,7 +76,7 @@
 
     /* Change Facing mode and selected camera */
     flip() {
-        this._facingMode = (this._facingMode == 'user') ? 'enviroment' : 'user';
+        this._facingMode = (this._facingMode == 'user') ? 'environment' : 'user';
         this._webcamElement.style.transform = "";
         this.selectCamera();
     }
