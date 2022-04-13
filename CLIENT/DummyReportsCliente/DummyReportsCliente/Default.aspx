@@ -2,8 +2,8 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" href="Content/Default.css">
     <link rel="stylesheet" href="Content/normalize.css">
+    <link rel="stylesheet" href="Content/Default.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -11,14 +11,12 @@
 <body>
 
 
-
-    <input id="btnTogleNewRep" type="button" value="Nuevo Reporte" />
-    <div class="main-container">
-
+    <div class="navbar">
 
         <div class="list-btn-container">
-            <img alt="Lista de reportes" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAA0klEQVQ4jWNkgILiKUflGZj+iTAQA/4xvenNsX7IwMDAwAITk5IV7lZVlw4lRv/tm09XMzAwhKEYwMLM9EtAgIcoB7AwM/2CsZmI0oHPMHSBX79+Mzx7+pZBSlqY4dnTtyhyfLxcDEIifPgNYGNjZVBQlGBgYGCA06MuGHIuwAWe3HnCIMXHwvDq3bf/P798g5tMdErk5mRhUJfmY3jz4ce5sggDFwwX/Pn7j+3Dhy84DXj37uu/dU/eXcwO0DZBFmeEMQhlZ+Z//wW6cuz2oosDAD77WY+9Yh4bAAAAAElFTkSuQmCC" />
             <input type="checkbox" class="checkbox" />
+            
+            <div class="menu-item">Mis Reportes</div>
 
             <div id="cntRepHeads" class="container-heads">
                 <div class="item-report-head">AÚN NO HAY ENTRADAS EN EL REPORTE</div>
@@ -26,6 +24,11 @@
             </div>
 
         </div>
+
+        <input id="btnTogleNewRep" type="button" value="Nuevo Reporte" />
+    </div>
+    <div class="main-container">
+
 
         <div id="cntNewRep" class="containerNewReport">
 

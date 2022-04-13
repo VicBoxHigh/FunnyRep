@@ -116,8 +116,10 @@
     <Content Include="Content\jquery-3.6.0.min.js" />
     <Content Include="Content\Login.css" />
     <Content Include="Content\LoginReporte.js" />
+    <Content Include="Content\normalize.css" />
     <Content Include="Content\NuevoReporte.css" />
     <Content Include="Content\NuevoReporte.js" />
+    <Content Include="Content\NuevoReporte_Cam.js" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\webcam-easyV.js" />
     <Content Include="Default.aspx" />
@@ -255,7 +257,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52597</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:52597/</IISUrl>
+          <IISUrl>http://172.16.9.118:52597/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://dumyclient.com:8002/</CustomServerUrl>

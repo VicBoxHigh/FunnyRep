@@ -203,10 +203,10 @@ const reFillReportDtl = (individualRepHead) => {
 
 
     let reportDtlHeadExpanded = $(`
-                <div>
+                
                     <div class="container-headexpand__title">${individualRepHead.Title}</div>
                     <div class="container-headexpand__idReport">Reporte #${individualRepHead.IdReport}</div>
-                    <div class="container-headexpand__numEmpleadoNotif">Empleado que notificó: ${individualRepHead.NumEmpleadoWhoNotified}</div>
+                    <div class="container-headexpand__numEmpleadoNotif">Notificó: ${individualRepHead.NumEmpleadoWhoNotified}</div>
                     <div class="container-headexpand__description">${individualRepHead.Description}</div>
                     <div class="container-headexpand__location">
                         <a target="_blank"
@@ -216,7 +216,7 @@ const reFillReportDtl = (individualRepHead) => {
                     </div>
                     <div class="container-headexpand__status">${statusRepStr}</div>
                     <div class="container-headexpand__notifiedDt">${dateRepStr}</div>
-                </div>
+                
                 <img class="container-headexpand__EvidencePic" src="data:image/png;base64,${individualRepHead.Pic64}"  ></img>
     `)
 
