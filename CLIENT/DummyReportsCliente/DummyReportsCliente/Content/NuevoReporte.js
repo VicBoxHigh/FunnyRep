@@ -128,6 +128,7 @@ const clickReportHead = async (event, individualRepHead) => {
             //  let value = await promiseV;
 
         } catch (err) {
+            alert(err.responseText);
             console.log("Error al actualizar los detalles locales del reporte.");
         }
         event.target.click();//click en el HEAD para que actualicé

@@ -183,9 +183,52 @@ namespace DumyReportes.Data
         {
             throw new NotImplementedException();
         }
-        public ErrorFlag Get(int iduser, out IReportObject reportObject, out string error)
+
+        public static string QUERY_GET_SPECIFIC_HEAD =
+            @"
+SELECT TOP (1) [IdReport]
+      ,[IdUserWhoNotified]
+      ,[IdLocation]
+      ,[IdStatus]
+      ,[FileNameEvidence]
+      ,[PathEvidence]
+      ,[NotifiedDT]
+      ,[Title]
+      ,[Description] RepDescription
+  FROM [ReportApp].[dbo].[Report]
+  WHERE IdReport = @idReport
+
+";
+
+        public ErrorFlag Get(int idReport, out IReportObject reportObject, out string error)
         {
-            throw new NotImplementedException();
+
+            SqlCommand command = new SqlCommand(QUERY_GET_SPECIFIC_HEAD, ConexionBD.getConexion());
+            command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = idReport;
+
+            ErrorFlag result = ErrorFlag.ERROR_OK_RESULT;
+            reportObject = null;
+            error = "";
+            try
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (!reader.HasRows) result = ErrorFlag.ERROR_NOT_EXISTS;
+                    else if (!reader.Read()) result = ErrorFlag.ERROR_INVALID_OBJECT;
+
+                    else reportObject = InstanceFromReader(reader);
+                }
+
+
+
+            }
+            catch (SqlException ex)
+            {
+                result = ErrorFlag.ERROR_CONNECTION_DB;
+                error = ex.Message;
+            }
+
+            return result;
         }
 
         public static string QUERY_GET_REPORT_BY_USER_WHONOTIFIED =
@@ -287,7 +330,7 @@ namespace DumyReportes.Data
                         while (reader.Read())
                         {
                             Report report = InstanceFromReader(reader) as Report;
-                            
+
                             ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(report.FileNameEvidence, out string base64Img);
                             report.Pic64 = base64Img;
                             reportObjects.Add(report);
@@ -317,26 +360,35 @@ namespace DumyReportes.Data
 
         public IReportObject InstanceFromReader(SqlDataReader reader)
         {
-
-            Location location = new Location(
-                (int)reader["IdLocation"],
-                reader["Description"].ToString(),
-                (decimal)reader["lat"],
-                (decimal)reader["long"]
-                );
-            //     reader.GetInt32(1);
+            Location location = null;
             Report report = new Report(
-                (int)reader["IdReport"],
-                (int)reader["IdUserWhoNotified"],
-                location,
-                (ReportStatus)reader["IdStatus"],
-                (DateTime)reader["NotifiedDT"],
-                reader["Title"].ToString(),
-                reader["RepDescription"].ToString()
+           (int)reader["IdReport"],
+           (int)reader["IdUserWhoNotified"],
+           location,
+           (ReportStatus)reader["IdStatus"],
+           (DateTime)reader["NotifiedDT"],
+           reader["Title"].ToString(),
+           reader["RepDescription"].ToString()
 
-                );
-            report.NumEmpleadoWhoNotified = reader["NumEmpNotified"].ToString();
-            report.FileNameEvidence = reader["FileNameEvidence"].ToString();
+           );
+            try
+            {
+
+                location = new Location(
+                    (int)reader["IdLocation"],
+                    reader["Description"].ToString(),
+                    (decimal)reader["lat"],
+                    (decimal)reader["long"]
+                    );
+                report.NumEmpleadoWhoNotified = reader["NumEmpNotified"].ToString();
+                report.FileNameEvidence = reader["FileNameEvidence"].ToString();
+            }
+            catch (Exception ex)
+            {
+                //no location columns
+            }
+
+            report.Location = location;
             return report;
 
 

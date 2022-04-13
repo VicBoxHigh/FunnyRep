@@ -78,6 +78,14 @@ namespace DumyReportes.Controllers
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (user == null || !user.IsAuthenticated) return Unauthorized();
+            new ReportDataContext().Get(reportDtlEntry.IdReport, out IReportObject report, out string error1);
+            //ErrorFlag resultGetRep = _ReportDtlContext.Get();
+            Report headFromDtl = report as Report;
+
+            if(headFromDtl.IdStatus == ReportStatus.STATUS_COMPLETADA)
+            {
+                return Content(HttpStatusCode.Forbidden,"No es posible enviar una entrada a un reporte COMPLETADO.");
+            }
 
             if (!reportDtlEntry.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
