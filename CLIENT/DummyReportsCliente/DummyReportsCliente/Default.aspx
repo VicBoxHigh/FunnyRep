@@ -31,7 +31,7 @@
 
             <input id="txtTitle" type="text" name="title" id="titleReport" placeholder="Titulo" />
 
-            <textarea type="text" rows="5" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
+            <textarea type="text" rows="3" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
 
             <input type="text" id="txtLugar" placeholder="Lugar" />
 
