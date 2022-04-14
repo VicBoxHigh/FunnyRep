@@ -15,7 +15,7 @@
 
         <div class="list-btn-container">
             <input type="checkbox" class="checkbox" />
-            
+
             <div class="menu-item">Mis Reportes</div>
 
             <div id="cntRepHeads" class="container-heads">
@@ -34,7 +34,7 @@
 
             <input id="txtTitle" type="text" name="title" id="titleReport" placeholder="Titulo" />
 
-            <textarea type="text" rows="3" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
+            <textarea type="text" rows="5" cols="50" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
 
             <input type="text" id="txtLugar" placeholder="Lugar" />
 
@@ -83,6 +83,8 @@
 
     <!-- <script src="webcam.js" type="text/javascript"></script> -->
     <script src="Content/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="Content/moment-min.js"></script>
+    <script src="Content/moment-timezone-with-data-10-year-range.min.js"></script>
     <script
         type="text/javascript"
         src="Content/webcam-easyV.js"></script>

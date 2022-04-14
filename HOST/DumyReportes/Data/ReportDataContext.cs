@@ -246,6 +246,8 @@ SELECT TOP (1) [IdReport]
                   LEFT JOIN [User] U
 	                ON Rep.IdUserWhoNotified = U.IdUser
                 Where U.IdUser = @IdUser
+                ORDER BY Rep.IdReport DESC
+
             ";
 
         //todos los reportes donde el dueño sea  @IdUser, y todos los reportes que no tengan owner aún
@@ -302,7 +304,8 @@ SELECT TOP (1) [IdReport]
 	           LEFT JOIN [User] U ON UOR.IdUser = U.IdUser
 	           LEFT JOIN [Location] Loc on SpecificUserReports.IdLocation = Loc.IdLocation
 	           LEFT JOIN ReportStatus RS ON SpecificUserReports.IdStatus = RS.IdStatus
-        WHERE UOR.IdUser = @IdUser or UOR.IdReport is NULL
+        WHERE UOR.IdUser = @IdUser or UOR.IdReport is NULL 
+        ORDER BY SpecificUserReports.IdReport DESC
 
 
 

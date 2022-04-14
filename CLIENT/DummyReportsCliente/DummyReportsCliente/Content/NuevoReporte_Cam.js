@@ -81,7 +81,8 @@ btnGuardar.addEventListener("click", (e) => {
 
         data: dataStr,
         succes: function (data, textStatus, xhr) {
-            alert(data);
+            getRepsByUser();
+
         },
         error: function (xhr, textStatus) {
             alert("Error en la solicitud" + xhr.responseText);
@@ -111,11 +112,11 @@ const extractReportData = () => {
         },
         IdStatus: 0,
         Pic64: webcam.snap().substring(22),
-        DTCreation: new Date()
+        DTCreation: "" /*new Date()//La API no lo lee, toma la hora del host
             .toISOString()
             .slice(0, 19)
             .replace("/-/g", "/")
-            .replace("T", " "),
+            .replace("T", " ")*/,
         ReportUpdates: [],
         Title: txtTitle.val(),
         Description: txtDescription.val(),

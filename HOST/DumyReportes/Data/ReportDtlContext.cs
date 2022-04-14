@@ -134,7 +134,7 @@ namespace DumyReportes.Data
                     //command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = reportDtlEntry.IdReport;
                     command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.TitleUpdate;
                     command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Description;
-                    command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = reportDtlEntry.DTUpdate;
+                    command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = DateTime.Now;/*reportDtlEntry.DTUpdate*/;//el servidor se encarga 
                     command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.IsOwnerUpdate;
                     int rowsAffected2 = command.ExecuteNonQuery();
                     transaction.Commit();

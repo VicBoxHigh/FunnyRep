@@ -116,6 +116,9 @@
     <Content Include="Content\jquery-3.6.0.min.js" />
     <Content Include="Content\Login.css" />
     <Content Include="Content\LoginReporte.js" />
+    <Content Include="Content\moment-timezone-with-data-10-year-range.min.js" />
+    <Content Include="Content\moment-timezone.min.js" />
+    <Content Include="Content\moment-min.js" />
     <Content Include="Content\normalize.css" />
     <Content Include="Content\NuevoReporte.css" />
     <Content Include="Content\NuevoReporte.js" />

@@ -151,11 +151,11 @@ const sendNewEntry = (newEntry) => {
         TitleUpdate: "",
         Description: txtRepDtlUserInput.val(),
         IsOwnerUpdate: userLvl == 0 ? false : true/*newEntry.IsOwnerUpdate*/,
-        DTUpdate: new Date()
+        DTUpdate: ""/* new Date()
             .toISOString()
             .slice(0, 19)
             .replace("/-/g", "/")
-            .replace("T", " "),
+            .replace("T", " ")//La API toma la hora del servidor.*/,
         Pic64: ""//Pendiente
     }
 
@@ -199,8 +199,10 @@ const reFillReportDtl = (individualRepHead) => {
 
     let dateRep = new Date(individualRepHead.DTCreation);
     let hora = dateRep.getHours();
+    let minutos = dateRep.getMinutes();
+
     let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear() + " " +
-        (hora > 12 ? hora - 12 : hora) + ":" + dateRep.getMinutes() + (hora > 12 ? " PM" : " AM");
+        (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 10 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
 
 
     let reportDtlHeadExpanded = $(`
@@ -212,7 +214,7 @@ const reFillReportDtl = (individualRepHead) => {
                     <div class="container-headexpand__location">
                         <a target="_blank"
                         href="https://www.google.com/maps?q=${individualRepHead.Location.lat + ',' + individualRepHead.Location.lon}">
-                         ${individualRepHead.Location.Description ? individualRepHead.Location.Description:"Ubicación"}
+                         ${individualRepHead.Location.Description ? individualRepHead.Location.Description : "Ubicación"}
                         </a>
                     </div>
                     <div class="container-headexpand__status">${statusRepStr}</div>
@@ -295,10 +297,13 @@ const reFillReportDtlEntries = (individualRepHead) => {
 
 
         let dateEntry = new Date(currentEnry.DTUpdate);
+       // let dateUtc = new Date(Date.UTC(dateEntry.getFullYear(), dateEntry.getMonth(), dateEntry.getDate(), dateEntry.getHours(), dateEntry.getMinutes()));
+
+        //dateEntry = dateUtc;
         let hora = dateEntry.getHours();
         let minutos = dateEntry.getMinutes();
         let dateEntryStr = dateEntry.getDate() + "/" + dateEntry.getMonth() + "/" + dateEntry.getFullYear() + " " +
-            (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 12 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
+            (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 10 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
 
 
         entriesContainer.append(`
@@ -351,6 +356,7 @@ const getRepDtlEntries = (individualRepHead) => {
 const generateRepHead = (individualRepHead) => {
 
     let dateRep = new Date(individualRepHead.DTCreation);
+
     let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear();
 
 

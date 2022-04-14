@@ -45,8 +45,9 @@ namespace DumyReportes.Data
  
             ";
 
-        internal ErrorFlag CredentialsExist(string userName, string password, out User userResult)
+        internal ErrorFlag CredentialsExist(string userName, string password, out User userResult, bool recursive = false)
         {
+
             userResult = null;
             ErrorFlag operationResult = ErrorFlag.ERROR_OK_RESULT;
 
@@ -60,8 +61,18 @@ namespace DumyReportes.Data
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
 
-                    if (!reader.HasRows) operationResult = ErrorFlag.ERROR_RECORD_EXISTS;
-                    if (reader.Read())
+                    if (!reader.HasRows)
+                    {
+                        operationResult = ErrorFlag.ERROR_NOT_EXISTS;
+                        //No existe, entonces consulta a checadas.
+                        //
+                        if (recursive && int.TryParse(userName, out int userNameInt))//empleados son un números, admins no, por tanto si el admin no existe, no hay login
+                        {
+
+                            ErrorFlag errorFlag = EmployeeExists(userName);
+                        }
+                    }
+                    else if (reader.Read())
                         userResult = (User)InstanceFromReader(reader);
 
                 }
@@ -80,6 +91,41 @@ namespace DumyReportes.Data
 
         }
 
+        private string QUERY_EXIST_EMPLOYEE = @"
+
+        SELECT TOP (1) [NumEmpleado]
+            FROM [Checadas].[dbo].[Empleados]
+            WHERE NumEmpleado = @numEmpleado
+
+        ";
+
+        public ErrorFlag EmployeeExists(string numEmpleado)
+        {
+            ErrorFlag result = ErrorFlag.ERROR_OK_RESULT;
+
+            using (SqlCommand command = new SqlCommand(QUERY_EXIST_EMPLOYEE, ConexionBD.getConexion(ConexionBD.ConnectionDB.REPORT_APP)))
+            {
+                command.Parameters.Add("@numEmpleado", System.Data.SqlDbType.VarChar).Value = numEmpleado;
+                try
+                {
+
+                    using (SqlDataReader sqlDataReader = command.ExecuteReader(System.Data.CommandBehavior.CloseConnection))
+                    {
+
+                        if (!sqlDataReader.HasRows) result = ErrorFlag.ERROR_NOT_EXISTS;
+
+
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    result = ErrorFlag.ERROR_CONNECTION_DB;
+                }
+            }
+
+
+            return result;
+        }
 
         //Insertará un row para tabla usuario
 
