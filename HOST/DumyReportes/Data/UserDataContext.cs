@@ -66,10 +66,14 @@ namespace DumyReportes.Data
                         operationResult = ErrorFlag.ERROR_NOT_EXISTS;
                         //No existe, entonces consulta a checadas.
                         //
-                        if (recursive && int.TryParse(userName, out int userNameInt))//empleados son un números, admins no, por tanto si el admin no existe, no hay login
+                        if (!recursive && int.TryParse(userName, out int userNameInt))//empleados son un números, admins no, por tanto si el admin no existe, no hay login
                         {
-
                             ErrorFlag errorFlag = EmployeeExists(userName);
+
+                            if (errorFlag != ErrorFlag.ERROR_OK_RESULT) operationResult = errorFlag;
+
+                            else//existe employee, then insertit
+                                operationResult = CredentialsExist(userName, password, out userResult, true);
                         }
                     }
                     else if (reader.Read())
