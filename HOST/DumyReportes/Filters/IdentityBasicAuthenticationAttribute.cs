@@ -28,19 +28,23 @@ namespace DumyReportes.Filters
             GenericPrincipal genericPrincipal = null;
             try
             {
+                ErrorFlag resultValidate = loginValidatorHelper.Validate(out User user);
+                if (resultValidate == ErrorFlag.ERROR_OK_RESULT)//false? entonces no access a user, 
+                {
+                    genericPrincipal = createPrincipal(user, "Basic");
+                    string token = TokenHelper.GenerateToken(user);
+                    user.CurrentToke = token;
 
-            if (loginValidatorHelper.Validate(out User user))//false? entonces no access a user, 
-            {
-                genericPrincipal = createPrincipal(user, "Basic");
-                string token = TokenHelper.GenerateToken(user);
-                user.CurrentToke = token;
+                }
+
 
             }
-            }
-            catch( Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
+
+
 
 
             return genericPrincipal;
@@ -52,7 +56,7 @@ namespace DumyReportes.Filters
         {
 
             var identity = new UserIdentiy(user, authType);
-            
+
             GenericPrincipal genericPrincipal = new GenericPrincipal(identity, new string[] { user.AccessLevel.ToString() });
 
             return genericPrincipal;
@@ -68,9 +72,9 @@ namespace DumyReportes.Filters
 
             if (resultValidate != ErrorFlag.ERROR_OK_RESULT) return genericPrincipal;//null
 
-            if ( user != null)
+            if (user != null)
             {
-                genericPrincipal = createPrincipal(user,"Bearer");
+                genericPrincipal = createPrincipal(user, "Bearer");
             }
             else
             {

@@ -1,4 +1,4 @@
-﻿const API_URL = "http://172.16.9.118:57995/";
+﻿const API_URL = "https://172.16.9.118:57996/";
 
 const btnLogin = $("#btnLogin");
 const txtNumEmpleado = $("#txtUser");
@@ -29,7 +29,7 @@ btnLogin.on("click", (e) => {
     }
 
     //Si es checked, entoces el logeo es admin
-    if (checkAdmin.is(':checked')  && !numEmpleado) {
+    if (checkAdmin.is(':checked') && !numEmpleado) {
 
         alert("Ingrese solamente digitos");
         return;
@@ -59,13 +59,14 @@ const loginUser = (numEmpleado, pass) => {
         },
 
         beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `Basic ${btoa(numEmpleado + ":" + pass)}`)
+            xhr.setRequestHeader("Authorization", `Basic ${btoa(numEmpleado + ":" + pass)}`);
+
         },
         success: successPromiseLog,
         error: failPromiseLog,
     });
 
-} 
+}
 
 const KEY_TOKEN_NAME = "SESSIONTOKEN";
 
@@ -89,7 +90,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
-    alert("Falló la solicitud al servidor 2" + xhr.responseText, +textStatus )
+    alert( xhr.responseText + xhr.status)
 
 }
 

@@ -158,7 +158,7 @@ namespace DumyReportes.Controllers
                     result = InternalServerError(new Exception("Error en base de datos"));
                     break;
                 default:
-                    result = BadRequest("Error desconocido");
+                    result = BadRequest("No es posible procesar la solicitud.");
                     break;
             }
 

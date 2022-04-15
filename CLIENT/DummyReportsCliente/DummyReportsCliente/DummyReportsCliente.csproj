@@ -260,7 +260,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52597</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://172.16.9.118:52597/</IISUrl>
+          <IISUrl>https://172.16.9.118:52598/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://dumyclient.com:8002/</CustomServerUrl>

@@ -22,17 +22,18 @@ namespace DumyReportes.Util
             this.password = password;
         }
 
-        internal bool Validate(out User user)
+        internal ErrorFlag Validate(out User user)
         {
 
             //call db context
             ErrorFlag result = this._UserDataContext.CredentialsExist(this.userName, this.password, out user);
 
-            if (result != ErrorFlag.ERROR_OK_RESULT && result != ErrorFlag.ERROR_RECORD_EXISTS)
-                throw new Exception(result.ToString());
+            /*  if (result != ErrorFlag.ERROR_OK_RESULT && result != ErrorFlag.ERROR_RECORD_EXISTS)
+                  throw new Exception(result.ToString());
+  */
 
 
-            return user != null;
+            return result;
 
         }
     }

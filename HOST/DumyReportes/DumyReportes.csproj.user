@@ -46,7 +46,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57995</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://172.16.9.118:57995/DummyHost</IISUrl>
+          <IISUrl>https://172.16.9.118:57996</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

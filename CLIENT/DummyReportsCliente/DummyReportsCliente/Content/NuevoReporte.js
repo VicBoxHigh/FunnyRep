@@ -1,4 +1,4 @@
-const API_URL = "http://172.16.9.118:57995/";
+const API_URL = "https://172.16.9.118:57996/";
 const containerNewRep = $("#cntNewRep");
 const containerRepDtl = $("#cntRepDtl");
 
