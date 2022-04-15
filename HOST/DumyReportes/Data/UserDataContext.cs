@@ -22,20 +22,25 @@ namespace DumyReportes.Data
            ,@Lon)";
 
         public static string QUERY_CREATE_USER =
-            @"                
-             INSERT INTO [dbo].[User]
-                   ([NumEmpleado]
-                   ,[UserName]
-                   ,[Pass]
-                   ,[IsEnabled]
-                   ,[Level])
-             VALUES
-                   (@NumEmpleado,
-                   @User
-                   ,@Pass
-                   ,@IsEnabled
-                   ,@UserLevel)
-               
+            @"        
+             IF NOT EXISTS(
+	            SELECT UserName FROM [User] WHERE UserName =  @User
+              ) 
+              BEGIN
+	            INSERT INTO [dbo].[User]
+                               ([NumEmpleado]
+                               ,[UserName]
+                               ,[Pass]
+                               ,[IsEnabled]
+                               ,[Level])
+                         VALUES
+                               (@NumEmpleado,
+                               @User
+                               ,@Pass
+                               ,@IsEnabled
+                               ,@UserLevel);
+              END
+   
             ";
 
 
@@ -47,9 +52,8 @@ namespace DumyReportes.Data
 
         internal ErrorFlag CredentialsExist(string userName, string password, out User userResult, bool recursive = false)
         {
-
             userResult = null;
-            ErrorFlag operationResult = ErrorFlag.ERROR_OK_RESULT;
+            ErrorFlag operationResult = ErrorFlag.ERROR_NOT_EXISTS;
 
             SqlCommand command = new SqlCommand(QUERY_CREDENTIALS_EXIST, ConexionBD.getConexion());
             command.Parameters.Add("@user", System.Data.SqlDbType.VarChar).Value = userName;
@@ -60,45 +64,56 @@ namespace DumyReportes.Data
                 using (command)
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-
                     if (!reader.HasRows)
                     {
                         operationResult = ErrorFlag.ERROR_NOT_EXISTS;
-                        //No existe, entonces consulta a checadas.
-                        //
-                        if (!recursive && int.TryParse(userName, out int userNameInt))//empleados son un números, admins no, por tanto si el admin no existe, no hay login
-                        {
-                            ErrorFlag errorFlag = EmployeeExists(userName);
 
-                            if (errorFlag != ErrorFlag.ERROR_OK_RESULT) operationResult = errorFlag;
-
-                            else//existe employee, then insertit
-                                operationResult = CredentialsExist(userName, password, out userResult, true);
-                        }
                     }
                     else if (reader.Read())
+                    {
                         userResult = (User)InstanceFromReader(reader);
-
+                        operationResult = ErrorFlag.ERROR_OK_RESULT;
+                    }
                 }
 
+                //No existe, entonces consulta a checadas.
+                //Si esta llamada no es recursiva, entrará
+                if (operationResult == ErrorFlag.ERROR_NOT_EXISTS && !recursive && int.TryParse(userName, out int userNameInt))//empleados son un números, admins no, por tanto si el admin no existe, no hay login
+                {
+                    //Revisa en Empleados
+                    ErrorFlag errorFlag = EmployeeExists(userName);
+
+                    if (errorFlag != ErrorFlag.ERROR_OK_RESULT) operationResult = errorFlag;
+
+                    else//existe employee, then insert it
+                    {
+                        ErrorFlag resultCreate = Create(new User(userName, userName, userName, true, AccessLevel.PUBLIC), out string error);
+                        if (resultCreate == ErrorFlag.ERROR_OK_RESULT)
+                        {
+                            //if (resultCreate == ErrorFlag.ERROR_OK_RESULT)
+                            operationResult = CredentialsExist(userName, password, out userResult, true);
+                        }
+                        else
+                        {
+                            operationResult = resultCreate;
+
+                            //llama recursiva para que simule la solicitud original
+                        }
+                    }
+                }
             }
             catch (SqlException ex)
             {
-
                 operationResult = ErrorFlag.ERROR_CONNECTION_DB;
-
             }
 
-
             return operationResult;
-
-
         }
 
         private string QUERY_EXIST_EMPLOYEE = @"
 
         SELECT TOP (1) [NumEmpleado]
-            FROM [Checadas].[dbo].[Empleados]
+            FROM dbo.[Empleados]
             WHERE NumEmpleado = @numEmpleado
 
         ";
@@ -106,14 +121,14 @@ namespace DumyReportes.Data
         public ErrorFlag EmployeeExists(string numEmpleado)
         {
             ErrorFlag result = ErrorFlag.ERROR_OK_RESULT;
-
-            using (SqlCommand command = new SqlCommand(QUERY_EXIST_EMPLOYEE, ConexionBD.getConexion(ConexionBD.ConnectionDB.REPORT_APP)))
+            SqlConnection sqlConnection = ConexionBD.getConexion(ConexionBD.ConnectionDB.CHECADAS);
+            using (SqlCommand command = new SqlCommand(QUERY_EXIST_EMPLOYEE, sqlConnection))
             {
                 command.Parameters.Add("@numEmpleado", System.Data.SqlDbType.VarChar).Value = numEmpleado;
                 try
                 {
 
-                    using (SqlDataReader sqlDataReader = command.ExecuteReader(System.Data.CommandBehavior.CloseConnection))
+                    using (SqlDataReader sqlDataReader = command.ExecuteReader())
                     {
 
                         if (!sqlDataReader.HasRows) result = ErrorFlag.ERROR_NOT_EXISTS;
@@ -149,7 +164,12 @@ namespace DumyReportes.Data
             try
             {
                 int a = command.ExecuteNonQuery();
-                result = Flags.ErrorFlag.ERROR_OK_RESULT;
+                if (a == 0)//ya existe
+                    result = ErrorFlag.ERROR_RECORD_EXISTS;
+                if (a > 0)//siempre será 1
+                    result = Flags.ErrorFlag.ERROR_OK_RESULT;
+                else //a<0
+                    result = ErrorFlag.ERROR_DATABASE;
             }
             catch (SqlException ex)
             {

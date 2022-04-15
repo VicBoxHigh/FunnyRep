@@ -13,12 +13,18 @@
     max-height: 8vh;
     background-color: #f3f3f3;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
 }
+
+    .navbar input {
+        margin:0;
+    }
+
 
     .navbar .menu-item {
         height: 100%;
-        padding: 1rem;
+        max-height: 100%;
+        padding: 0.5em;
     }
 
 .main-container {
@@ -28,9 +34,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height:100%;
+    height: 100%;
     max-height: 92vh;
-    overflow-y:scroll;
+    overflow-y: scroll;
 }
 
 .containerNewReport {
@@ -60,6 +66,7 @@ input[type=button] {
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    max-height: 100%;
 }
 
     input[type=button]:hover {
@@ -134,8 +141,7 @@ input[type=button] {
 }
 
     .container-headexpand > * {
-    
-        margin-top:1rem;
+        margin-top: 1rem;
     }
 
 .container-reportDtlEntries {
@@ -148,10 +154,12 @@ input[type=button] {
     padding: 10px;
     border: 2px solid;
 }
-.container-reportDtlEntry > *{
-    margin:0.25rem;
-}
-    .containerNewReport {
+
+    .container-reportDtlEntry > * {
+        margin: 0.25rem;
+    }
+
+.containerNewReport {
     width: 90%;
     max-width: 90%;
     overflow-x: scroll;
@@ -161,7 +169,7 @@ input[type=button] {
 input[type=text],
 input[type=password],
 textarea {
-    width: 100%
+    width: 100%;
 }
 
 input[type=checkbox]:checked ~ .container-heads {

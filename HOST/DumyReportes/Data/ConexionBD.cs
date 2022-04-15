@@ -15,13 +15,13 @@ namespace DumyReportes.Data
     ///s:t Cadena de conexión a la DB
     ///s:c>
     {
-        private static string CADENA_CONEXION =
+        private static string CADENA_CONEXION_REPORTAPP =
          //   @"Data Source=localhost\SQLEXPRESSTESTV,50891;Initial Catalog=ChecadasVic;User ID=cheto;Password=chetoconsalsa";
 
          @"Data Source=localhost\SQLEXPRESS19,8465;Initial Catalog=ReportApp;User ID=ReportApp;Password=Marves2022;";
 
         private static string CADENA_CONEXION_Checadas =
-         @"Data Source=172.16.0.7\SQLEXPRESS,1433;Initial Catalog=Checadas;User ID=asistencia;Password=w0RkbE4t";
+         @"Data Source=172.16.0.7\SQLEXPRESS,1433;Initial Catalog=Checadas;User ID=asistencia;Password=w0RkbE4t;";
         ///<s:c
 
 
@@ -64,7 +64,7 @@ namespace DumyReportes.Data
             }
             else
             {
-                currenStrConnection = ConexionBD.CADENA_CONEXION + "Connection Timeout=10;Connection Lifetime=0;Min Pool Size=0;Max Pool Size=100;Pooling=true;";
+                currenStrConnection = ConexionBD.CADENA_CONEXION_REPORTAPP + "Connection Timeout=10;Connection Lifetime=0;Min Pool Size=0;Max Pool Size=100;Pooling=true;";
                 if (connection == null)
                 {
                     tempPointer = new SqlConnection(currenStrConnection);
@@ -79,7 +79,7 @@ namespace DumyReportes.Data
 
             if (tempPointer.State == System.Data.ConnectionState.Closed)
             {
-                tempPointer.ConnectionString = ConexionBD.CADENA_CONEXION + "Connection Timeout=10;Connection Lifetime=0;Min Pool Size=0;Max Pool Size=100;Pooling=true;";
+                tempPointer.ConnectionString = currenStrConnection ;
                 tempPointer.Open();
             }
             //Se puede cambiar a manera de factory, ssi las instancias son de 1 solo uso .

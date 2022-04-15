@@ -28,7 +28,7 @@ namespace DumyReportes.Util
             //call db context
             ErrorFlag result = this._UserDataContext.CredentialsExist(this.userName, this.password, out user);
 
-            if (result != ErrorFlag.ERROR_OK_RESULT & result != ErrorFlag.ERROR_RECORD_EXISTS)
+            if (result != ErrorFlag.ERROR_OK_RESULT && result != ErrorFlag.ERROR_RECORD_EXISTS)
                 throw new Exception(result.ToString());
 
 
