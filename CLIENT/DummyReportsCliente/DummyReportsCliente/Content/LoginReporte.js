@@ -90,6 +90,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
+    let a = xhr.getResponseHeader();
     alert( xhr.responseText + xhr.status)
 
 }
