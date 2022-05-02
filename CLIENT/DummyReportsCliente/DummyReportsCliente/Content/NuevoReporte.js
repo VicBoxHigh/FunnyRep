@@ -66,6 +66,9 @@ const getRepsByUser = () => {
 
         success: function (data, textStatus, xhr) {
             //alert(data);
+            if (xhr.status != 200 && xhr.status != 204)
+                alert(textStatus)
+
             if (data)
                 if (data.reports)
                     renderRepHeads(data.reports)
@@ -297,7 +300,7 @@ const reFillReportDtlEntries = (individualRepHead) => {
 
 
         let dateEntry = new Date(currentEnry.DTUpdate);
-       // let dateUtc = new Date(Date.UTC(dateEntry.getFullYear(), dateEntry.getMonth(), dateEntry.getDate(), dateEntry.getHours(), dateEntry.getMinutes()));
+        // let dateUtc = new Date(Date.UTC(dateEntry.getFullYear(), dateEntry.getMonth(), dateEntry.getDate(), dateEntry.getHours(), dateEntry.getMinutes()));
 
         //dateEntry = dateUtc;
         let hora = dateEntry.getHours();

@@ -19,7 +19,7 @@
             <div class="menu-item">Mis Reportes</div>
 
             <div id="cntRepHeads" class="container-heads">
-                <div class="item-report-head">AÚN NO HAY ENTRADAS EN EL REPORTE</div>
+                <div class="item-report-head">AÚN NO HAY REPORTES REGISTRADOS</div>
 
             </div>
 

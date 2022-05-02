@@ -74,7 +74,7 @@ const KEY_TOKEN_NAME = "SESSIONTOKEN";
 const successPromiseLog = (data, textStatus, xhr) => {
 
 
-    if (data.token) {
+    if (xhr.status == 200 ) {
 
 
         //if (localStorage.getItem("sessionToken"))
@@ -82,16 +82,17 @@ const successPromiseLog = (data, textStatus, xhr) => {
         localStorage.setItem("LevelUser", data.levelUser);
         window.location.href = "./Default.aspx"
 
+        //Cuando no es un OK
     } else {
-        alert("Algo salió mal.")
+        alert(textStatus)
     }
 }
 
 const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
-    let a = xhr.getResponseHeader();
-    alert( xhr.responseText + xhr.status)
+    if(xhr)
+        alert( xhr.responseText + xhr.status)
 
 }
 

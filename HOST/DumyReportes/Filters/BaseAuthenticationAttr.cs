@@ -82,7 +82,7 @@ namespace DumyReportes.Filters
                 //Si la autenticación fue correcta, se tendrá un obj principal;
                 context.ErrorResult = new AuthenticationFailureResult("Credenciales invalidas.", request);
 
-
+                
             }
             else
             {
@@ -172,7 +172,7 @@ namespace DumyReportes.Filters
                 // escaped (precededed by a backslash that is not itself escaped).
                 parameter = "realm=\"" + Realm + "\"";
             }
-
+            //hace challenge con auth basic,
             context.ChallengeWith("Basic", parameter);
         }
         private void SetPrincipal(IPrincipal principal)

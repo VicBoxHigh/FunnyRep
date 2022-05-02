@@ -81,7 +81,9 @@ btnGuardar.addEventListener("click", (e) => {
 
         data: dataStr,
         succes: function (data, textStatus, xhr) {
-            getRepsByUser();
+            /* getRepsByUser();*/
+            window.location.href = "./Default.aspx"
+
 
         },
         error: function (xhr, textStatus) {
