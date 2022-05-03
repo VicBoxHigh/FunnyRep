@@ -70,7 +70,9 @@ namespace DumyReportes.Filters
 
             GenericPrincipal genericPrincipal = null;
 
-            if (resultValidate != ErrorFlag.ERROR_OK_RESULT) return genericPrincipal;//null
+
+            if (resultValidate != ErrorFlag.ERROR_OK_RESULT) return genericPrincipal;//null 
+            //si hay error parse, o expiration del token,  retornará Unauthorized de igual manera..
 
             if (user != null)
             {

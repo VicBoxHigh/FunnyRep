@@ -58,6 +58,9 @@ namespace DumyReportes.Data
             SqlCommand command = new SqlCommand(QUERY_CREDENTIALS_EXIST, ConexionBD.getConexion());
             command.Parameters.Add("@user", System.Data.SqlDbType.VarChar).Value = userName;
             command.Parameters.Add("@pass", System.Data.SqlDbType.VarChar).Value = password;
+            
+            //bad password?
+
 
             try
             {
@@ -82,6 +85,7 @@ namespace DumyReportes.Data
                 {
                     //Revisa en Empleados
                     ErrorFlag errorFlag = EmployeeExists(userName);
+                  //  ErrorFlag errorFlag2 = ErrorFlag.ERROR_NO_AFECTED_RECORDS | ErrorFlag.ERROR_OK_RESULT;
 
                     if (errorFlag != ErrorFlag.ERROR_OK_RESULT) operationResult = errorFlag;
 
@@ -169,7 +173,7 @@ namespace DumyReportes.Data
                 if (a > 0)//siempre será 1
                     result = Flags.ErrorFlag.ERROR_OK_RESULT;
                 else //a<0
-                    result = ErrorFlag.ERROR_DATABASE;
+                    result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
             }
             catch (SqlException ex)
             {

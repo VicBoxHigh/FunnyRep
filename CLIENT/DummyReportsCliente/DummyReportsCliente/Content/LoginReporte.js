@@ -74,7 +74,7 @@ const KEY_TOKEN_NAME = "SESSIONTOKEN";
 const successPromiseLog = (data, textStatus, xhr) => {
 
 
-    if (xhr.status == 200 ) {
+    if (xhr.status == 200) {
 
 
         //if (localStorage.getItem("sessionToken"))
@@ -84,15 +84,15 @@ const successPromiseLog = (data, textStatus, xhr) => {
 
         //Cuando no es un OK
     } else {
-        alert(textStatus)
+        alert(textStatus + "v")
     }
 }
 
 const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
-    if(xhr)
-        alert( xhr.responseText + xhr.status)
+    if (xhr)
+        alert(xhr.status == 401 ? "Credenciales inválidas" : xhr.statusText)
 
 }
 

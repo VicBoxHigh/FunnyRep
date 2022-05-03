@@ -108,8 +108,16 @@ const clickReportHead = async (event, individualRepHead) => {
     /*  {
   
       }*/
+    let data = null;
+    try {
+        data = await taskGetEntries;//unvelop the entries from the promise
 
-    let data = await taskGetEntries;//unvelop the entries from the promise
+    } catch (ex) {
+
+        alert("Error al solicitar el detalle.")
+    }
+
+ 
     if (taskGetEntries.statusText == 'Ok' || taskGetEntries.statusText == 'OK') {
         individualRepHead.ReportUpdates = data.reportDtlEntries;
         reFillReportDtlEntries(individualRepHead);//llena las entries;
@@ -132,7 +140,7 @@ const clickReportHead = async (event, individualRepHead) => {
 
         } catch (err) {
             alert(err.responseText);
-            console.log("Error al actualizar los detalles locales del reporte.");
+            console.log("Error al actualizar el reporte.");
         }
         event.target.click();//click en el HEAD para que actualicé
     });
@@ -363,12 +371,13 @@ const generateRepHead = (individualRepHead) => {
     let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear();
 
 
+
     let repHead = $(`
 
             <div class="item-report-head"    >
                 <div class="item-report-head__idReport"> Reporte #${individualRepHead.IdReport} </div>
                 <div class="item-report-head__title">${individualRepHead.Title}</div>
-                <div class="item-report-head__description">${individualRepHead.Description}</div>
+                 
                 <div class="item-report-head__date">${dateRepStr}</div>
                 <div class="item-report-head__numEmpleado">${individualRepHead.NumEmpleadoWhoNotified}</div>
 

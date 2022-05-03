@@ -20,6 +20,7 @@ namespace BasicAuthentication.Results
 
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
+            
             return Task.FromResult(Execute());
         }
 

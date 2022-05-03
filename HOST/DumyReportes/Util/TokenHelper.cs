@@ -47,15 +47,23 @@ namespace DumyReportes.Util
         {
             user = null;
             if (String.IsNullOrEmpty(token)) return ErrorFlag.ERROR_INVALID_TOKEN;
+            byte[] tokenBytesDecrypted = null;
+            try
+            {
+                tokenBytesDecrypted = Convert.FromBase64String(token);
 
-            byte[] tokenBytesDecrypted = Convert.FromBase64String(token);
+            }
+            catch (Exception ex)
+            {
+                return ErrorFlag.ERROR_PARSE;
+            }
 
             if (tokenBytesDecrypted == null || tokenBytesDecrypted.Length == 0) return ErrorFlag.ERROR_INVALID_TOKEN;
 
             string tokenStr = Encoding.UTF8.GetString(tokenBytesDecrypted);
 
             ErrorFlag resultUFAT = UserFromArrayToken(tokenStr, out User userCredentialsLogin);
-
+            if (resultUFAT != ErrorFlag.ERROR_OK_RESULT) return resultUFAT;//
 
             UserDataContext userDataCtx = new UserDataContext();
 
@@ -90,8 +98,8 @@ namespace DumyReportes.Util
 
             User userDb = repoObj as User;
 
-            return userDb.IsEnabled 
-                && userDb.IdUser == userCredentialsLogin.IdUser 
+            return userDb.IsEnabled
+                && userDb.IdUser == userCredentialsLogin.IdUser
                 && userCredentialsLogin.UserName.Equals(userDb.UserName);
 
 
@@ -109,11 +117,21 @@ namespace DumyReportes.Util
             if (tokenProperties == null || tokenProperties.Length == 0 || tokenProperties.Length != 5) return ErrorFlag.ERROR_INVALID_TOKEN;
             DateTime dateTime = DateTime.Parse(tokenProperties[3]);
 
-            if (dateTime.Subtract(DateTime.Now).TotalMinutes > MINUTES_VALID_TOKEN)
+            DateTime tokenExpiration = dateTime.AddMinutes(120);
+
+            int resultCompare = DateTime.Compare(DateTime.Now, tokenExpiration);
+
+            //if(resultCompare <=0) //DateNow es igual o menor que la fecha de expiration del token.
+            if (resultCompare > 0)//DateNow sobrepasa el expiration date del token
             {
                 return ErrorFlag.ERROR_EXPIRED_TOKEN;
             }
-
+            
+            /*if (Math.Abs(dateTime.Subtract(DateTime.Now).TotalMinutes) > MINUTES_VALID_TOKEN)
+            {
+                return ErrorFlag.ERROR_EXPIRED_TOKEN;
+            }
+*/
             user = new User()
             {
                 IdUser = int.Parse(tokenProperties[0]),

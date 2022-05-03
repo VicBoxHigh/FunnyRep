@@ -65,7 +65,7 @@ btnGuardar.addEventListener("click", (e) => {
     let dataStr = JSON.stringify(data);
     $.ajax({
         type: "POST",
-        url: API_URL +  "api/Report",
+        url: API_URL + "api/Report",
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
@@ -82,7 +82,10 @@ btnGuardar.addEventListener("click", (e) => {
         data: dataStr,
         succes: function (data, textStatus, xhr) {
             /* getRepsByUser();*/
-            window.location.href = "./Default.aspx"
+            if (xhr.status == 200 || xhr.status == 201 || xhr.status == 202 )
+                window.location.href = "./Default.aspx"
+            else 
+                alert(textStatus)
 
 
         },
@@ -133,7 +136,7 @@ const initCam = () => {
         .start()
         .then((result) => {
             //alert("Webcam started")
-            
+
         })
         .catch((err) => {
             console.log(err);
