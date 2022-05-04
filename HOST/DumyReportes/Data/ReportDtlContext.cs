@@ -47,6 +47,7 @@ namespace DumyReportes.Data
 
 
         public static string QUERY_CHECK_EXISTENCE_OWNER_OR_CREATE =
+            //(SELECT TOP (1) IdUser FROM Report R Where R.IdReport = @idReport)
             @"
 
             IF NOT EXISTS (SELECT TOP(1) * FROM ReportApp.dbo.UserOwner_Report UOR where UOR.IdReport = @idReport order by DT DESC)
@@ -58,7 +59,7 @@ namespace DumyReportes.Data
                        ,[DT])
 	            VALUES (
 	                @idReport,
-	                (SELECT TOP (1) IdReport FROM Report R Where R.IdReport = @idReport),
+	                @idUserOwner,
 	                GETDATE()
                 )
 
@@ -115,15 +116,17 @@ namespace DumyReportes.Data
 
                 try
                 {
-                    command.CommandText = QUERY_CHECK_EXISTENCE_OWNER_OR_CREATE;
-                    command.Parameters.Add("@idReport", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.IdReport;
 
 
                     //si no hay entries, ese Reporte no tiene OWNER, por lo tanto se asignará al usuario que actualice primero.
                     //siempre que no sea un usuario level 0
+                    //ID report en commún en ambas consulas del transaction
+                    command.Parameters.Add("@idReport", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.IdReport;
 
                     if (!user.AccessLevel.Equals(Flags.AccessLevel.PUBLIC))
                     {
+                        command.CommandText = QUERY_CHECK_EXISTENCE_OWNER_OR_CREATE;
+                        command.Parameters.Add("@idUserOwner", System.Data.SqlDbType.VarChar).Value = user.IdUser;
                         int rowsAffected = command.ExecuteNonQuery();
 
                     }

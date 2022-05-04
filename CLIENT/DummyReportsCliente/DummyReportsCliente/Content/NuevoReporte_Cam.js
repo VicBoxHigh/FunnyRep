@@ -63,6 +63,7 @@ btnGuardar.addEventListener("click", (e) => {
 
     let data = extractReportData();
     let dataStr = JSON.stringify(data);
+    
     $.ajax({
         type: "POST",
         url: API_URL + "api/Report",
@@ -71,6 +72,7 @@ btnGuardar.addEventListener("click", (e) => {
         datatype: "json",
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+            
         },
         headers: {
             "Access-Control-Allow-Origin": "*",
@@ -80,11 +82,12 @@ btnGuardar.addEventListener("click", (e) => {
         },
 
         data: dataStr,
-        succes: function (data, textStatus, xhr) {
+        success: function (data, textStatus, xhr) {
             /* getRepsByUser();*/
-            if (xhr.status == 200 || xhr.status == 201 || xhr.status == 202 )
-                window.location.href = "./Default.aspx"
-            else 
+            if (xhr.status == 200 || xhr.status == 201 || xhr.status == 202) {
+                window.location.href = "./Default"
+            }
+            else
                 alert(textStatus)
 
 

@@ -51,3 +51,7 @@ C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyRepo
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.pdb
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AdvancedStringBuilder.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Buffers.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Runtime.InteropServices.RuntimeInformation.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AdvancedStringBuilder.xml

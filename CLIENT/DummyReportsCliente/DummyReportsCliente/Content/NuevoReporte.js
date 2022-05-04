@@ -45,6 +45,7 @@ const getRepsByUser = () => {
 
     if (!currentToken) {
         alert("Inicie sesión primero")
+        window.location.href = "./Login"
         return
     }
 
@@ -65,7 +66,7 @@ const getRepsByUser = () => {
         },
 
         success: function (data, textStatus, xhr) {
-            //alert(data);
+
             if (xhr.status != 200 && xhr.status != 204)
                 alert(textStatus)
 
@@ -117,8 +118,8 @@ const clickReportHead = async (event, individualRepHead) => {
         alert("Error al solicitar el detalle.")
     }
 
- 
-    if (taskGetEntries.statusText == 'Ok' || taskGetEntries.statusText == 'OK') {
+    //OK
+    if (taskGetEntries.status == 200  ) {
         individualRepHead.ReportUpdates = data.reportDtlEntries;
         reFillReportDtlEntries(individualRepHead);//llena las entries;
 
@@ -154,6 +155,8 @@ const sendNewEntry = (newEntry) => {
 
     if (!currentToken) {
         alert("Inicie sesión primero")
+        window.location.href = "./Login"
+
         return
     }
 
@@ -245,7 +248,7 @@ const reFillReportDtl = (individualRepHead) => {
             let result = await individualRepHead;
         }
         catch (ex) {
-            alert("Error: " + ex)
+            //alert("Error: " + ex)
         }
     })
 }
@@ -257,6 +260,8 @@ const saveStatus = (individualRepHead) => {
 
     if (!currentToken) {
         alert("Inicie sesión primero")
+        window.location.href = "./Login"
+
         return
     }
 
@@ -339,6 +344,8 @@ const getRepDtlEntries = (individualRepHead) => {
     let currentToken = localStorage.getItem(KEY_TOKEN_NAME);;
     if (!currentToken) {
         alert("Inicie sesión primero.")
+        window.location.href = "./Login"
+
         return;
     }
 
@@ -426,7 +433,11 @@ const enviarActualización = (actualizacionData) => {
 const checkSessionLevel = () => {
     let lu = localStorage.getItem("LevelUser");
 
-    if (lu == undefined) alert("ERROR");
+    if (lu == undefined) {
+        
+        window.location.href = "./Login"
+        return
+    }
 
     //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
     //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
