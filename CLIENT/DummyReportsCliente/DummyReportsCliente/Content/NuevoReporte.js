@@ -75,7 +75,7 @@ const getRepsByUser = () => {
                     renderRepHeads(data.reports)
         },
         error: function (xhr, textStatus) {
-            alert("Error en la solicitud1" + xhr.responseText + textStatus);
+            alert("Error en la solicitud" +  JSNO.stringify(xhr));
         },
     });
 }
@@ -100,7 +100,7 @@ const clickReportHead = async (event, individualRepHead) => {
 
     clearReportDtl()//limpia el Head expanded y las entries
     txtRepDtlUserInput.val("");
-    reFillReportDtl(individualRepHead);//llena el head expanded
+    reFillReportDtl(individualRepHead,event.target);//llena el head expanded
 
 
     let taskGetEntries = getRepDtlEntries(individualRepHead);
@@ -208,7 +208,7 @@ const clearReportDtl = () => {
 
 }
 
-const reFillReportDtl = (individualRepHead) => {
+const reFillReportDtl = (individualRepHead, targetHead) => {
     let statusRepStr = individualRepHead.IdStatus == 0 ? "EN ESPERA" : individualRepHead.IdStatus == 1 ? "EN PROCESO" : "COMPLETADA";
 
     let dateRep = new Date(individualRepHead.DTCreation);
@@ -243,9 +243,10 @@ const reFillReportDtl = (individualRepHead) => {
     btnSaveStatus.off("click");
     btnSaveStatus.on("click", async (event) => {
         let task = saveStatus(individualRepHead);
-
+        
         try {
             let result = await individualRepHead;
+            targetHead.click();
         }
         catch (ex) {
             //alert("Error: " + ex)
