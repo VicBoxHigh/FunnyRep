@@ -80,7 +80,7 @@ namespace DumyReportes.Filters
             if(principal == null)
             {
                 //Si la autenticación fue correcta, se tendrá un obj principal;
-                context.ErrorResult = new AuthenticationFailureResult("Credenciales invalidas.", request);
+                context.ErrorResult = new AuthenticationFailureResult("Credenciales inválidas.", request);
 
                 
             }
