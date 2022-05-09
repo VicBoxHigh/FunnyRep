@@ -27,6 +27,7 @@ C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyRepo
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\vbc.rsp
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\VBCSCompiler.exe
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AdvancedStringBuilder.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Antlr3.Runtime.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AspNet.ScriptManager.bootstrap.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AspNet.ScriptManager.jQuery.dll
@@ -37,8 +38,11 @@ C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyRepo
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.ScriptManager.WebForms.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Microsoft.Web.Infrastructure.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Newtonsoft.Json.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Buffers.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Runtime.InteropServices.RuntimeInformation.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Web.Optimization.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\WebGrease.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AdvancedStringBuilder.xml
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Web.Optimization.xml
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Newtonsoft.Json.xml
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\Antlr3.Runtime.pdb
@@ -51,7 +55,3 @@ C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyRepo
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.pdb
-C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AdvancedStringBuilder.dll
-C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Buffers.dll
-C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\System.Runtime.InteropServices.RuntimeInformation.dll
-C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\AdvancedStringBuilder.xml
