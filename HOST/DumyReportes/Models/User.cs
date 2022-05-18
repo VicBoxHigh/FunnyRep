@@ -24,6 +24,9 @@ namespace DumyReportes.Models
         [DataMember]
         public Flags.AccessLevel AccessLevel { get; set; }
 
+        [DataMember]
+        public string Name { get; set; }
+
         public string CurrentToke { get; set; }
 
         public User() { }

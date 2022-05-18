@@ -286,7 +286,10 @@ namespace DumyReportes.Data
                    (Flags.AccessLevel)reader["Level"]
                );
 
-            if (user != null) user.IdUser = (int)reader["IdUser"];
+            if (user != null) { 
+                user.IdUser = (int)reader["IdUser"];
+                user.Name = reader["Name"].ToString();
+            }
 
             return user;
         }

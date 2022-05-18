@@ -80,7 +80,7 @@ namespace DumyReportes.Filters
             }
             else
             {
-                Console.WriteLine("F");
+               
             }
 
             return genericPrincipal;

@@ -13,7 +13,7 @@ namespace DumyReportes.Util
         private string userName;
         private string password;
 
-        private readonly UserDataContext _UserDataContext = new UserDataContext();
+        private UserDataContext _UserDataContext = new UserDataContext();
 
 
         public LoginValidatorHelper(string userName, string password)
