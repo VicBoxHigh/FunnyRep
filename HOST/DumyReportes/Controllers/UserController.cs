@@ -150,12 +150,8 @@ namespace DumyReportes.Controllers
         
         public IHttpActionResult Delete(int id)
         {
-
-            Flags.ErrorFlag result = _UserDataContext.Delete(id, out string error);
-
-
-            return Ok();
-
+            return Content(HttpStatusCode.NotImplemented, "Esta función no ha sido creada´aún.");
+            //Flags.ErrorFlag result = _UserDataContext.Delete(id, out string error);
 
         }
     }
