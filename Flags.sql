@@ -1,10 +1,10 @@
-USE [ReportApp]
+USE [ReportApp9]
 GO
 
 INSERT INTO [dbo].[AccessLevel]
            ([Level]
            ,[Name])
-     VALUES (0,'PUBLIC'),(10,'AGENT'),(20,'ADMIN')
+     VALUES (0,'PUBLIC'),(10,'AGENT'),(20,'ADMIN'),(30,'SUPERADMIN')
 GO
 
 INSERT INTO [dbo].[ReportStatus]
@@ -14,6 +14,11 @@ INSERT INTO [dbo].[ReportStatus]
 GO
 
 INSERT INTO dbo.[User]
-(NumEmpleado,UserName,Pass,IsEnabled,[Level])
-VALUES('3088','vperez','vperez',1,20)
+(NumEmpleado,UserName,Pass,IsEnabled,[Level],[Name])
+VALUES('3088','vperez','vperez',1,20,'Victor Alfonso Pérez Espino')
 GO
+
+
+INSERT INTO dbo.[ReportType]
+([Name])
+VALUES ('Edificio'),('Eléctrico'), ('Mecánico')

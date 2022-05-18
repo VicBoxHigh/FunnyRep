@@ -35,19 +35,13 @@ namespace DumyReportes.Controllers
 
         }
 
-        /* [Authorize]
-         [VicAuth]*/
-        // GET: api/User/5
-        /// [Route("~/api/User/{authorId:int}/books")]
-        /// 
-       
         public IHttpActionResult Get(int id)
         {
             if (id < 1) return BadRequest("ID no válido");
 
-            /*User userOut ;*/
+           
             Flags.ErrorFlag result = _UserDataContext.Get(id, out  IReportObject user  , out string error);
-            /*userOut = user as User;*/
+            
 
             if (result == Flags.ErrorFlag.ERROR_NOT_EXISTS)
             {
