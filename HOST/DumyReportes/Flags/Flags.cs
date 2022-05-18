@@ -45,7 +45,8 @@ namespace DumyReportes.Flags
     {
         PUBLIC = 0,
         AGENT = 10,
-        ADMIN = 20
+        ADMIN = 20,
+        SUPERADMIN = 30
     }
 
     public class Flags

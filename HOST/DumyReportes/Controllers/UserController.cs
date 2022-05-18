@@ -67,12 +67,12 @@ namespace DumyReportes.Controllers
 
         private static int HIDING_FACTOR = 54 * 13 * 4;
 
-        // [Route("~/api/User/ ")]
+        // Cuando hace login
         [IdentityBasicAuthentication]
         [HttpGet]
-        public IHttpActionResult Get(/*[FromUri]int numEmpleado, [FromUri] string pass*/)
+        public IHttpActionResult Get()
         {
-            //if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
+            
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
@@ -88,18 +88,7 @@ namespace DumyReportes.Controllers
 
         }
 
-        /*
-                [Route("~/api/User/LoginAdm/{numEmpleado:int}, {pass:string]}")]
-                public IHttpActionResult Post([FromUri] string usuario, [FromUri] string pass)
-                {
-                    if (numEmpleado < 1 && !String.IsNullOrEmpty(pass)) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_CREDENTIALS.ToString());
-
-
-
-
-
-                }
-        */
+ 
         [HttpPost]
         /*   [AllowAnonymous]*/
 
@@ -112,21 +101,20 @@ namespace DumyReportes.Controllers
 
         // POST: api/User
      
-        public IHttpActionResult Post(/*[FromBody]*/string numEmpleado, string userName, string pass, bool isEnable, int accessLevel)
+        public IHttpActionResult Post(/*[FromBody]*/User user)
         {
 
-            User user = new User(
-                    numEmpleado,
-                    userName,
-                    pass,
-                    isEnable,
-                    (Flags.AccessLevel)accessLevel
+            UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
-                );
+            if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
 
+            if (genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+                return Content(HttpStatusCode.Unauthorized, "No tiene permisos para crear un usuario.");
+ 
             //Válida la data
             bool isValid = user.Validate();
             if (!isValid) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString()); 
+
 
             //Inserta en DB
             Flags.ErrorFlag resultCreate = _UserDataContext.Create(user, out string error);
