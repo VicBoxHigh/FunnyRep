@@ -1,6 +1,6 @@
 USE  ReportApp9;
 GO
---La vista retorna objetos Report unicamente.
+--La vista retorna Los reportes que no hayan sido asignados a un Agente (los que no tienen una relacion en tabla UserOwner_Reportf)
 CREATE VIEW dbo.RepNoAsignados 
 AS
 
@@ -39,7 +39,6 @@ AS
 --Obtiene todos los reportes existentes, con el último empleado asignado a ese reporte
 --Teniendo en cuenta que UOR es principal, 
 --Con el result es necesario join a report y sus dependencias
---Esas vistas se deberán joine
 WITH GroupUOR AS(
 
 	SELECT UOR.IdReport, MAX(UOR.DT) AS LastAgentByDate
@@ -107,33 +106,12 @@ AS
 	SELECT * FROM RepsAsignadosWithLastOwner;
 
 GO
+ 
 
-/*
-CREATE PROCEDURE ReportsBy
-	@IdUserNotified int,
-	@IdUserOwner int
-As
-
-	IF(@IdUserNotified > -1)
-		begin
-			SELECT ' ';
-		end
-	ELSE IF(@IdUserOwner > -1)
-		BEGIN
-
-			SELECT ' ';
-
-		END
-	ELSE
-		THROW 512345, 'Sin parámetro definido al intentar obtener los reportes.',1;
-
-
-
-GO
-*/
 
 
 --Obtiene las entries del Report  especificado
+ 
 CREATE PROCEDURE ReportDtlEntries
 @IdReportHeader int
 AS
@@ -150,7 +128,7 @@ AS
 				,U.IsEnabled
 				,U.[Level]
               FROM [ReportDtlEntry]  RDE
-			  LEFT JOIN [User] U ON RDE.IdUserUptade = U.IdUser
+			  LEFT JOIN [User] U ON RDE.IdUserUpdate = U.IdUser
               Where RDE.IdReport = @IdReportHeader
               Order by DTUpdate ASC
 
@@ -158,7 +136,8 @@ AS
 GO
 
 
-CREATE PROCEDURE InsertDtlEnry
+--Select * from sysobjects where type = 'V' and category = 0
+CREATE PROCEDURE InsertDtlEntry
 		@idReport int,
 		@idUserUpdate int,
 		@titleUpdate nvarchar, 
@@ -189,3 +168,96 @@ AS
 
 
 GO
+
+
+
+
+
+/*
+
+CUANDO SE ACUTALICE LA TABLA REPORT COMPROBARÄ SI EL STATUS o TIPO DE REPORTE
+CAMBIO,
+
+SI CAMBIARON, GENERARÁ UN DtlEntry con ese cambio (para que sea mostrado en la app)
+
+*/
+CREATE TRIGGER [dbo].UpdateReportTriger ON Report
+AFTER UPDATE
+AS
+
+	DECLARE @tempTitle varchar(50);
+	DECLARE @IdReport int = (SELECT IdReport FROM inserted);
+
+	DECLARE @newIdStat int = (SELECT IdStatus as newStat FROM inserted) ;
+	DECLARE @newIdRepType int = (SELECT IdReportType FROM inserted);
+
+
+	--Si cambió el status
+	IF(@newIdStat  != (SELECT IdStatus FROM deleted) )
+	BEGIN
+		SET @tempTitle = CONCAT('El estado del reporte cambió a: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		--Generar entry dtl
+		EXEC InsertDtlEntry @IdReport, @tempTitle , '' , GETDATE, 0, 1	;	
+	END
+
+	--Si cambió el typo de reporte
+	IF( @newIdRepType != ( SELECT IdReportType FROM deleted ) )
+	BEGIN
+
+		SET @tempTitle = CONCAT ('El reporte se re-clasificó a tipo: ',( SELECT TOP(1) ReportType.[Name] FROM ReportType Where IdReportType = @newIdRepType ) );
+		EXEC InsertDtlEntry @idReport, @tempTitle, '', GETDATE ,0,1;
+		
+
+	END
+	
+
+GO
+
+
+
+
+--UPDATE REPORT
+/*
+CREATE PROCEDURE UpdateReport
+	@idReport int,
+	@idStatus int,
+	@idReportType int
+AS
+
+	
+	UPDATE [dbo].[Report]
+	SET 
+		[IdStatus] = @idStatus,
+		[IdReportType] = @idReportType
+
+	WHERE [IdReport] = @idReport;
+
+
+	DECLARE @oldRepStatus int;
+	SET @oldRepStatus = (SELECT TOP(1) IdReportType FROM Report WHERE IdReport = @idReport);
+	
+	DECLARE @tempTitle varchar(50);
+
+	--Cambia el estado con respecto al actual
+	IF(@idStatus != (SELECT TOP(1) IdStatus FROM Report WHERE  IdReport = @idReport ))
+	BEGIN 
+
+		SET @tempTitle = CONCAT('El estado del reporte cambió a: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @idReportType) );
+		--Generar entry dtl
+		EXEC InsertDtlEntry @idReport, @tempTitle , '' , GETDATE, 0, 1	;	
+	END
+
+
+	DECLARE @oldRepType int;
+	set @oldRepType = (SELECT TOP(1) IdReportType FROM Report WHERE IdReport = @idReport);
+
+	IF(@idReportType != @oldRepType)
+	BEGIN
+	
+		SET @tempTitle = CONCAT ('El reporte se re-clasificó a tipo: ',( SELECT TOP(1) ReportType.[Name] FROM ReportType Where IdReportType = @idReportType) );
+		EXEC InsertDtlEntry @idReport, @tempTitle, '', GETDATE ,0,1;
+	END
+
+
+
+GO*/

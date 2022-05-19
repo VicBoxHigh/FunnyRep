@@ -375,7 +375,7 @@ SELECT TOP (1) [IdReport]
                     if (reader.HasRows)
                         while (reader.Read())
                         {
-                            Report newRep= InstanceFromReader2(reader, isOwnedReps) as Report;
+                            Report newRep = InstanceFromReader2(reader, isOwnedReps) as Report;
                             ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
                             newRep.Pic64 = base64Img;
 
@@ -386,7 +386,7 @@ SELECT TOP (1) [IdReport]
                         }
                     isOwnedReps = false;
 
-                } while (reader.NextResult() && isOwnedReps);//segunda vuelva trae los que aun no han sido asignados
+                } while (reader.NextResult());//segunda vuelva trae los que aun no han sido asignados
 
 
             }
@@ -404,7 +404,7 @@ SELECT TOP (1) [IdReport]
 
 
             using (command)
-            using (SqlDataReader reader =  command.ExecuteReader())
+            using (SqlDataReader reader = command.ExecuteReader())
             {
                 reportObjs = new List<Report>();
 
@@ -425,34 +425,41 @@ SELECT TOP (1) [IdReport]
             command.CommandType = System.Data.CommandType.StoredProcedure;
             //Sin params
 
-
-            using (command)
-            using (SqlDataReader reader = command.ExecuteReader())
+            reportAsigned = new List<Report>();
+            reportsNoAsigned = new List<Report>();
+            try
             {
-
-                //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
-                bool isOwnedReps = true;
-                reportAsigned = new List<Report>();
-                reportsNoAsigned = new List<Report>();
-                do
+                using (command)
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
 
-                    if(reader.HasRows)
-                        while (reader.Read())
-                        {
-                            Report newRep = InstanceFromReader2(reader, isOwnedReps) as Report;
-                            ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
-                            newRep.Pic64 = base64Img;
+                    //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
+                    bool isOwnedReps = true;
+                    do
+                    {
 
-                            if (isOwnedReps) reportAsigned.Add(newRep);
-                            else reportsNoAsigned.Add(newRep);
-                        }
-                            
+                        if (reader.HasRows)
+                            while (reader.Read())
+                            {
+                                Report newRep = InstanceFromReader2(reader, isOwnedReps) as Report;
+                                ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
+                                newRep.Pic64 = base64Img;
 
-                    isOwnedReps = false;
-                } while (reader.NextResult() && isOwnedReps);
+                                if (isOwnedReps) reportAsigned.Add(newRep);
+                                else reportsNoAsigned.Add(newRep);
+                            }
+
+
+                        
+                    } while (reader.NextResult() );
+
+                }
+            }
+            catch (SqlException e)
+            {
 
             }
+
 
 
             return ErrorFlag.ERROR_OK_RESULT;

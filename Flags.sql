@@ -15,10 +15,13 @@ GO
 
 INSERT INTO dbo.[User]
 (NumEmpleado,UserName,Pass,IsEnabled,[Level],[Name])
-VALUES('3088','vperez','vperez',1,20,'Victor Alfonso Pérez Espino')
+VALUES
+('0','Sistema','MarvesTI2022',1,30,'Sistema'),--El primer usuario
+('3088','vperez','vperez',1,20,'Victor Alfonso Pérez Espino')
 GO
 
 
 INSERT INTO dbo.[ReportType]
 ([Name])
 VALUES ('Edificio'),('Eléctrico'), ('Mecánico')
+GO

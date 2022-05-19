@@ -171,7 +171,7 @@ namespace DumyReportes.Data
             error = "";
             ErrorFlag result;
          
-            using (SqlCommand command = new SqlCommand(QUERY_INSERT_REPORT_DTL, ConexionBD.getConexion()))
+            using (SqlCommand command = new SqlCommand("dbo.InsertDtlEntry", ConexionBD.getConexion()))
             {           
                 try
                 {                   

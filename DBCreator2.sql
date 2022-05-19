@@ -63,7 +63,7 @@ CREATE TABLE [Location](
 CREATE TABLE ReportStatus(
 
 	IdStatus INT NOT NULL PRIMARY KEY,
-	titleStatus varchar(25)
+	titleStatus varchar(25) NOT NULL
 
 );
  
@@ -133,14 +133,14 @@ CREATE TABLE ReportDtlEntry (
 	FOREIGN KEY(IdReport ) REFERENCES [Report](IdReport ),
 
 	TitleUpdate varchar(45) NOT NULL,
-	[Description] varchar(512) NOT NULL,
+	[Description] varchar(512) ,
 
 	DTUpdate datetime NOT NULL,
 
 	isOwnerUpdate bit NOT NULL,
 
-	IdUserUptade int NOT NULL,
-	FOREIGN KEY(IdUserUptade) REFERENCES [User](Iduser)
+	IdUserUpdate int NOT NULL,
+	FOREIGN KEY(IdUserUpdate) REFERENCES [User](Iduser)
 
 
 

@@ -72,25 +72,30 @@ const getRepsByUser = () => {
 
             if (data)
                 if (data.reports)
-                    renderRepHeads(data.reports)
+                    renderRepHeads(data.reportesAsignados, data.reportesNoAsignados)
+
         },
         error: function (xhr, textStatus) {
-            alert("Error en la solicitud" +  JSNO.stringify(xhr));
+            alert("Error en la solicitud" + JSNO.stringify(xhr));
         },
     });
 }
 
 
-const renderRepHeads = (repHeads) => {
+const renderRepHeads = (repHeadAsignados, repHeadsNoAsignados) => {
 
     repHeadsContainer.children().remove();
-    for (let currentRep in repHeads) {
-        repHeadsContainer.append(
-            generateRepHead(repHeads[currentRep])
+    for (let currentRep in repHeadAsignados) {
+        repHeadAsignadosContainer.append(
+            generateRepHead(repHeadAsignados[currentRep])
         )
-
     }
 
+    for (let currentRep in repHeadsNoAsignados) {
+        repHeadAsignadosContainer.append(
+            generateRepHead(repHeadsNoAsignados[currentRep])
+        )
+    }
 
 }
 
@@ -100,7 +105,7 @@ const clickReportHead = async (event, individualRepHead) => {
 
     clearReportDtl()//limpia el Head expanded y las entries
     txtRepDtlUserInput.val("");
-    reFillReportDtl(individualRepHead,event.target);//llena el head expanded
+    reFillReportDtl(individualRepHead, event.target);//llena el head expanded
 
 
     let taskGetEntries = getRepDtlEntries(individualRepHead);
@@ -119,7 +124,7 @@ const clickReportHead = async (event, individualRepHead) => {
     }
 
     //OK
-    if (taskGetEntries.status == 200  ) {
+    if (taskGetEntries.status == 200) {
         individualRepHead.ReportUpdates = data.reportDtlEntries;
         reFillReportDtlEntries(individualRepHead);//llena las entries;
 
@@ -243,7 +248,7 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
     btnSaveStatus.off("click");
     btnSaveStatus.on("click", async (event) => {
         let task = saveStatus(individualRepHead);
-        
+
         try {
             let result = await individualRepHead;
             targetHead.click();
@@ -387,7 +392,8 @@ const generateRepHead = (individualRepHead) => {
                 <div class="item-report-head__title">${individualRepHead.Title}</div>
                  
                 <div class="item-report-head__date">${dateRepStr}</div>
-                <div class="item-report-head__numEmpleado">${individualRepHead.NumEmpleadoWhoNotified}</div>
+                <div class="item-report-head__numEmpleadoWhoNotified">${individualRepHead.UserWhoNotified.NumEmpleado}</div>
+                <div class="item-report-head__nameWhoNotified"> ${individualRepHead.UserWhoNotified.Name} </div>
 
             </div>
 
@@ -435,7 +441,7 @@ const checkSessionLevel = () => {
     let lu = localStorage.getItem("LevelUser");
 
     if (lu == undefined) {
-        
+
         window.location.href = "./Login"
         return
     }

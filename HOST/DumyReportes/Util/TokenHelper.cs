@@ -33,7 +33,7 @@ namespace DumyReportes.Util
             dummyToken.Append(user.Name);
             dummyToken.Append(";");
             dummyToken.Append(user.NumEmpleado);
-            dummyToken.Append(";");
+            
 
             string tokenb64 = Convert.ToBase64String(
                 Encoding.UTF8.GetBytes(dummyToken.ToString())
@@ -107,10 +107,8 @@ namespace DumyReportes.Util
 
             return userDb.IsEnabled
                 && userDb.IdUser == userCredentialsLogin.IdUser
-                && userCredentialsLogin.UserName.Equals(userDb.UserName)
-                && userCredentialsLogin.Pass.Equals(userDb.Pass);
-
-
+                && userCredentialsLogin.UserName.Equals(userDb.UserName);
+     
 
         }
 
@@ -122,7 +120,7 @@ namespace DumyReportes.Util
 
 
 
-            if (tokenProperties == null || tokenProperties.Length == 0 || tokenProperties.Length != 5) return ErrorFlag.ERROR_INVALID_TOKEN;
+            if (tokenProperties == null || tokenProperties.Length == 0 || tokenProperties.Length != 7) return ErrorFlag.ERROR_INVALID_TOKEN;
             DateTime dateTime = DateTime.Parse(tokenProperties[3]);
 
             DateTime tokenExpiration = dateTime.AddMinutes(120);
