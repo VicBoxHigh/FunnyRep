@@ -89,8 +89,8 @@ CREATE TABLE Report(
 
 	NotifiedDT datetime NOT NULL,
 	
-	InicioReporteDT datetime not null,
-	FinReporteDT datetime not null,
+	InicioReporteDT datetime ,
+	FinReporteDT datetime ,
 
 
 	Title varchar(50) NOT NULL,

@@ -78,26 +78,26 @@ namespace DumyReportes.Data
 
 
 		            INSERT INTO [dbo].[ReportDtlEntry]
-                                    ([IdReport]
-                                    ,[PathEvidence]
-                                    ,[FileNameEvidence]
+                                    ([IdReport]                                   
                                     ,[TitleUpdate]
                                     ,[Description]
                                     ,[DTUpdate]
-                                    ,[isOwnerUpdate])
+                                    ,[isOwnerUpdate]
+                                    ,[IdUserUpdate]
+                                    )
                                 VALUES
                                     (
-		                            @idReport
-                                    ,@path
-                                    ,@fileName
+		                            @idReport                                   
                                     ,@titleUpdate
                                     ,@description
                                     ,@dtUpdate
                                     ,@isOwnerUpdate
+                                    ,@idUserUpdate
 		                            );
 
             ";
         //Si el reporte aun no tiene un owner (persona asignada), relacionará el Owner que añada una entrada 
+        [Obsolete("La db cambio, Los reportes ahora no se auto asignan, solo basta con insertar el EntryDtl, por tanto la lógica de transaction ya no es nnecesaria, usar función Create2.")]
         public ErrorFlag Create(IReportObject reportObject, User user, out string error)
         {
             ReportDtlEntry reportDtlEntry = reportObject as ReportDtlEntry;
@@ -164,7 +164,43 @@ namespace DumyReportes.Data
 
         }
 
+        public ErrorFlag Create2(IReportObject reportObject, User user, out string error)
+        {
+            ReportDtlEntry reportDtlEntry = reportObject as ReportDtlEntry;
 
+            error = "";
+            ErrorFlag result;
+         
+            using (SqlCommand command = new SqlCommand(QUERY_INSERT_REPORT_DTL, ConexionBD.getConexion()))
+            {           
+                try
+                {                   
+                    command.Parameters.Add("@idReport", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.IdReport;
+                    command.Parameters.Add("@idUserUpdate", System.Data.SqlDbType.Int).Value = user.IdUser;
+
+                    command.Parameters.Add("@titleUpdate", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.TitleUpdate;
+                    command.Parameters.Add("@description", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.Description;
+                    command.Parameters.Add("@dtUpdate", System.Data.SqlDbType.DateTime).Value = DateTime.Now;/*reportDtlEntry.DTUpdate*/;//el servidor se encarga de asinar la fecha.
+                    command.Parameters.Add("@isOwnerUpdate", System.Data.SqlDbType.Bit).Value = reportDtlEntry.IsOwnerUpdate;
+                    int rowsAffected2 = command.ExecuteNonQuery();
+                    result = ErrorFlag.ERROR_OK_RESULT;
+
+                }
+                catch (SqlException ex)
+                {
+                    result = ErrorFlag.ERROR_CREATION_ENITITY;
+                }
+                catch (Exception ex)
+                {
+                    result = ErrorFlag.FATAL;
+                }
+            }
+
+
+
+            return result;
+
+        }
 
         public ErrorFlag Delete(int id, out string error)
         {
@@ -207,9 +243,9 @@ namespace DumyReportes.Data
         {
             error = "";
             reportObjects = new List<IReportObject>();
-            SqlCommand command = new SqlCommand(QUERY_SELECT_REPORT_DTL_ENTRY, ConexionBD.getConexion());
-
-            command.Parameters.Add("@IdReport", System.Data.SqlDbType.Int).Value = id;
+            SqlCommand command = new SqlCommand("dbo.ReportDtlEntries" /*QUERY_SELECT_REPORT_DTL_ENTRY*/, ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add("@IdReportHeader", System.Data.SqlDbType.Int).Value = id;
 
             try
             {
@@ -244,14 +280,21 @@ namespace DumyReportes.Data
 
             ReportDtlEntry reportDtlEntry = new ReportDtlEntry()
             {
-                IdReport = (int)reader["IdReport"],
                 IdReportUpdate = (int)reader["IdReportDtlEntry"],
+                IdReport = (int)reader["IdReport"],
                 TitleUpdate = reader["TitleUpdate"].ToString(),
                 Description = reader["Description"].ToString(),
-                IsOwnerUpdate = (bool)reader["isOwnerUpdate"],
                 DTUpdate = DateTime.Parse(reader["DTUpdate"].ToString()),
-                FileNameEvidence = reader["FileNameEvidence"].ToString(),
-                PathEvidence = reader["PathEvidence"].ToString()
+                IsOwnerUpdate = (bool)reader["isOwnerUpdate"],
+                UserWhoUpdate = new User()
+                {
+                    IdUser = (int)reader["IdUser"],
+                    NumEmpleado = reader["NumEmpleado"].ToString(),
+                    Name = reader["Name"].ToString(),
+                    IsEnabled = (bool)reader["IsEnabled"],
+                    AccessLevel = (AccessLevel) reader["Level"]
+                }
+
             };
 
 

@@ -84,7 +84,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 
         //Cuando no es un OK
     } else {
-        alert(textStatus + "v")
+        alert(textStatus )
     }
 }
 

@@ -22,12 +22,12 @@ namespace DumyReportes.Models
         public string NumEmpleadoWhoNotified { get; set; }
 
         [DataMember]
-        public Location Location { get; set;  }
+        public Location Location { get; set; }
         [DataMember]
         public Flags.ReportStatus IdStatus { get; set; }
         [DataMember]
         public DateTime DTCreation { get; set; }
-        
+
         [DataMember]
         public string Pic64 { get; set; }
 
@@ -36,7 +36,7 @@ namespace DumyReportes.Models
 
         [DataMember]
         public string Title { get; set; }
-        
+
         [DataMember]
         public string Description { get; set; }
 
@@ -45,12 +45,24 @@ namespace DumyReportes.Models
 
         [DataMember]
         public string PathEvidence { get; set; }
+        
+        [DataMember]
+        public User UserWhoNotified { get; set; }
+        
+        [DataMember]
+        public User CurrentOwner { get; set; }
+
+        [DataMember]
+        public DateTime InicioReporteDT { get; set; }
+
+        [DataMember]
+        public DateTime FinReprteDT { get; set; }
 
         public Report()
         {
 
         }
-        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, List<ReportDtlEntry> reportUpdates,string title, string description)
+        public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, List<ReportDtlEntry> reportUpdates, string title, string description)
         {
             IdReport = idReport;
             IdUserWhoNotified = idUserWhoNotified;
@@ -62,26 +74,26 @@ namespace DumyReportes.Models
             this.Description = description;
         }
         public Report(int idReport, int idUserWhoNotified, Location Location, ReportStatus currentStat, DateTime dTCreation, string title, string descripion)
-        :this(idReport, idUserWhoNotified, Location, currentStat, dTCreation, new List<ReportDtlEntry>(),title, descripion)
+        : this(idReport, idUserWhoNotified, Location, currentStat, dTCreation, new List<ReportDtlEntry>(), title, descripion)
         {
-   
-            
+
+
 
 
         }
 
         public override bool Validate()
         {
-            
 
-            ValidateResult =   Title.Length < 50 & IdUserWhoNotified > 0 & Location != null & DTCreation != null;            
+
+            ValidateResult = Title.Length < 50 & IdUserWhoNotified > 0 & Location != null & DTCreation != null;
 
 
 
 
             return ValidateResult;
 
-             
+
         }
     }
 }

@@ -76,7 +76,7 @@ namespace DumyReportes.Filters
 
             if (user != null)
             {
-                genericPrincipal = createPrincipal(user, "Bearer");
+                genericPrincipal = createPrincipal(user, "Bearer");//Solo usa bearer porque está función solo es llamada cuando hay token
             }
             else
             {

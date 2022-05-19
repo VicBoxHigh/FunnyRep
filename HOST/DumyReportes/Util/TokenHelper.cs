@@ -29,6 +29,12 @@ namespace DumyReportes.Util
             dummyToken.Append(";");
             dummyToken.Append(10 * (int)user.AccessLevel);
 
+            dummyToken.Append(";");
+            dummyToken.Append(user.Name);
+            dummyToken.Append(";");
+            dummyToken.Append(user.NumEmpleado);
+            dummyToken.Append(";");
+
             string tokenb64 = Convert.ToBase64String(
                 Encoding.UTF8.GetBytes(dummyToken.ToString())
                 );
@@ -67,19 +73,20 @@ namespace DumyReportes.Util
 
             UserDataContext userDataCtx = new UserDataContext();
 
-            IReportObject repoObj = null;//basado en el 
-            ErrorFlag resultGetUser = userDataCtx.Get(userCredentialsLogin.IdUser, out repoObj, out string error);
+            IReportObject userRepObj = null;//basado en el 
+            ErrorFlag resultGetUser = userDataCtx.Get(userCredentialsLogin.IdUser, out userRepObj, out string error);
 
             if (resultGetUser != ErrorFlag.ERROR_OK_RESULT) return resultGetUser;
 
 
 
 
-            if (!UserCredentialAgainstDB(userCredentialsLogin, repoObj))
+            if (!UserCredentialAgainstDB(userCredentialsLogin, userRepObj))
             {
                 return ErrorFlag.ERROR_INVALID_TOKEN;
             }
-            user = repoObj as User;
+            user = userRepObj as User;
+            user.Pass = "";//se elimina el pass, por cualquier cosa 
             user.CurrentToke = token;
             //TODO
             //if(tokenProperties == user) return ok else return null
@@ -100,7 +107,8 @@ namespace DumyReportes.Util
 
             return userDb.IsEnabled
                 && userDb.IdUser == userCredentialsLogin.IdUser
-                && userCredentialsLogin.UserName.Equals(userDb.UserName);
+                && userCredentialsLogin.UserName.Equals(userDb.UserName)
+                && userCredentialsLogin.Pass.Equals(userDb.Pass);
 
 
 
@@ -126,17 +134,21 @@ namespace DumyReportes.Util
             {
                 return ErrorFlag.ERROR_EXPIRED_TOKEN;
             }
-            
+
             /*if (Math.Abs(dateTime.Subtract(DateTime.Now).TotalMinutes) > MINUTES_VALID_TOKEN)
             {
                 return ErrorFlag.ERROR_EXPIRED_TOKEN;
             }
 */
+
+  
             user = new User()
             {
                 IdUser = int.Parse(tokenProperties[0]),
                 UserName = tokenProperties[1],
-                AccessLevel = (Flags.AccessLevel)int.Parse(tokenProperties[4])
+                AccessLevel = (Flags.AccessLevel)int.Parse(tokenProperties[4]),
+                Name = tokenProperties[5],
+                NumEmpleado = tokenProperties[6]
 
 
             };

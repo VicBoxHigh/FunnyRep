@@ -40,7 +40,7 @@ namespace DumyReportes.Controllers
 
         }
 
-        //Todas las entries de un ReportHeader, es independiente del usuario, ya que es gobernado por el IdReport (Header)
+        //Todas las entries de un ReportHeader (RH), es independiente del usuario, ya que es gobernado por el IdReport (Header)
         // GET: api/ReportDtl
         [Route("~/api/ReportDtl/{idRH}")]
         public IHttpActionResult Get([FromUri] int idRH)
@@ -78,6 +78,7 @@ namespace DumyReportes.Controllers
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (user == null || !user.IsAuthenticated) return Unauthorized();
+
             new ReportDataContext().Get(reportDtlEntry.IdReport, out IReportObject report, out string error1);
             //ErrorFlag resultGetRep = _ReportDtlContext.Get();
             Report headFromDtl = report as Report;
@@ -93,7 +94,8 @@ namespace DumyReportes.Controllers
 
             if (resultCreateEvidence != ErrorFlag.ERROR_OK_RESULT && resultCreateEvidence != ErrorFlag.ERROR_NO_FILE_TO_WRITE) return ValidateResult(resultCreateEvidence);
 
-            Flags.ErrorFlag resultCreate = _ReportDtlContext.Create(reportDtlEntry, user.user,  out string error);
+            //Pasa el usuario que está creando el entry
+            Flags.ErrorFlag resultCreate = _ReportDtlContext.Create2(reportDtlEntry, user.user,  out string error);
 
 
             if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultCreate);

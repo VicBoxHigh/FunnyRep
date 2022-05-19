@@ -356,6 +356,110 @@ SELECT TOP (1) [IdReport]
 
         }
 
+        public ErrorFlag GetReportsByWhoNotified(User whoNotified, out List<Report> reportsAsignados, out List<Report> reportsNoAsignados)
+        {
+            SqlCommand command = new SqlCommand("dbo.ReportsByWhoNotified", ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add("@IdUserWhoNotif", System.Data.SqlDbType.Int).Value = whoNotified.IdUser;
+
+            using (command)
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                //Reps que ya tienen un owner
+                bool isOwnedReps = true;
+                reportsAsignados = new List<Report>();
+                reportsNoAsignados = new List<Report>();
+                //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
+                do
+                {
+                    if (reader.HasRows)
+                        while (reader.Read())
+                        {
+                            Report newRep= InstanceFromReader2(reader, isOwnedReps) as Report;
+                            ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
+                            newRep.Pic64 = base64Img;
+
+                            if (isOwnedReps) reportsAsignados.Add(newRep);
+                            else reportsNoAsignados.Add(newRep);
+
+                            reportsAsignados.Add(newRep);
+                        }
+                    isOwnedReps = false;
+
+                } while (reader.NextResult() && isOwnedReps);//segunda vuelva trae los que aun no han sido asignados
+
+
+            }
+
+            return ErrorFlag.ERROR_OK_RESULT;
+
+        }
+
+        //Llamada por usuarios Agent
+        public ErrorFlag GetReportsByOwner(User owner, out List<Report> reportObjs)
+        {
+            SqlCommand command = new SqlCommand("dbo.RepsByOwner", ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add("@IdUserOwner", System.Data.SqlDbType.Int).Value = owner.IdUser;
+
+
+            using (command)
+            using (SqlDataReader reader =  command.ExecuteReader())
+            {
+                reportObjs = new List<Report>();
+
+                if (reader.HasRows)
+                    while (reader.Read())
+                        reportObjs.Add(InstanceFromReader2(reader, ownerInfoExist: true));//reports de owners
+
+            }
+
+
+            return ErrorFlag.ERROR_OK_RESULT;
+
+        }
+        //llamada por admin y superadmin
+        public ErrorFlag GetAllReports(out List<Report> reportAsigned, out List<Report> reportsNoAsigned)
+        {
+            SqlCommand command = new SqlCommand("dbo.ReportsAllAsignadosNoAsignados", ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            //Sin params
+
+
+            using (command)
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+
+                //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
+                bool isOwnedReps = true;
+                reportAsigned = new List<Report>();
+                reportsNoAsigned = new List<Report>();
+                do
+                {
+
+                    if(reader.HasRows)
+                        while (reader.Read())
+                        {
+                            Report newRep = InstanceFromReader2(reader, isOwnedReps) as Report;
+                            ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
+                            newRep.Pic64 = base64Img;
+
+                            if (isOwnedReps) reportAsigned.Add(newRep);
+                            else reportsNoAsigned.Add(newRep);
+                        }
+                            
+
+                    isOwnedReps = false;
+                } while (reader.NextResult() && isOwnedReps);
+
+            }
+
+
+            return ErrorFlag.ERROR_OK_RESULT;
+
+        }
+
+
         public ErrorFlag GetAll(out List<IReportObject> reportObjects, out string error)
         {
             throw new NotImplementedException();
@@ -393,8 +497,55 @@ SELECT TOP (1) [IdReport]
 
             report.Location = location;
             return report;
+        }
+
+        private Report InstanceFromReader2(SqlDataReader reader, bool ownerInfoExist)
+        {
+
+            Report report = null;
+
+            report = new Report()
+            {
+                IdReport = (int)reader["IdReport"],
+                IdUserWhoNotified = (int)reader["IdUserWhoNotified"],
+                IdStatus = (ReportStatus)reader["IdStatus"],
+                DTCreation = (DateTime)reader["NotifiedDT"],
+                Title = reader["Title"].ToString(),
+                Description = reader["RepDescription"].ToString(),
+                UserWhoNotified = new User()
+                {
+                    IdUser = (int)reader["UNotif_IdUser"],
+                    Name = reader["UNotif_Name"].ToString(),
+                    IsEnabled = (bool)reader["UNotif_IsEnabled"],
+                    AccessLevel = (AccessLevel)reader["UNotif_Level"],
+                    NumEmpleado = reader["UNoif_NumEmpleado"].ToString()
 
 
+                },
+                CurrentOwner = !ownerInfoExist ? null : new User()
+                {
+                    IdUser = (int)reader["UOwner_IdUserOwner"],
+                    Name = reader["UOwner_Name"].ToString(),
+                    NumEmpleado = reader["UOwner_NumEmpleado"].ToString(),
+                    AccessLevel = (AccessLevel)reader["UOwner_Level"],
+                },
+
+
+
+            };
+
+            report.Location = new Location(
+                 (int)reader["IdLocation"],
+                 reader["Description"].ToString(),
+                 (decimal)reader["lat"],
+                 (decimal)reader["long"]
+                 );
+            report.FileNameEvidence = reader["FileNameEvidence"].ToString();
+
+
+
+
+            return report;
         }
 
 

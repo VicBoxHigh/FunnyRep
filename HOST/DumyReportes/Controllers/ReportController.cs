@@ -20,21 +20,10 @@ namespace DumyReportes.Controllers
     public class ReportController : ApiController
     {
 
-
-
         //WhoNotifiedReports and OwnerReports
 
         private readonly ReportDataContext _ReportDataContext = new ReportDataContext();
 
-        /* // GET: api/Report //get ALL reports //get report header data only
-         [Route("~/api/Report/all")]
-         public IHttpActionResult Get()
-         {
-
-
-
-             return StatusCode(HttpStatusCode.NotImplemented);
-         }*/
 
 
 
@@ -45,6 +34,8 @@ namespace DumyReportes.Controllers
         //So, the function can get all the header reports , by owner or not, depending on the IdUser
 
         ///Como se implementó autenticación, ya es posible hacerlo si estos parametros.
+
+        //Los datos a entregar dependerán del nivel de usuario que hizo login.
 
         [HttpGet]
         public IHttpActionResult Get(/*bool isOwner, int idUser*/)
@@ -60,23 +51,34 @@ namespace DumyReportes.Controllers
 
             User user = genericIdentity.user;
 
-            Flags.ErrorFlag result =
-                _ReportDataContext.GetAllBy(
-                    isOwner: user.AccessLevel != Flags.AccessLevel.PUBLIC,
-                    idUser: user.IdUser,
-                    reportObjects: out List<IReportObject> reportObjs,
-                    error: out string error
-                    );
+            //Cualquier tipo de request podría traer reportes asignados a un agente y no asignados así que se tendrán 2 listas;
 
-            if (result != ErrorFlag.ERROR_OK_RESULT)
-                return StatusCode(HttpStatusCode.NotFound);
+            List<Report> reportesAsignados = new List<Report>();
+            List<Report> reportesNoAsignados = new List<Report>();
 
-            if (reportObjs.Count == 0) return StatusCode(HttpStatusCode.NoContent); 
-            
+
+            switch (user.AccessLevel)
+            {
+                case AccessLevel.PUBLIC:
+                    _ReportDataContext.GetReportsByWhoNotified(user, out reportesAsignados, out reportesNoAsignados);
+                    break;
+                case AccessLevel.AGENT://los AGENT solo tienen reportes asignados.
+                    _ReportDataContext.GetReportsByOwner(owner: user, out reportesAsignados);
+                    break;
+                case AccessLevel.ADMIN:
+                case AccessLevel.SUPERADMIN:
+                    _ReportDataContext.GetAllReports(reportAsigned: out reportesAsignados, reportsNoAsigned: out reportesNoAsignados);
+
+                    break;
+            }
+
+            if (reportesAsignados.Count == 0 && reportesNoAsignados.Count == 0) return StatusCode(HttpStatusCode.NoContent);
+
             return Ok(
                 new
                 {
-                    reports = reportObjs
+                    reportesAsignados,
+                    reportesNoAsignados
                 }
             );
 
@@ -117,7 +119,7 @@ namespace DumyReportes.Controllers
         {
             if (report == null) return BadRequest("Objeto nulo");
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
-            
+
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
             if (user == null || !user.IsAuthenticated) return Unauthorized();
 
@@ -133,7 +135,7 @@ namespace DumyReportes.Controllers
             {
                 return ValidateResult(resultCreation);
             }
-            
+
             return StatusCode(HttpStatusCode.Created);
 
 
@@ -145,7 +147,7 @@ namespace DumyReportes.Controllers
             switch (resultCreateEvidence)
             {
                 case ErrorFlag.ERROR_NO_FILE_TO_WRITE:
-                    
+
                     result = InternalServerError(new Exception("No es posible escribir el archivo. Operación abortada."));
                     break;
                 case ErrorFlag.ERROR_NOT_EXISTS:
@@ -171,7 +173,7 @@ namespace DumyReportes.Controllers
         public IHttpActionResult Put(int id, [FromBody] Report report)
         {
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
-            if (user == null || !user.IsAuthenticated  || user.user.AccessLevel.Equals(AccessLevel.PUBLIC)) return Unauthorized();
+            if (user == null || !user.IsAuthenticated || user.user.AccessLevel.Equals(AccessLevel.PUBLIC)) return Unauthorized();
 
             if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_VALIDATION_ENTITY.ToString());
             if (id != report.IdReport) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());

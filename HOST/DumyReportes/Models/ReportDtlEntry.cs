@@ -42,15 +42,18 @@ namespace DumyReportes.Models
         [DataMember]
         public string Pic64 { get; set; }
 
+        [DataMember]
+        public User UserWhoUpdate { get; set; }
+
         public ReportDtlEntry()
         {
 
         }
- 
+
         public override bool Validate()
         {
 
-            ValidateResult =  TitleUpdate != null && Description != null &&
+            ValidateResult = TitleUpdate != null && Description != null &&
                 TitleUpdate.Length < 45 & Description.Length < 512;
 
             return ValidateResult;

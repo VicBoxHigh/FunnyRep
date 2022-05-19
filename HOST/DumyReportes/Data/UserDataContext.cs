@@ -187,13 +187,14 @@ namespace DumyReportes.Data
 
         public static string QUERY_GET_USER =
             @"
-            SELECT  [IdUser]
-                  ,[NumEmpleado]
-                  ,[UserName]
-                  ,[Pass]
-                  ,[IsEnabled]
-                  ,[Level]
-              FROM [ReportApp].[dbo].[User]
+            SELECT   [IdUser]
+                      ,[NumEmpleado]
+                      ,[UserName]
+                      ,[Pass]
+                      ,[Name]
+                      ,[IsEnabled]
+                      ,[Level]
+              FROM .[dbo].[User]
               
 
             ";
