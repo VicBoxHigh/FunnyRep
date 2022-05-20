@@ -1,11 +1,11 @@
 ﻿const API_URL = "https://172.16.9.118:57996/";
 
 const btnLogin = $("#btnLogin");
-const txtNumEmpleado = $("#txtUser");
+const txtUsuario = $("#txtUser");
 const txtPass = $("#txtPass");
-const checkAdmin = $("#chekToogleAdmn");
+/*const checkAdmin = $("#chekToogleAdmn");*/
 
-checkAdmin.on("change", () => {
+/*checkAdmin.on("change", () => {
 
 
     txtPass.prop("disabled",
@@ -14,36 +14,40 @@ checkAdmin.on("change", () => {
 
 
 
-});
+});*/
 
 btnLogin.on("click", (e) => {
 
-    let numEmpleado = txtNumEmpleado.val();
+    let user = txtUsuario.val();
     let pass = txtPass.val();
 
-    if (txtNumEmpleado.val() == "") {
+    if (!user || user == "") {
 
-        alert("Ingrese su número de empleado por favor");
+        alert("Ingrese su usuario por favor.");
 
         return;
+    }
+
+    if (!pass || pass == "") {
+        alert("Ingrese contraseña por favor.");
     }
 
     //Si es checked, entoces el logeo es admin
-    if (checkAdmin.is(':checked') && !numEmpleado) {
+    /*if (checkAdmin.is(':checked') && !user) {
 
         alert("Ingrese solamente digitos");
         return;
-    }
+    }*/
 
-    loginUser(numEmpleado, checkAdmin.is(':checked') ? pass : numEmpleado);
-
+    /*    loginUser(user, checkAdmin.is(':checked') ? pass : user);*/
+    loginUser(user, pass);
 
 
 
 
 })
 
-const loginUser = (numEmpleado, pass) => {
+const loginUser = (user, pass) => {
 
     $.ajax({
         type: "GET",
@@ -59,7 +63,7 @@ const loginUser = (numEmpleado, pass) => {
         },
 
         beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `Basic ${btoa(numEmpleado + ":" + pass)}`);
+            xhr.setRequestHeader("Authorization", `Basic ${btoa(user + ":" + pass)}`);
 
         },
         success: successPromiseLog,
@@ -84,7 +88,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 
         //Cuando no es un OK
     } else {
-        alert(textStatus )
+        alert(textStatus)
     }
 }
 
@@ -92,7 +96,7 @@ const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
     if (xhr)
-        alert(xhr.status == 401 ? "Credenciales inválidas" :  "Error al enviar la solicitud al servidor." )
+        alert(xhr.status == 401 ? "Credenciales inválidas" : "Error al enviar la solicitud al servidor.")
 
 }
 

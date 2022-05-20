@@ -85,17 +85,17 @@ const getRepsByUser = () => {
 const renderRepHeads = (repHeadAsignados, repHeadsNoAsignados) => {
 
     repHeadsContainer.children().remove();
+    for (let currentRep in repHeadsNoAsignados) {
+        repHeadAsignadosContainer.append(
+            generateRepHead(repHeadsNoAsignados[currentRep])
+        )
+    }
     for (let currentRep in repHeadAsignados) {
         repHeadAsignadosContainer.append(
             generateRepHead(repHeadAsignados[currentRep])
         )
     }
 
-    for (let currentRep in repHeadsNoAsignados) {
-        repHeadAsignadosContainer.append(
-            generateRepHead(repHeadsNoAsignados[currentRep])
-        )
-    }
 
 }
 
@@ -377,7 +377,7 @@ const getRepDtlEntries = (individualRepHead) => {
 }
 
 //genera cada uno de las vistas básicas del Head
-const generateRepHead = (individualRepHead) => {
+const generateRepHead = (individualRepHead, isNew) => {
 
     let dateRep = new Date(individualRepHead.DTCreation);
 

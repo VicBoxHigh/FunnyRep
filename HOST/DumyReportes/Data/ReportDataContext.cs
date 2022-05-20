@@ -514,7 +514,7 @@ SELECT TOP (1) [IdReport]
             report = new Report()
             {
                 IdReport = (int)reader["IdReport"],
-                IdUserWhoNotified = (int)reader["IdUserWhoNotified"],
+               // IdUserWhoNotified = (int)reader["IdUserWhoNotified"],
                 IdStatus = (ReportStatus)reader["IdStatus"],
                 DTCreation = (DateTime)reader["NotifiedDT"],
                 Title = reader["Title"].ToString(),

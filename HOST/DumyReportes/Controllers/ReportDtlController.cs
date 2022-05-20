@@ -45,13 +45,13 @@ namespace DumyReportes.Controllers
         [Route("~/api/ReportDtl/{idRH}")]
         public IHttpActionResult Get([FromUri] int idRH)
         {
-            if (idRH < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
 
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (user == null || !user.IsAuthenticated) return Unauthorized();
 
+            if (idRH < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
             Flags.ErrorFlag resultGet = _ReportDtlContext.GetAll(idRH, out List<IReportObject> reportObjects, out string error);
 
             if (resultGet == ErrorFlag.ERROR_NOT_EXISTS) return StatusCode(HttpStatusCode.NoContent);
@@ -83,9 +83,9 @@ namespace DumyReportes.Controllers
             //ErrorFlag resultGetRep = _ReportDtlContext.Get();
             Report headFromDtl = report as Report;
 
-            if(headFromDtl.IdStatus == ReportStatus.STATUS_COMPLETADA)
+            if (headFromDtl.IdStatus == ReportStatus.STATUS_COMPLETADA)
             {
-                return Content(HttpStatusCode.Forbidden,"No es posible enviar una entrada a un reporte COMPLETADO.");
+                return Content(HttpStatusCode.Forbidden, "No es posible enviar una entrada a un reporte COMPLETADO.");
             }
 
             if (!reportDtlEntry.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
@@ -95,7 +95,7 @@ namespace DumyReportes.Controllers
             if (resultCreateEvidence != ErrorFlag.ERROR_OK_RESULT && resultCreateEvidence != ErrorFlag.ERROR_NO_FILE_TO_WRITE) return ValidateResult(resultCreateEvidence);
 
             //Pasa el usuario que está creando el entry
-            Flags.ErrorFlag resultCreate = _ReportDtlContext.Create2(reportDtlEntry, user.user,  out string error);
+            Flags.ErrorFlag resultCreate = _ReportDtlContext.Create2(reportDtlEntry, user.user, out string error);
 
 
             if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultCreate);
@@ -126,7 +126,7 @@ namespace DumyReportes.Controllers
                 case ErrorFlag.ERROR_CONNECTION_DB:
                     result = InternalServerError(new Exception("Error al conectar la base de datos"));
                     break;
-                    
+
                 default:
                     result = BadRequest("Error desconocido");
                     break;
