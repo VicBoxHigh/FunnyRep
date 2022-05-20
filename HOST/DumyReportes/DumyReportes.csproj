@@ -193,6 +193,7 @@
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ReportDtlController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
+    <Compile Include="Controllers\ReportTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data\ConexionBD.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Data\IDataOperation.cs" />
     <Compile Include="Data\ReportDataContext.cs" />
     <Compile Include="Data\ReportDtlContext.cs" />
+    <Compile Include="Data\ReportTypeContext.cs" />
     <Compile Include="Data\UserDataContext.cs" />
     <Compile Include="Models\UserIdentiy.cs" />
     <Compile Include="Results\AuthenticationFailureResult.cs" />

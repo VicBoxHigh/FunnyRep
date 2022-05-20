@@ -12,7 +12,9 @@ const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
 const selStatusRep = $("#selStat");
 const btnSaveStatus = $("#btnSaveStatus");
 
-const KEY_TOKEN_NAME = "SESSIONTOKEN";
+const selRepType_Dtl = $("#selRepType_Dtl");
+
+
 
 
 btnToogleNewRep.on("click", () => {
@@ -24,6 +26,7 @@ btnToogleNewRep.on("click", () => {
         containerRepDtl.addClass("no-render")
         btnToogleNewRep.val("Detalle")
         initCam();
+        initNewReportView();
     }
     else {
 
@@ -71,12 +74,11 @@ const getRepsByUser = () => {
                 alert(textStatus)
 
             if (data)
-                if (data.reports)
-                    renderRepHeads(data.reportesAsignados, data.reportesNoAsignados)
+                renderRepHeads(data.reportesAsignados, data.reportesNoAsignados)
 
         },
         error: function (xhr, textStatus) {
-            alert("Error en la solicitud" + JSNO.stringify(xhr));
+            alert("Error en la solicitud" + JSON.stringify(xhr));
         },
     });
 }
@@ -85,14 +87,14 @@ const getRepsByUser = () => {
 const renderRepHeads = (repHeadAsignados, repHeadsNoAsignados) => {
 
     repHeadsContainer.children().remove();
-    for (let currentRep in repHeadsNoAsignados) {
-        repHeadAsignadosContainer.append(
-            generateRepHead(repHeadsNoAsignados[currentRep])
+    for (let currentRep in repHeadAsignados) {
+        repHeadsContainer.append(
+            generateRepHead(repHeadAsignados[currentRep])
         )
     }
-    for (let currentRep in repHeadAsignados) {
-        repHeadAsignadosContainer.append(
-            generateRepHead(repHeadAsignados[currentRep])
+    for (let currentRep in repHeadsNoAsignados) {
+        repHeadsContainer.append(
+            generateRepHead(repHeadsNoAsignados[currentRep])
         )
     }
 
@@ -217,19 +219,25 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
     let statusRepStr = individualRepHead.IdStatus == 0 ? "EN ESPERA" : individualRepHead.IdStatus == 1 ? "EN PROCESO" : "COMPLETADA";
 
     let dateRep = new Date(individualRepHead.DTCreation);
-    let hora = dateRep.getHours();
-    let minutos = dateRep.getMinutes();
-
-    let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear() + " " +
-        (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 10 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
+    let dateRepInicio = new Date(individualRepHead.InicioReporteDT)
+    let dateRepFin = new Date(individualRepHead.FinReprteDT)
+    
+    let dateRepStr = getDateStr(dateRep);
+    let dateRepInicioStr = getDateStr(dateRepInicio);
+    let dateRepFinStr = getDateStr(dateRepFin);
 
 
     let reportDtlHeadExpanded = $(`
                 
                     <div class="container-headexpand__title">${individualRepHead.Title}</div>
                     <div class="container-headexpand__idReport">Reporte #${individualRepHead.IdReport}</div>
-                    <div class="container-headexpand__numEmpleadoNotif">Notificó: ${individualRepHead.NumEmpleadoWhoNotified}</div>
+                    <div class="item-report-head__numEmpleadoWhoNotified">${individualRepHead.UserWhoNotified.NumEmpleado ? "# Nómina: " + individualRepHead.UserWhoNotified.NumEmpleado: ''}</div>
+
+                    <div class="container-headexpand__numEmpleadoNotif">Notificó: ${individualRepHead.UserWhoNotified.Name}</div>
                     <div class="container-headexpand__description">${individualRepHead.Description}</div>
+                    <select name="selRepType_Dtl" id="selRepType_Dtl">
+                    </select>
+
                     <div class="container-headexpand__location">
                         <a target="_blank"
                         href="https://www.google.com/maps?q=${individualRepHead.Location.lat + ',' + individualRepHead.Location.lon}">
@@ -237,12 +245,24 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
                         </a>
                     </div>
                     <div class="container-headexpand__status">${statusRepStr}</div>
-                    <div class="container-headexpand__notifiedDt">${dateRepStr}</div>
+                    <div class="container-headexpand__notifiedDt">Fecha creación: ${dateRepStr}</div>
+                    
+                    <span class="container-headexpand__InicioDt">Fecha de inicio: ${dateRepInicioStr === '1/01/1 0:00 AM' ? '-----' : dateRepInicioStr}</span>
+                    <span class="container-headexpand__notifiedDt">Fecha de termino: ${dateRepFinStr === '1/01/1 0:00 AM' ? '-----' : dateRepFinStr}</span>
                 
-                <img class="container-headexpand__EvidencePic" src="data:image/png;base64,${individualRepHead.Pic64}"  ></img>
+                    <img class="container-headexpand__EvidencePic" src="data:image/png;base64,${individualRepHead.Pic64}"  ></img>
     `)
 
     containerRepDtl.children(".container-headexpand").append(reportDtlHeadExpanded);
+
+    let select = containerRepDtl.children(".container-headexpand").children('#selRepType_Dtl');
+
+    fillReportTypesNewRep(
+        select
+    );
+
+    select.val(individualRepHead.IdReportType);
+
     selStatusRep.val(individualRepHead.IdStatus);
 
     btnSaveStatus.off("click");
@@ -257,6 +277,18 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
             //alert("Error: " + ex)
         }
     })
+}
+
+const getDateStr = (date)=>{
+
+    let hora = date.getHours();
+    let minutos = date.getMinutes();
+
+    let dateStr = date.getDate() + "/" + date.getMonth() + 1 + "/" + date.getFullYear() + " " +
+        (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 10 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
+
+    return dateStr;
+
 }
 
 const saveStatus = (individualRepHead) => {
@@ -377,7 +409,7 @@ const getRepDtlEntries = (individualRepHead) => {
 }
 
 //genera cada uno de las vistas básicas del Head
-const generateRepHead = (individualRepHead, isNew) => {
+const generateRepHead = (individualRepHead) => {
 
     let dateRep = new Date(individualRepHead.DTCreation);
 
@@ -392,12 +424,12 @@ const generateRepHead = (individualRepHead, isNew) => {
                 <div class="item-report-head__title">${individualRepHead.Title}</div>
                  
                 <div class="item-report-head__date">${dateRepStr}</div>
-                <div class="item-report-head__numEmpleadoWhoNotified">${individualRepHead.UserWhoNotified.NumEmpleado}</div>
+                <div class="item-report-head__numEmpleadoWhoNotified">${individualRepHead.UserWhoNotified.NumEmpleado ?? "# Nómina: " + individualRepHead.UserWhoNotified.NumEmpleado}</div>
                 <div class="item-report-head__nameWhoNotified"> ${individualRepHead.UserWhoNotified.Name} </div>
 
             </div>
 
-`);
+    `);
     repHead.on("click", (e) => { clickReportHead(e, individualRepHead) });
     return repHead;
 
@@ -469,7 +501,10 @@ const checkSessionLevel = () => {
 
 const init = () => {
     checkSessionLevel();
+    initNewReportView()
     getRepsByUser();
+
+    fillReportTypesNewRep(selRepType_Dtl)
     // initCam();
 }
 

@@ -5,6 +5,8 @@ const txtTitle = $("#txtTitle");
 const txtDescription = $("#txtDescriptionReport");
 const txtLugar = $("#txtLugar");
 
+const selRepType_NewRep = $("#selRepType_NewRep");
+
 
 let lat = 0;
 let lon = 0;
@@ -19,6 +21,8 @@ let webcam //= new Webcam(webcamElement, "user", canvasElement, null);
 
 const iframeMap = document.createElement("iframe");
 
+const REPORT_TYPE_NAME = "REPORT_TYPES";
+const KEY_TOKEN_NAME = "SESSIONTOKEN";
 
 
 /* const webcam = new Webcam(
@@ -63,7 +67,7 @@ btnGuardar.addEventListener("click", (e) => {
 
     let data = extractReportData();
     let dataStr = JSON.stringify(data);
-    
+
     $.ajax({
         type: "POST",
         url: API_URL + "api/Report",
@@ -72,7 +76,7 @@ btnGuardar.addEventListener("click", (e) => {
         datatype: "json",
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
-            
+
         },
         headers: {
             "Access-Control-Allow-Origin": "*",
@@ -110,22 +114,23 @@ btnFlipCamera.addEventListener("click", (e) => {
 const extractReportData = () => {
     let d = {
 
-        IdReport: 0,
-        IdUserWhoNotified: 1,
+        IdReport: 0,//IGNORED when create
+        IdUserWhoNotified: 1,//IGNORED when create
         Location: {
-            IdLocation: 0,
+            IdLocation: 0, //IGNORED when create
             Description: txtLugar.val(),
             lat: lat,
             lon: lon,
         },
-        IdStatus: 0,
+        IdReportType: selRepType_NewRep.val(),
+        IdStatus: 0,//IGNORED when create
         Pic64: webcam.snap().substring(22),
         DTCreation: "" /*new Date()//La API no lo lee, toma la hora del host
             .toISOString()
             .slice(0, 19)
             .replace("/-/g", "/")
             .replace("T", " ")*/,
-        ReportUpdates: [],
+        ReportUpdates: [],//IGNORED when create, 
         Title: txtTitle.val(),
         Description: txtDescription.val(),
     };
@@ -152,3 +157,74 @@ const stopCam = () => {
     webcam.stop();
 
 }
+
+
+const fillReportTypesNewRep = (selecToSet) => {
+
+    let reportTypes = localStorage.getItem(REPORT_TYPE_NAME);
+    selecToSet.children().remove();
+    let listParsed = JSON.parse(reportTypes)
+    
+    for (let currentType in listParsed) {
+        selecToSet.append(`<option value='${currentType}' >${listParsed[currentType]}</option>`)
+    }
+}
+
+const initNewReportView = () => {
+
+
+    if (localStorage.getItem(REPORT_TYPE_NAME)) {
+        fillReportTypesNewRep(selRepType_NewRep)
+        return;
+    }
+    //might be invalid token or not exists
+    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
+    if (!currentToken) {
+        alert("Inicie sesión primero.")
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: API_URL + "api/ReportType",
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+
+        },
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+        // data: dataStr,
+        success: function (data, textStatus, xhr) {
+            /* getRepsByUser();*/
+            if (xhr.status == 200 || xhr.status == 201 || xhr.status == 202) {
+
+                localStorage.setItem(REPORT_TYPE_NAME, JSON.stringify(data.reportTypes));
+
+                fillReportTypes(selRepType_NewRep)//con la data de local storage
+
+
+
+            }
+            else
+                alert(textStatus);
+
+
+        },
+        error: function (xhr, textStatus) {
+            alert("Error en la solicitud" + xhr.responseText);
+        },
+
+
+    });
+
+
+
+}
+

@@ -48,57 +48,57 @@ namespace DumyReportes.Data
                              )
               ";*/
 
-      /*  public static string QUERY_INSERT_REPORT_LOCATION =
-             @"
+        /*  public static string QUERY_INSERT_REPORT_LOCATION =
+               @"
 
-            BEGIN TRY
+              BEGIN TRY
 
-	            BEGIN TRANSACTION CreateReportDtlTran;
+                  BEGIN TRANSACTION CreateReportDtlTran;
 
 
-                       INSERT INTO [dbo].[Location]
-                            ([Description]
-                            ,[lat]
-                            ,[long])
-                        VALUES
-                            (
-			                @LocDescription
-                            ,@LocLat
-                            ,@LocLong
-		                    );
-                       
+                         INSERT INTO [dbo].[Location]
+                              ([Description]
+                              ,[lat]
+                              ,[long])
+                          VALUES
+                              (
+                              @LocDescription
+                              ,@LocLat
+                              ,@LocLong
+                              );
 
-                        INSERT INTO [dbo].[Report]
-                            ([IdUserWhoNotified]
-                            ,[IdLocation]
-                            ,[IdStatus]
-                            ,[NotifiedDT]
-                            ,[Title]
-                            ,[Description]
-                            ,[FileNameEvidence]
-                            ,[PathEvidence]
-                            )
-                        VALUES
-                            (
-		                    @IdUserWhoNotified
-                            ,(SELECT SCOPE_IDENTITY())
-                            ,@IdStatus
-                            ,@NotifiedDT
-                            ,@RepTitle
-                            ,@RepDescription
-                            ,@fileNameEvidence
-                            ,@pathEvidence
-                        );
 
- 
-	            COMMIT TRANSACTION CreateReportDtlTran;
+                          INSERT INTO [dbo].[Report]
+                              ([IdUserWhoNotified]
+                              ,[IdLocation]
+                              ,[IdStatus]
+                              ,[NotifiedDT]
+                              ,[Title]
+                              ,[Description]
+                              ,[FileNameEvidence]
+                              ,[PathEvidence]
+                              )
+                          VALUES
+                              (
+                              @IdUserWhoNotified
+                              ,(SELECT SCOPE_IDENTITY())
+                              ,@IdStatus
+                              ,@NotifiedDT
+                              ,@RepTitle
+                              ,@RepDescription
+                              ,@fileNameEvidence
+                              ,@pathEvidence
+                          );
 
-            END TRY
-            BEGIN CATCH
-                SELECT ERROR_MESSAGE() ERROR;
-	            ROLLBACK TRANSACTION CreateReportDtlTran;
-            END CATCH
-            ";*/
+
+                  COMMIT TRANSACTION CreateReportDtlTran;
+
+              END TRY
+              BEGIN CATCH
+                  SELECT ERROR_MESSAGE() ERROR;
+                  ROLLBACK TRANSACTION CreateReportDtlTran;
+              END CATCH
+              ";*/
 
 
 
@@ -113,7 +113,7 @@ namespace DumyReportes.Data
 
             command.Parameters.Add("@LocDescription", System.Data.SqlDbType.VarChar).Value = report.Location.Description;
             command.Parameters.Add("@LocLat", System.Data.SqlDbType.Decimal).Value = report.Location.lat;
-            command.Parameters.Add("@LocLong", System.Data.SqlDbType.Decimal).Value = report.Location.lon;
+            command.Parameters.Add("@LocLon", System.Data.SqlDbType.Decimal).Value = report.Location.lon;
 
             command.Parameters.Add("@IdReportType", System.Data.SqlDbType.Int).Value = report.IdReportType;
 
@@ -344,7 +344,7 @@ SELECT TOP (1) [IdReport]
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 //Reps que ya tienen un owner
-                bool isOwnedReps = true;
+                bool isOwnedReps = false;
                 reportsAsignados = new List<Report>();
                 reportsNoAsignados = new List<Report>();
                 //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
@@ -359,10 +359,8 @@ SELECT TOP (1) [IdReport]
 
                             if (isOwnedReps) reportsAsignados.Add(newRep);
                             else reportsNoAsignados.Add(newRep);
-
-                            reportsAsignados.Add(newRep);
                         }
-                    isOwnedReps = false;
+                    isOwnedReps = true;
 
                 } while (reader.NextResult());//segunda vuelva trae los que aun no han sido asignados
 
@@ -412,7 +410,7 @@ SELECT TOP (1) [IdReport]
                 {
 
                     //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
-                    bool isOwnedReps = true;
+                    bool isOwnedReps = false;
                     do
                     {
 
@@ -488,6 +486,7 @@ SELECT TOP (1) [IdReport]
         {
 
             Report report = null;
+           
 
             report = new Report()
             {
@@ -496,14 +495,19 @@ SELECT TOP (1) [IdReport]
                 IdStatus = (ReportStatus)reader["IdStatus"],
                 DTCreation = (DateTime)reader["NotifiedDT"],
                 Title = reader["Title"].ToString(),
-                Description = reader["RepDescription"].ToString(),
+                Description = reader["Description"].ToString(),
+                IdReportType = (int)reader["IdReportType"],
+                FileNameEvidence = reader["FileNameEvidence"].ToString(),
+                PathEvidence = reader["PathEvidence"].ToString(),
+                FinReprteDT = reader["InicioReporteDT"] == null ? (DateTime)reader["FinReporteDT"] : DateTime.MinValue,
+                InicioReporteDT = reader["FinReporteDT"] == null ? (DateTime)reader["FinReporteDT"] : DateTime.MinValue,
                 UserWhoNotified = new User()
                 {
                     IdUser = (int)reader["UNotif_IdUser"],
                     Name = reader["UNotif_Name"].ToString(),
                     IsEnabled = (bool)reader["UNotif_IsEnabled"],
                     AccessLevel = (AccessLevel)reader["UNotif_Level"],
-                    NumEmpleado = reader["UNoif_NumEmpleado"].ToString()
+                    NumEmpleado = reader["UNotif_NumEmpleado"].ToString()
 
 
                 },
@@ -521,7 +525,7 @@ SELECT TOP (1) [IdReport]
 
             report.Location = new Location(
                  (int)reader["IdLocation"],
-                 reader["Description"].ToString(),
+                 reader["Location_Description"].ToString(),
                  (decimal)reader["lat"],
                  (decimal)reader["long"]
                  );
