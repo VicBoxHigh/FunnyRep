@@ -173,7 +173,7 @@ SELECT TOP (1) [IdReport]
       ,[NotifiedDT]
       ,[Title]
       ,[Description] RepDescription
-  FROM [ReportApp].[dbo].[Report]
+  FROM [dbo].[Report]
   WHERE IdReport = @idReport
 
 ";

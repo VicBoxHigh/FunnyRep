@@ -1,3 +1,4 @@
+
 const API_URL = "https://172.16.9.118:57996/";
 const containerNewRep = $("#cntNewRep");
 const containerRepDtl = $("#cntRepDtl");
@@ -127,8 +128,8 @@ const clickReportHead = async (event, individualRepHead) => {
 
     //OK
     if (taskGetEntries.status == 200) {
-        individualRepHead.ReportUpdates = data.reportDtlEntries;
-        reFillReportDtlEntries(individualRepHead);//llena las entries;
+        individualRepHead.ReportUpdates = data.reportDtlEntries;//asigna las DtlEntries al header del reporte
+        reFillReportDtlEntries(individualRepHead);//manda el objeto de dats de Reporte junto con las entries para que sea renderizado;
 
 
     }
@@ -221,7 +222,7 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
     let dateRep = new Date(individualRepHead.DTCreation);
     let dateRepInicio = new Date(individualRepHead.InicioReporteDT)
     let dateRepFin = new Date(individualRepHead.FinReprteDT)
-    
+
     let dateRepStr = getDateStr(dateRep);
     let dateRepInicioStr = getDateStr(dateRepInicio);
     let dateRepFinStr = getDateStr(dateRepFin);
@@ -231,7 +232,7 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
                 
                     <div class="container-headexpand__title">${individualRepHead.Title}</div>
                     <div class="container-headexpand__idReport">Reporte #${individualRepHead.IdReport}</div>
-                    <div class="item-report-head__numEmpleadoWhoNotified">${individualRepHead.UserWhoNotified.NumEmpleado ? "# Nómina: " + individualRepHead.UserWhoNotified.NumEmpleado: ''}</div>
+                    <div class="item-report-head__numEmpleadoWhoNotified">${individualRepHead.UserWhoNotified.NumEmpleado ? "# Nómina: " + individualRepHead.UserWhoNotified.NumEmpleado : ''}</div>
 
                     <div class="container-headexpand__numEmpleadoNotif">Notificó: ${individualRepHead.UserWhoNotified.Name}</div>
                     <div class="container-headexpand__description">${individualRepHead.Description}</div>
@@ -279,7 +280,7 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
     })
 }
 
-const getDateStr = (date)=>{
+const getDateStr = (date) => {
 
     let hora = date.getHours();
     let minutos = date.getMinutes();
@@ -351,21 +352,17 @@ const reFillReportDtlEntries = (individualRepHead) => {
 
 
         let dateEntry = new Date(currentEnry.DTUpdate);
-        // let dateUtc = new Date(Date.UTC(dateEntry.getFullYear(), dateEntry.getMonth(), dateEntry.getDate(), dateEntry.getHours(), dateEntry.getMinutes()));
 
-        //dateEntry = dateUtc;
-        let hora = dateEntry.getHours();
-        let minutos = dateEntry.getMinutes();
-        let dateEntryStr = dateEntry.getDate() + "/" + dateEntry.getMonth() + "/" + dateEntry.getFullYear() + " " +
-            (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 10 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
-
-
+        let dateEntryStr = getDateStr(dateEntry);
         entriesContainer.append(`
                 <div class="container-reportDtlEntry ${entryPositionClass} ">
 
-                    <div class="container-reportDtlEntry__title">${currentEnry.TitleUpdate}</div>
+                    <div class="container-reportDtlEntry__whomReply">
+                ${
+            currentEnry.UserWhoUpdate.Name + (currentEnry.UserWhoUpdate.AccessLevel > 0 ? ' - ' +  currentEnry.UserWhoUpdate.AccessLevelName : '')
+            }</div>
+
                     <div class="container-reportDtlEntry__description">${currentEnry.Description}</div>
-                    <div class="container-reportDtlEntry__fileNameEvidence">${currentEnry.FileNameEvidence}</div>
                     <div class="container-reportDtlEntry__fechaHoraEntry">${dateEntryStr}</div>
 
                 </div>

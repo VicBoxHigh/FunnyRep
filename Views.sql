@@ -126,10 +126,12 @@ AS
 				,U.IdUser
 				,U.NumEmpleado
 				,U.[Name]
-				,U.IsEnabled
-				,U.[Level]
+				,U.IsEnabled				
+				,AL.[Level]
+				,AL.[Name] AS AccessLevelName
               FROM [ReportDtlEntry]  RDE
 			  LEFT JOIN [User] U ON RDE.IdUserUpdate = U.IdUser
+			  LEFT JOIN AccessLevel AL ON U.[Level] = AL.[Level]
               Where RDE.IdReport = @IdReportHeader
               Order by DTUpdate ASC
 

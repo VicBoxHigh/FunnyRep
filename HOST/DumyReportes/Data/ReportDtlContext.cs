@@ -174,7 +174,8 @@ namespace DumyReportes.Data
             using (SqlCommand command = new SqlCommand("dbo.InsertDtlEntry", ConexionBD.getConexion()))
             {           
                 try
-                {                   
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.Add("@idReport", System.Data.SqlDbType.VarChar).Value = reportDtlEntry.IdReport;
                     command.Parameters.Add("@idUserUpdate", System.Data.SqlDbType.Int).Value = user.IdUser;
 
@@ -292,7 +293,8 @@ namespace DumyReportes.Data
                     NumEmpleado = reader["NumEmpleado"].ToString(),
                     Name = reader["Name"].ToString(),
                     IsEnabled = (bool)reader["IsEnabled"],
-                    AccessLevel = (AccessLevel) reader["Level"]
+                    AccessLevel = (AccessLevel) reader["Level"],
+                    AccessLevelName = (reader["AccessLevelName"]).ToString()
                 }
 
             };

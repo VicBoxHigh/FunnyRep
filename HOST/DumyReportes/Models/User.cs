@@ -29,6 +29,9 @@ namespace DumyReportes.Models
 
         public string CurrentToke { get; set; }
 
+        [DataMember]
+        public string AccessLevelName { get; internal set; }
+
         public User() { }
 
         public User(string numEmpleado, string userName, string pass, bool isEnabled, AccessLevel accessLevel)
