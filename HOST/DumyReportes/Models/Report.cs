@@ -58,6 +58,9 @@ namespace DumyReportes.Models
         [DataMember]
         public DateTime FinReprteDT { get; set; }
 
+        [DataMember]
+        public int IdReportType { get; set; }
+
         public Report()
         {
 

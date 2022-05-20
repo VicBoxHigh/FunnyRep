@@ -48,7 +48,7 @@ namespace DumyReportes.Data
                              )
               ";*/
 
-        public static string QUERY_INSERT_REPORT_LOCATION =
+      /*  public static string QUERY_INSERT_REPORT_LOCATION =
              @"
 
             BEGIN TRY
@@ -98,7 +98,7 @@ namespace DumyReportes.Data
                 SELECT ERROR_MESSAGE() ERROR;
 	            ROLLBACK TRANSACTION CreateReportDtlTran;
             END CATCH
-            ";
+            ";*/
 
 
 
@@ -108,62 +108,40 @@ namespace DumyReportes.Data
             error = "";
             ErrorFlag result;
             Report report = reportObject as Report;
+            SqlCommand command = new SqlCommand("dbo.InsertReport", ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
 
-            //ya está validado
-            SqlConnection connection = ConexionBD.getConexion();
+            command.Parameters.Add("@LocDescription", System.Data.SqlDbType.VarChar).Value = report.Location.Description;
+            command.Parameters.Add("@LocLat", System.Data.SqlDbType.Decimal).Value = report.Location.lat;
+            command.Parameters.Add("@LocLong", System.Data.SqlDbType.Decimal).Value = report.Location.lon;
 
-            using (SqlCommand command = connection.CreateCommand())
+            command.Parameters.Add("@IdReportType", System.Data.SqlDbType.Int).Value = report.IdReportType;
+
+            command.Parameters.Add("@IdUserWhoNotified", System.Data.SqlDbType.Int).Value = report.IdUserWhoNotified;
+            command.Parameters.Add("@IdStatus", System.Data.SqlDbType.Int).Value = (int)report.IdStatus;
+            command.Parameters.Add("@NotifiedDT", System.Data.SqlDbType.DateTime).Value = DateTime.Now;
+            command.Parameters.Add("@RepTitle", System.Data.SqlDbType.VarChar).Value = report.Title;
+            command.Parameters.Add("@RepDescription", System.Data.SqlDbType.VarChar).Value = report.Description;
+            command.Parameters.Add("@fileNameEvidence", System.Data.SqlDbType.VarChar).Value = report.FileNameEvidence;
+            command.Parameters.Add("@pathEvidence", System.Data.SqlDbType.VarChar).Value = report.PathEvidence;
+
+            using (command)
+            using (SqlDataReader reader = command.ExecuteReader())
             {
-
-
-                command.Connection = connection;
-                try
+                result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
+                if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
+                //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
+                if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
                 {
-                    command.Connection = connection;
-
-                    command.CommandText = QUERY_INSERT_REPORT_LOCATION;
-                    command.Parameters.Add("@LocDescription", System.Data.SqlDbType.VarChar).Value = report.Location.Description;
-                    command.Parameters.Add("@LocLat", System.Data.SqlDbType.Decimal).Value = report.Location.lat;
-                    command.Parameters.Add("@LocLong", System.Data.SqlDbType.Decimal).Value = report.Location.lon;
-
-
-                    command.Parameters.Add("@IdUserWhoNotified", System.Data.SqlDbType.Int).Value = report.IdUserWhoNotified;
-                    command.Parameters.Add("@IdStatus", System.Data.SqlDbType.Int).Value = (int)report.IdStatus;
-                    command.Parameters.Add("@NotifiedDT", System.Data.SqlDbType.DateTime).Value = DateTime.Now;
-                    command.Parameters.Add("@RepTitle", System.Data.SqlDbType.VarChar).Value = report.Title;
-                    command.Parameters.Add("@RepDescription", System.Data.SqlDbType.VarChar).Value = report.Description;
-                    command.Parameters.Add("@fileNameEvidence", System.Data.SqlDbType.VarChar).Value = report.FileNameEvidence;
-                    command.Parameters.Add("@pathEvidence", System.Data.SqlDbType.VarChar).Value = report.PathEvidence;
-
-                    int IdReportInserdet = 0;
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-
-                        result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
-                        if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
-                        //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
-                        if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
-                        {
-                            result = ErrorFlag.ERROR_CREATION_ENITITY;
-                            //result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
-                            //if (reader.Read())
-
-                        }
-                    }
-
-
+                    result = ErrorFlag.ERROR_CREATION_ENITITY;
+                    if (reader.Read())
+                        error = reader.GetString(0);
 
                 }
-                catch (SqlException ex)
-                {
-
-                    result = Flags.ErrorFlag.ERROR_NO_AFECTED_RECORDS;
-
-                }
-                return result;
-
             }
 
+
+            return result;
 
         }
 
@@ -450,8 +428,8 @@ SELECT TOP (1) [IdReport]
                             }
 
 
-                        
-                    } while (reader.NextResult() );
+
+                    } while (reader.NextResult());
 
                 }
             }
@@ -514,7 +492,7 @@ SELECT TOP (1) [IdReport]
             report = new Report()
             {
                 IdReport = (int)reader["IdReport"],
-               // IdUserWhoNotified = (int)reader["IdUserWhoNotified"],
+                // IdUserWhoNotified = (int)reader["IdUserWhoNotified"],
                 IdStatus = (ReportStatus)reader["IdStatus"],
                 DTCreation = (DateTime)reader["NotifiedDT"],
                 Title = reader["Title"].ToString(),

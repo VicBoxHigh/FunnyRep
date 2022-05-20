@@ -17,7 +17,9 @@ INSERT INTO dbo.[User]
 (NumEmpleado,UserName,Pass,IsEnabled,[Level],[Name])
 VALUES
 ('0','Sistema','MarvesTI2022',1,30,'Sistema'),--El primer usuario
-('3088','vperez','vperez',1,20,'Victor Alfonso Pérez Espino')
+('3088','vperez','vperez',1,20,'Victor Alfonso Pérez Espino'),--Admin
+('12', 'marvin','marvin1',1,10, 'Marvin Red'),--Agent
+('54','mjack','mjack',1,0, 'Michael Jackson')--Basic
 GO
 
 

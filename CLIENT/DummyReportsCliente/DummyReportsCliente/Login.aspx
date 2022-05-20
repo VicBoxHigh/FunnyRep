@@ -19,11 +19,7 @@
         <h1>Reportes</h1>
         <input id="txtUser" type="text" placeholder="Usuario" />
         <input id="txtPass" type="password" placeholder="Contraseña" />
-        <span class="check-container">
-
-            <input id="chekToogleAdmn" title="Admin login" name="checkToogleAdmn" checked type="checkbox" value="Admin" />
-            <label for="checkToogleAdmn" title="Admin login">Administrador</label>
-        </span>
+         
         <input id="btnLogin" type="button" value="Iniciar sesión" />
     </form>
     <script src="Content/jquery-3.6.0.min.js" type="text/javascript"></script>

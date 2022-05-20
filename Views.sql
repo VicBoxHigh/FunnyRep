@@ -214,6 +214,76 @@ AS
 GO
 
 
+CREATE PROCEDURE InsertReport
+	@LocDescription nvarchar,
+	@LocLat decimal(18,8),
+	@LocLon decimal(18,8),
+
+	@IdReportType int,
+
+	@IdUserWhoNotified int,
+	@IdStatus int,
+	@NotifiedDT datetime,
+	@RepTitle nvarchar,
+	@RepDescription nvarchar,
+	@fileNameEvidence nvarchar,
+	@pathEvidence nvarchar
+AS
+
+
+	try
+		BEGIN TRY
+		    BEGIN TRANSACTION CreateReportDtlTran;
+
+				INSERT INTO [dbo].[Location]
+				   ([Description]
+				   ,[lat]
+				   ,[long])
+				VALUES(
+					@LocDescripion,
+					@LocLat,
+					@LocLon
+				);
+
+				DECLARE @LastRowPKInserted int = (SELECT SCOPE_IDENTITY() );
+
+				INSERT INTO [dbo].[Report]
+					([IdUserWhoNotified]
+					,[IdLocation]
+					,[IdStatus]
+					,[IdReportType]
+					,[FileNameEvidence]
+					,[PathEvidence]
+					,[NotifiedDT]
+					,[InicioReporteDT]
+					,[FinReporteDT]
+					,[Title]
+					,[Description])
+				VALUES(
+					@IdUserWhoNotified, 
+					@LastRowPKInserted,--location PK id inserted
+					(SELECT TOP(1) IdStatus FROM ReportStatus WHERE titleStatus like '%ESPERA%'), --Al ser nuevo report, su valor por defecto siempre será En espera
+					@IdReportType,
+					@fileNameEvidence,
+					@pathEvidence,
+					@NotifiedDT, 
+					NULL, --Inicio de la atención del reporte
+					NULL, --Fin de la atención del reporte
+					@RepTitle,
+					@RepDescription
+				);
+
+		COMMIT TRANSACTION CreateReportDtlTran;
+
+		END TRY
+	CATCH
+		BEGIN CATCH
+				SELECT ERROR_MESSAGE() ERROR;
+	            ROLLBACK TRANSACTION CreateReportDtlTran;
+		END CATCH
+
+GO
+
 
 
 --UPDATE REPORT
