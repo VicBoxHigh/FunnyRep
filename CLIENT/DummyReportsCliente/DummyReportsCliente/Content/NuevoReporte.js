@@ -7,6 +7,7 @@ const btnToogleNewRep = $("#btnTogleNewRep")
 
 const repHeadsContainer = $("#cntRepHeads");
 
+
 const txtRepDtlUserInput = $("#txtRepDtlUserInput")
 const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
 
@@ -87,7 +88,7 @@ const getRepsByUser = () => {
 
 const renderRepHeads = (repHeadAsignados, repHeadsNoAsignados) => {
 
-    repHeadsContainer.children().remove();
+    repHeadsContainer.children('.item-report-head').remove();
     for (let currentRep in repHeadAsignados) {
         repHeadsContainer.append(
             generateRepHead(repHeadAsignados[currentRep])

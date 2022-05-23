@@ -259,3 +259,7 @@ canvas {
   background-color: #ddd;
 }
 /*# sourceMappingURL=Default.css.map */
+
+/*input[type="radio"] #checkAsignados :checked ~ input[type="checbox"] {
+    pointer-events: none;
+}*/

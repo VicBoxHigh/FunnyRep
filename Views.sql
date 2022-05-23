@@ -143,8 +143,8 @@ GO
 CREATE PROCEDURE InsertDtlEntry
 		@idReport int,
 		@idUserUpdate int,
-		@titleUpdate nvarchar, 
-		@description nvarchar, 
+		@titleUpdate nvarchar(45), 
+		@description nvarchar(512),  
 		@dtUpdate datetime, 
 		@isOwnerUpdate bit
 

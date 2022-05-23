@@ -19,6 +19,25 @@
             <div class="menu-item">Mis Reportes</div>
 
             <div id="cntRepHeads" class="container-heads">
+ 
+                <input type="radio"   id="checkAsignados" name="AsginacionStat" value="Asignados">
+                <label for="checkAsignados">Asignados</label><br>
+                <input type="radio" id="checkSinAsignar" name="AsginacionStat" value="No asignados">
+                <label for="checkSinAsignar">No asignados</label><br>
+
+
+                <input type="checkbox" id="checkEspera" name="repStatus" value="Espera">
+                <label for="checkEspera">En espera</label><br>
+
+                <input type="checkbox" id="checkProceso" name="repStatus" value="Proceso">
+                <label for="checkProceso">En proceso</label><br>
+
+                <input type="checkbox" id="checkCompletado" name="repStatus" value="Completo">
+                <label for="checkCompletado">Copleatados</label><br>
+
+
+
+
                 <div class="item-report-head">AÚN NO HAY REPORTES REGISTRADOS</div>
 
             </div>
@@ -57,7 +76,6 @@
         <div id="cntRepDtl" class="container-repdtl">
 
             <div id="cntRepHeadExpand" class="container-headexpand">
-                 
             </div>
 
             <div id="cntRepDtlEntries" class="container-reportDtlEntries  ">
@@ -69,7 +87,7 @@
             <div id="cntRepDtlUserInput" class="container-repdtl__user-input">
                 <textarea id="txtRepDtlUserInput" class="container-repdtl__user-input" rows="5" cols="50"></textarea>
                 <input id="btnSendRepDtlUpdate" type="button" class="container-repdtl__send" value="Enviar" />
-                
+
                 <select name="selStat" id="selStat">
                     <option value="0">PENDIENTE</option>
                     <option value="1">EN PROCESO</option>
