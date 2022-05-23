@@ -183,7 +183,7 @@ const getDateStr = (date) => {
     let hora = date.getHours();
     let minutos = date.getMinutes();
 
-    let dateStr = date.getDate() + "/" + date.getMonth() + 1 + "/" + date.getFullYear() + " " +
+    let dateStr = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " +
         (hora > 12 ? hora - 12 : hora) + ":" + (minutos < 10 ? "0" + minutos : minutos) + (hora > 12 ? " PM" : " AM");
 
     return dateStr;
