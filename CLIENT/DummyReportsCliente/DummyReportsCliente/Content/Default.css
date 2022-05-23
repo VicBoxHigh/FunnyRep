@@ -258,6 +258,19 @@ canvas {
   border-color: #ccc;
   background-color: #ddd;
 }
+
+.entry-center {
+    align-self: center;
+    border-color: rgb(204 204 204 / 0.50);
+    
+   
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+}
+
+
 /*# sourceMappingURL=Default.css.map */
 
 /*input[type="radio"] #checkAsignados :checked ~ input[type="checbox"] {

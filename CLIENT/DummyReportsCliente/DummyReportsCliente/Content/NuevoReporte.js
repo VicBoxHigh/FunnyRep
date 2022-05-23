@@ -103,114 +103,11 @@ const renderRepHeads = (repHeadAsignados, repHeadsNoAsignados) => {
 
 }
 
-//el callback para cuando se de click en una de las tarjetas Head de un reporte
-//event es la entidad que regresa el head al darle clic, sirve para invocar
-const clickReportHead = async (event, individualRepHead) => {
-
-    clearReportDtl()//limpia el Head expanded y las entries
-    txtRepDtlUserInput.val("");
-    reFillReportDtl(individualRepHead, event.target);//llena el head expanded
-
-
-    let taskGetEntries = getRepDtlEntries(individualRepHead);
-
-    //do animation loading?
-    /*  {
-  
-      }*/
-    let data = null;
-    try {
-        data = await taskGetEntries;//unvelop the entries from the promise
-
-    } catch (ex) {
-
-        alert("Error al solicitar el detalle.")
-    }
-
-    //OK
-    if (taskGetEntries.status == 200) {
-        individualRepHead.ReportUpdates = data.reportDtlEntries;//asigna las DtlEntries al header del reporte
-        reFillReportDtlEntries(individualRepHead);//manda el objeto de dats de Reporte junto con las entries para que sea renderizado;
-
-
-    }
-
-    btnSendRepDtlUpdate.off("click");
-    btnSendRepDtlUpdate.on("click", async (e) => {
-
-        if (individualRepHead.IdStatus == 2) {
-            alert("El reporte está marcado como completado. No se realizarán cambios.");
-            return
-        }
-
-        try {
-            let promiseV = await sendNewEntry(individualRepHead);
-
-            //  let value = await promiseV;
-
-        } catch (err) {
-            alert(err.responseText);
-            console.log("Error al actualizar el reporte.");
-        }
-        event.target.click();//click en el HEAD para que actualicé
-    });
-
-}
-
-const sendNewEntry = (newEntry) => {
-
-    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
-    let userLvl = localStorage.getItem("LevelUser");
-
-    if (!currentToken) {
-        alert("Inicie sesión primero")
-        window.location.href = "./Login"
-
-        return
-    }
-
-    let data = {
-        IdReport: newEntry.IdReport,//ese Id es colocado cuando se da click en el head
-        TitleUpdate: "",
-        Description: txtRepDtlUserInput.val(),
-        IsOwnerUpdate: userLvl == 0 ? false : true/*newEntry.IsOwnerUpdate*/,
-        DTUpdate: ""/* new Date()
-            .toISOString()
-            .slice(0, 19)
-            .replace("/-/g", "/")
-            .replace("T", " ")//La API toma la hora del servidor.*/,
-        Pic64: ""//Pendiente
-    }
-
-    let dataStr = JSON.stringify(data);
-
-    return $.ajax({
-        type: "POST",
-        url: API_URL + "api/ReportDtl",
-        contentType: "application/json",
-        crossDomain: true,
-        datatype: "json",
-        data: dataStr,
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-        },
-
-
-    });
-
-
-}
 
 
 const clearReportDtl = () => {
 
-    containerRepDtl.children(".container-reportDtlEntries").children().remove();
+    containerRepDtl.children(".container-reportDtlEntries").children("container-reportDtlEntry ").remove();
     let containerHeadExpanded = containerRepDtl.children(".container-headexpand");
 
     containerHeadExpanded.children().remove();
@@ -272,11 +169,11 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
         let task = saveStatus(individualRepHead);
 
         try {
-            let result = await individualRepHead;
+            let result = await task;
             targetHead.click();
         }
         catch (ex) {
-            //alert("Error: " + ex)
+            alert("Error: " + ex)
         }
     })
 }
@@ -293,48 +190,11 @@ const getDateStr = (date) => {
 
 }
 
-const saveStatus = (individualRepHead) => {
-
-    let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
-    let userLvl = localStorage.getItem("LevelUser");
-
-    if (!currentToken) {
-        alert("Inicie sesión primero")
-        window.location.href = "./Login"
-
-        return
-    }
-
-    if (!userLvl || userLvl == 0) alert("No tiene permiso para realizar esta acción.");
-
-    individualRepHead.IdStatus = selStatusRep.val();
-    let d = JSON.stringify(individualRepHead);
-
-
-    return $.ajax({
-        type: "PUT",
-        url: API_URL + `api/Report/${individualRepHead.IdReport}`,
-        contentType: "application/json",
-        crossDomain: true,
-        datatype: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
-        },
-        data: d,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-        },
-
-
-    })
-}
 
 const reFillReportDtlEntries = (individualRepHead) => {
 
     let entriesContainer = containerRepDtl.children(".container-reportDtlEntries");
+    entriesContainer.children(".container-reportDtlEntry  ").remove();
 
     let sessionLevel = localStorage.getItem("LevelUser");
 
@@ -347,9 +207,14 @@ const reFillReportDtlEntries = (individualRepHead) => {
         let entryPositionClass = "";//default is right (end)
 
         entryPositionClass =
-            (sessionLevel > 0 && !currentEnry.IsOwnerUpdate) || (sessionLevel == 0 && currentEnry.IsOwnerUpdate)
-                ? "entry-left"
-                : "entry-right";
+            currentEnry.UserWhoUpdate.IdUser == 1 ? "entry-center" :
+                (sessionLevel > 0 && !currentEnry.IsOwnerUpdate) || (sessionLevel == 0 && currentEnry.IsOwnerUpdate)
+                    ? "entry-left"
+                    : "entry-right";
+
+        let userInfoToShow =
+            currentEnry.UserWhoUpdate.IdUser == 1 ? "" :
+                currentEnry.UserWhoUpdate.Name + (currentEnry.UserWhoUpdate.AccessLevel > 0 ? ' - ' + currentEnry.UserWhoUpdate.AccessLevelName : '')
 
 
         let dateEntry = new Date(currentEnry.DTUpdate);
@@ -359,9 +224,7 @@ const reFillReportDtlEntries = (individualRepHead) => {
                 <div class="container-reportDtlEntry ${entryPositionClass} ">
 
                     <div class="container-reportDtlEntry__whomReply">
-                ${
-            currentEnry.UserWhoUpdate.Name + (currentEnry.UserWhoUpdate.AccessLevel > 0 ? ' - ' +  currentEnry.UserWhoUpdate.AccessLevelName : '')
-            }</div>
+                ${userInfoToShow}</div>
 
                     <div class="container-reportDtlEntry__description">${currentEnry.Description}</div>
                     <div class="container-reportDtlEntry__fechaHoraEntry">${dateEntryStr}</div>
@@ -411,7 +274,7 @@ const generateRepHead = (individualRepHead) => {
 
     let dateRep = new Date(individualRepHead.DTCreation);
 
-    let dateRepStr = dateRep.getDate() + "/" + dateRep.getMonth() + "/" + dateRep.getFullYear();
+    let dateRepStr = dateRep.getDate() + "/" + (dateRep.getMonth() + 1) + "/" + dateRep.getFullYear();
 
 
 
@@ -434,36 +297,6 @@ const generateRepHead = (individualRepHead) => {
 
 }
 
-const enviarActualización = (actualizacionData) => {
-
-    let repDtlEntry = {
-        "IdReport": 3,
-        "FileNameEvidence": "NoMyFile.jpeg",
-        "PathEvidence": "C:/files/evidences/",
-        "TitleUpdate": " Gracias",
-        "Description": " De nada segunda description ",
-        "IsOwnerUpdate": true,
-        "DTUpdate": "2021-03-14 02:40:15"
-    }
-
-    return $.ajax({
-        type: "POST",
-        url: API_URL + `api/ReportDtl/`,
-        contentType: "application/json",
-        crossDomain: true,
-        datatype: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-        },
-    })
-
-}
 
 
 //Si el usuario

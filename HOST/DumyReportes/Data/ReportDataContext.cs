@@ -209,6 +209,50 @@ SELECT TOP (1) [IdReport]
             return result;
         }
 
+   
+
+        private static string QUERY_UPDATE_STATUS =
+          @"
+                UPDATE [dbo].[Report]
+                   SET 
+                      [IdStatus] = @newStat,
+                      [IdReportType] = @idReportType
+
+                 WHERE [IdReport] = @idReport
+            ";
+
+        public  ErrorFlag Update(int idReport , int newClasif, int newStatus, out string error)
+        {
+       
+            SqlCommand command = new SqlCommand(QUERY_UPDATE_STATUS, ConexionBD.getConexion());
+            command.Parameters.Add("@newStat", System.Data.SqlDbType.Int).Value = newStatus;
+            command.Parameters.Add("@idReportType", System.Data.SqlDbType.Int).Value = newClasif;
+
+            command.Parameters.Add("@idReport", System.Data.SqlDbType.Int).Value = idReport;
+
+            ErrorFlag resultOp = ErrorFlag.ERROR_OK_RESULT;
+            error = "";
+            try
+            {
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                resultOp = ErrorFlag.ERROR_OK_RESULT;
+
+
+            }
+            catch (SqlException ex)
+            {
+                resultOp = ErrorFlag.ERROR_CONNECTION_DB;
+                error = "Error al actualizar";
+            }
+
+
+            return resultOp;
+
+         }
+
+
         public static string QUERY_GET_REPORT_BY_USER_WHONOTIFIED =
             @"
                 SELECT Rep.IdReport, Rep.IdUserWhoNotified, Rep.NotifiedDT,Rep.Title,Rep.Description RepDescription,FileNameEvidence,
@@ -538,15 +582,7 @@ SELECT TOP (1) [IdReport]
         }
 
 
-        private static string QUERY_UPDATE_STATUS =
-            @"
-                UPDATE [dbo].[Report]
-                   SET 
-                      [IdStatus] = @newStat
-
-                 WHERE [IdReport] = @idReport
-            ";
-
+     
         public ErrorFlag Update(IReportObject reportObject, out string error)
         {
             Report report = reportObject as Report;

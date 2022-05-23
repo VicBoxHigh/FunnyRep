@@ -262,28 +262,31 @@ CREATE TRIGGER [dbo].UpdateReportTriger ON Report
 AFTER UPDATE
 AS
 
-	DECLARE @tempTitle varchar(50);
+	DECLARE @tempDescription varchar(50);
 	DECLARE @IdReport int = (SELECT IdReport FROM inserted);
 
 	DECLARE @newIdStat int = (SELECT IdStatus as newStat FROM inserted) ;
 	DECLARE @newIdRepType int = (SELECT IdReportType FROM inserted);
+		
+	DECLARE @currentDT datetime =GETDATE();
 
 
 	--Si cambió el status
 	IF(@newIdStat  != (SELECT IdStatus FROM deleted) )
 	BEGIN
-		SET @tempTitle = CONCAT('El estado del reporte cambió a: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		SET @tempDescription = CONCAT('El estado del reporte cambió a: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
 		--Generar entry dtl
-		EXEC InsertDtlEntry @IdReport, @tempTitle , '' , GETDATE, 0, 1	;	
+		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
+	
 	END
 
 	--Si cambió el typo de reporte
 	IF( @newIdRepType != ( SELECT IdReportType FROM deleted ) )
 	BEGIN
 
-		SET @tempTitle = CONCAT ('El reporte se re-clasificó a tipo: ',( SELECT TOP(1) ReportType.[Name] FROM ReportType Where IdReportType = @newIdRepType ) );
-		EXEC InsertDtlEntry @idReport, @tempTitle, '', GETDATE ,0,1;
-		
+		SET @tempDescription = CONCAT ('El reporte se re-clasificó a tipo: ',( SELECT TOP(1) ReportType.[Name] FROM ReportType Where IdReportType = @newIdRepType ) );
+		EXEC InsertDtlEntry @idReport,1 ,'', @tempDescription, @currentDT ,0;
+
 
 	END
 	

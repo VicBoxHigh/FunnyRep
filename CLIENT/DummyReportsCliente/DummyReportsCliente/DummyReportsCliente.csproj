@@ -135,6 +135,9 @@
     <Content Include="Content\NuevoReporte.css" />
     <Content Include="Content\NuevoReporte.js" />
     <Content Include="Content\NuevoReporte_Cam.js" />
+    <Content Include="Content\NuevoReporte_Eventos.js" />
+    <Content Include="Content\NuevoReporte_init.js" />
+    <Content Include="Content\NuevoReporte_render.js" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\webcam-easyV.js" />
     <Content Include="Default.aspx" />

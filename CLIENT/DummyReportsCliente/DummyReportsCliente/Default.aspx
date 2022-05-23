@@ -19,8 +19,8 @@
             <div class="menu-item">Mis Reportes</div>
 
             <div id="cntRepHeads" class="container-heads">
- 
-                <input type="radio"   id="checkAsignados" name="AsginacionStat" value="Asignados">
+
+                <input type="radio" id="checkAsignados" name="AsginacionStat" value="Asignados">
                 <label for="checkAsignados">Asignados</label><br>
                 <input type="radio" id="checkSinAsignar" name="AsginacionStat" value="No asignados">
                 <label for="checkSinAsignar">No asignados</label><br>
@@ -111,6 +111,8 @@
 
 
     <script src="Content/NuevoReporte_Cam.js" type="text/javascript"></script>
+    <script src="Content/NuevoReporte_Eventos.js" type="text/javascript"></script>
+
     <script src="Content/NuevoReporte.js" type="text/javascript"></script>
 
 </body>
