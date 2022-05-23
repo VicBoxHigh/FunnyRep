@@ -274,7 +274,7 @@ AS
 	--Si cambió el status
 	IF(@newIdStat  != (SELECT IdStatus FROM deleted) )
 	BEGIN
-		SET @tempDescription = CONCAT('El estado del reporte cambió a: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		SET @tempDescription = CONCAT('El reporte se marcó como: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
 		--Generar entry dtl
 		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
 	

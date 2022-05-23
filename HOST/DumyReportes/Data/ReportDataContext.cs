@@ -209,7 +209,7 @@ SELECT TOP (1) [IdReport]
             return result;
         }
 
-   
+
 
         private static string QUERY_UPDATE_STATUS =
           @"
@@ -221,9 +221,9 @@ SELECT TOP (1) [IdReport]
                  WHERE [IdReport] = @idReport
             ";
 
-        public  ErrorFlag Update(int idReport , int newClasif, int newStatus, out string error)
+        public ErrorFlag Update(int idReport, int newClasif, int newStatus, out string error)
         {
-       
+
             SqlCommand command = new SqlCommand(QUERY_UPDATE_STATUS, ConexionBD.getConexion());
             command.Parameters.Add("@newStat", System.Data.SqlDbType.Int).Value = newStatus;
             command.Parameters.Add("@idReportType", System.Data.SqlDbType.Int).Value = newClasif;
@@ -250,7 +250,7 @@ SELECT TOP (1) [IdReport]
 
             return resultOp;
 
-         }
+        }
 
 
         public static string QUERY_GET_REPORT_BY_USER_WHONOTIFIED =
@@ -332,6 +332,7 @@ SELECT TOP (1) [IdReport]
 
 
         ";
+        [Obsolete("Se hicieron proceidmientos almacenados, ahora se usan diferentes funciones.")]
         public ErrorFlag GetAllBy(bool isOwner, int idUser, out List<IReportObject> reportObjects, out string error)
         {
             error = "";

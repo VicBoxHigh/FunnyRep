@@ -223,8 +223,7 @@ const reFillReportDtlEntries = (individualRepHead) => {
         entriesContainer.append(`
                 <div class="container-reportDtlEntry ${entryPositionClass} ">
 
-                    <div class="container-reportDtlEntry__whomReply">
-                ${userInfoToShow}</div>
+                    <div class="container-reportDtlEntry__whomReply"> ${userInfoToShow}</div>
 
                     <div class="container-reportDtlEntry__description">${currentEnry.Description}</div>
                     <div class="container-reportDtlEntry__fechaHoraEntry">${dateEntryStr}</div>

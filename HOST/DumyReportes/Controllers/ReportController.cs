@@ -62,7 +62,7 @@ namespace DumyReportes.Controllers
                 case AccessLevel.PUBLIC:
                     _ReportDataContext.GetReportsByWhoNotified(user, out reportesAsignados, out reportesNoAsignados);
                     break;
-                case AccessLevel.AGENT://los AGENT solo tienen reportes asignados.
+                case AccessLevel.AGENT://los AGENT solo aparecerán reportes asignados.
                     _ReportDataContext.GetReportsByOwner(owner: user, out reportesAsignados);
                     break;
                 case AccessLevel.ADMIN:
@@ -88,7 +88,7 @@ namespace DumyReportes.Controllers
         //Get specific Header report by ID, detail report data
         //hould report have the title?
         // GET: api/Report/5
-        public IHttpActionResult Get(int id)
+      /*  public IHttpActionResult Get(int id)
         {
             if (id < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
@@ -107,7 +107,7 @@ namespace DumyReportes.Controllers
 
 
         }
-
+*/
 
         //Get reports ByOwnerId
         //Get reports ByWhoNotifier
