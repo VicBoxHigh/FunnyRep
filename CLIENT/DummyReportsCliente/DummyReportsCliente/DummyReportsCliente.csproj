@@ -138,7 +138,9 @@
     <Content Include="Content\NuevoReporte_Eventos.js" />
     <Content Include="Content\NuevoReporte_init.js" />
     <Content Include="Content\NuevoReporte_render.js" />
+    <Content Include="Content\NuevoReport_HeadExpand.js" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\Util.js" />
     <Content Include="Content\webcam-easyV.js" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />

@@ -76,6 +76,28 @@
         <div id="cntRepDtl" class="container-repdtl">
 
             <div id="cntRepHeadExpand" class="container-headexpand">
+
+                <div class="container-headexpand__title"></div>
+                <div class="container-headexpand__idReport"> </div>
+                <div class="item-report-head__numEmpleadoWhoNotified"> </div>
+
+                <div class="container-headexpand__EmpleadoNotif"> </div>
+                <div class="container-headexpand__description"> </div>
+                <select name="selRepType_Dtl" id="selRepType_Dtl">
+                </select>
+
+                <div class="container-headexpand__location">
+                    
+                </div>
+                <div class="container-headexpand__status"> </div>
+                <div class="container-headexpand__notifiedDt"> </div>
+
+                <span class="container-headexpand__InicioDt"> </span>
+                <span class="container-headexpand__notifiedDt"> </span>
+
+                <img class="container-headexpand__EvidencePic"  ></img>
+
+
             </div>
 
             <div id="cntRepDtlEntries" class="container-reportDtlEntries  ">
@@ -105,14 +127,12 @@
 
     <!-- <script src="webcam.js" type="text/javascript"></script> -->
     <script src="Content/jquery-3.6.0.min.js" type="text/javascript"></script>
-    <script
-        type="text/javascript"
-        src="Content/webcam-easyV.js"></script>
-
-
+    <script type="text/javascript" src="Content/webcam-easyV.js"></script>
+    <script type="text/javascript" src="Content/Util.js" ></script>
     <script src="Content/NuevoReporte_Cam.js" type="text/javascript"></script>
-    <script src="Content/NuevoReporte_Eventos.js" type="text/javascript"></script>
     <script src="Content/NuevoReporte_init.js" type="text/javascript"></script>
+    <script src="Content/NuevoReport_HeadExpand.js" type="text/javascript"></script>
+    <script src="Content/NuevoReporte_Eventos.js" type="text/javascript"></script>
     <script src="Content/NuevoReporte.js" type="text/javascript"></script>
 
 </body>

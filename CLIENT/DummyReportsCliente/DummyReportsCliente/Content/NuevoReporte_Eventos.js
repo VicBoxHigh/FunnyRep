@@ -122,12 +122,14 @@ const saveStatus = (individualRepHead) => {
 
     if (!userLvl || userLvl == 0) alert("No tiene permiso para realizar esta acción.");
 
-    individualRepHead.IdStatus = selStatusRep.val();
-    let d = JSON.stringify({ "id": individualRepHead.IdReport , "newClasif": individualRepHead.IdReportType, "newStatus": individualRepHead.IdStatus })//JSON.stringify(individualRepHead);
 
-    let newClasif = containerRepDtl.children(".container-headexpand").children("#selRepType_Dtl").val();    
+
+    let newClasif = heSelectReportType.val();
 
     let newStatus = selStatusRep.val();
+
+ 
+    //individualRepHead.IdStatus = selStatusRep.val();
 
     return $.ajax({
         type: "PUT",

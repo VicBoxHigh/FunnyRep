@@ -159,17 +159,6 @@ const stopCam = () => {
 }
 
 
-const fillReportTypesNewRep = (selecToSet) => {
-
-    let reportTypes = localStorage.getItem(REPORT_TYPE_NAME);
-    selecToSet.children().remove();
-    let listParsed = JSON.parse(reportTypes)
-    
-    for (let currentType in listParsed) {
-        selecToSet.append(`<option value='${currentType}' >${listParsed[currentType]}</option>`)
-    }
-}
-
 const initNewReportView = () => {
 
 
