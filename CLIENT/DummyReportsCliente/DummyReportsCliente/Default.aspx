@@ -112,7 +112,7 @@
 
     <script src="Content/NuevoReporte_Cam.js" type="text/javascript"></script>
     <script src="Content/NuevoReporte_Eventos.js" type="text/javascript"></script>
-
+    <script src="Content/NuevoReporte_init.js" type="text/javascript"></script>
     <script src="Content/NuevoReporte.js" type="text/javascript"></script>
 
 </body>

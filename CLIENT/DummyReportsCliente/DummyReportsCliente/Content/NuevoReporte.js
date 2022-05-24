@@ -298,36 +298,6 @@ const generateRepHead = (individualRepHead) => {
 
 
 
-//Si el usuario
-const checkSessionLevel = () => {
-    let lu = localStorage.getItem("LevelUser");
-
-    if (lu == undefined) {
-
-        window.location.href = "./Login"
-        return
-    }
-
-    //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
-    //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
-    if (lu != 0) {
-        btnToogleNewRep.addClass("no-render")
-
-    } else {
-
-        selStatusRep.addClass("no-render");
-        btnSaveStatus.addClass("no-render");
-
-    }
-    //Por defecto el contenedor Nuevo reporte será escondido, no importa el usuario
-
-    containerNewRep.addClass("no-render");
-
-    containerRepDtl.removeClass("no-render")
-
-
-
-}
 
 const init = () => {
     checkSessionLevel();
