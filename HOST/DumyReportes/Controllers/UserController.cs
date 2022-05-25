@@ -4,6 +4,7 @@ using DumyReportes.Models;
 using DumyReportes.Util;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,59 +21,69 @@ namespace DumyReportes.Controllers
 
         private readonly UserDataContext _UserDataContext = new UserDataContext();
         // GET: api/User
+        [HttpGet]
         [Route("~/api/User/all")]
-         public /*IEnumerable<string>*/ IHttpActionResult Get([FromBody] bool something)
+        [IdentityBasicAuthentication]
+        public IHttpActionResult GetAll()
         {
+
+            UserIdentiy userIdentiy = HttpContext.Current.User.Identity as UserIdentiy;
+            if (userIdentiy == null || !userIdentiy.IsAuthenticated | userIdentiy.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+            {
+                return Content(HttpStatusCode.Unauthorized, "No está autorizado para acceder.");
+            }
 
             Flags.ErrorFlag result = _UserDataContext.GetAll(out List<IReportObject> users, out string error);
 
             return Ok(new
             {
                 users,
-                errorCode = result.ToString()
+                error = result.ToString() + error
 
             });
 
         }
 
-        public IHttpActionResult Get(int id)
-        {
-            if (id < 1) return BadRequest("ID no válido");
-
-           
-            Flags.ErrorFlag result = _UserDataContext.Get(id, out  IReportObject user  , out string error);
-            
-
-            if (result == Flags.ErrorFlag.ERROR_NOT_EXISTS)
-            {
-                return Content(HttpStatusCode.NotFound, result.ToString());
-            
-            }
-
-            return
-                Ok(
-                    new
-                    {
-                        resultCode = result.ToString(),
-                        errorMsg = error,
-                        user = user /*as User*/,
-
-                    }
-                );
 
 
-        }
+        /*  public IHttpActionResult Get(int id)
+          {
+              if (id < 1) return BadRequest("ID no válido");
+
+
+              Flags.ErrorFlag result = _UserDataContext.Get(id, out  IReportObject user  , out string error);
+
+
+              if (result == Flags.ErrorFlag.ERROR_NOT_EXISTS)
+              {
+                  return Content(HttpStatusCode.NotFound, result.ToString());
+
+              }
+
+              return
+                  Ok(
+                      new
+                      {
+                          resultCode = result.ToString(),
+                          errorMsg = error,
+                          user = user *//*as User*//*,
+
+                      }
+                  );
+
+
+          }*/
 
 
 
         private static int HIDING_FACTOR = 54 * 13 * 4;
 
         // Cuando hace login
-        [IdentityBasicAuthentication]
         [HttpGet]
+        [IdentityBasicAuthentication]
         public IHttpActionResult Get()
         {
-            
+
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
@@ -88,19 +99,19 @@ namespace DumyReportes.Controllers
 
         }
 
- 
+
         [HttpPost]
         /*   [AllowAnonymous]*/
 
-         
-         [Route("~/api/User/V ")]
+
+        [Route("~/api/User/V ")]
         public IHttpActionResult OK(int a)
         {
             return Ok("ok");
         }
 
         // POST: api/User
-     
+
         public IHttpActionResult Post(/*[FromBody]*/User user)
         {
 
@@ -110,10 +121,10 @@ namespace DumyReportes.Controllers
 
             if (genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
                 return Content(HttpStatusCode.Unauthorized, "No tiene permisos para crear un usuario.");
- 
+
             //Válida la data
             bool isValid = user.Validate();
-            if (!isValid) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString()); 
+            if (!isValid) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
 
             //Inserta en DB
@@ -128,7 +139,7 @@ namespace DumyReportes.Controllers
         //including user disabling 
         // PUT: api/User/5
         [HttpPut]
-         
+
         public IHttpActionResult Put(int id, [FromBody] User user)
         {
             bool isValid = user.Validate();
@@ -147,7 +158,7 @@ namespace DumyReportes.Controllers
 
         [HttpDelete]
         // DELETE: api/User/5
-        
+
         public IHttpActionResult Delete(int id)
         {
             return Content(HttpStatusCode.NotImplemented, "Esta función no ha sido creada´aún.");

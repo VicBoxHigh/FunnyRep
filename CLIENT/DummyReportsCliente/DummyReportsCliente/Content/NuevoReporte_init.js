@@ -1,4 +1,23 @@
-﻿//INIT UI - Según el usuario
+﻿
+const containerNewRep = $("#cntNewRep");
+const containerRepDtl = $("#cntRepDtl");
+
+const btnToogleNewRep = $("#btnTogleNewRep")
+
+const repHeadsContainer = $("#cntRepHeads");
+
+
+const txtRepDtlUserInput = $("#txtRepDtlUserInput")
+const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
+
+const selStatusRep = $("#selStat");
+const btnSaveStatus = $("#btnSaveStatus");
+
+
+
+//const selRepType_Dtl = $("#selRepType_Dtl");
+
+//INIT UI - Según el usuario
 
 //BASIC - 0
 //Solo da accion de nuevo reporte y le muestra los que el ha creado, sin importar si se ecuentran asignados o no
@@ -56,6 +75,10 @@ const checkSessionLevel = () => {
     //cambio de clasificación, solo la hará un ADMIN
     //El HeaderDtl Expand es dinamico, por lo tanto no puede ser colocado aquí.
 
+
+    if (lu == 150000) {
+        //render users page
+    }
 
 }
 

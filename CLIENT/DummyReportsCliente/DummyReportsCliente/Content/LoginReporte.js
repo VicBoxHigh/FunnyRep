@@ -1,4 +1,4 @@
-﻿const API_URL = "https://172.16.9.118:57996/";
+﻿const API_URL = "https://it-junior.grupomarves.net:57996/";
 
 const btnLogin = $("#btnLogin");
 const txtUsuario = $("#txtUser");
@@ -68,11 +68,24 @@ const loginUser = (user, pass) => {
         },
         success: successPromiseLog,
         error: failPromiseLog,
+        complete: completePromese
     });
 
 }
 
 const KEY_TOKEN_NAME = "SESSIONTOKEN";
+
+const completePromese = (xhr, textStatus) => {
+
+    if (xhr.status == 200) {
+
+
+        window.location.href = "./Default.aspx"
+
+        //Cuando no es un OK
+    }
+
+}
 
 //manejo del token
 const successPromiseLog = (data, textStatus, xhr) => {
@@ -84,7 +97,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
         //if (localStorage.getItem("sessionToken"))
         localStorage.setItem(KEY_TOKEN_NAME, data.token);
         localStorage.setItem("LevelUser", data.levelUser);
-        window.location.href = "./Default.aspx"
+
 
         //Cuando no es un OK
     } else {

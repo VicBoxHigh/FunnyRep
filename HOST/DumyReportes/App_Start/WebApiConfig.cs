@@ -18,6 +18,7 @@ namespace DumyReportes
             config.EnableCors();
             // Rutas de API web
             config.MapHttpAttributeRoutes();
+            
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

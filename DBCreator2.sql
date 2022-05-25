@@ -23,7 +23,7 @@ CREATE TABLE ReportType(
 
 CREATE TABLE [User](
 	IdUser int NOT NULL IDENTITY(1,1) PRIMARY KEY ,	
-	NumEmpleado varchar(25) NOT NULL,
+	NumEmpleado varchar(25) ,
 	UserName varchar(25) NOT NULL,
 	Pass varchar(25) NOT NULL,
 	[Name] varchar(60) NOT NULL,

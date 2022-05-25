@@ -1,23 +1,6 @@
 
-const API_URL = "https://172.16.9.118:57996/";
-const containerNewRep = $("#cntNewRep");
-const containerRepDtl = $("#cntRepDtl");
 
-const btnToogleNewRep = $("#btnTogleNewRep")
-
-const repHeadsContainer = $("#cntRepHeads");
-
-
-const txtRepDtlUserInput = $("#txtRepDtlUserInput")
-const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
-
-const selStatusRep = $("#selStat");
-const btnSaveStatus = $("#btnSaveStatus");
-
-const selRepType_Dtl = $("#selRepType_Dtl");
-
-
-
+ 
 
 btnToogleNewRep.on("click", () => {
 
@@ -229,7 +212,7 @@ const init = () => {
     initNewReportView()
     getRepsByUser();
 
-    fillReportTypesNewRep(selRepType_Dtl)
+    ////fillReportTypesNewRep(selRepType_Dtl) //este no, se carga dinamico
     // initCam();
 }
 

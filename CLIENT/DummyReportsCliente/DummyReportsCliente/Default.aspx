@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="Content/Default.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+ 
 </head>
 <body>
 
@@ -45,6 +45,7 @@
         </div>
 
         <input id="btnTogleNewRep" type="button" value="Nuevo Reporte" />
+        <input id="btnUsuarios" type="button" value="Usuarios" />
     </div>
     <div class="main-container">
 

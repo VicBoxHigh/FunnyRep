@@ -21,9 +21,6 @@ let webcam //= new Webcam(webcamElement, "user", canvasElement, null);
 
 const iframeMap = document.createElement("iframe");
 
-const REPORT_TYPE_NAME = "REPORT_TYPES";
-const KEY_TOKEN_NAME = "SESSIONTOKEN";
-
 
 /* const webcam = new Webcam(
   webcamElement,
@@ -173,45 +170,23 @@ const initNewReportView = () => {
         return;
     }
 
-    $.ajax({
-        type: "GET",
-        url: API_URL + "api/ReportType",
-        contentType: "application/json",
-        crossDomain: true,
-        datatype: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+    try {
+        let result = await getReporTypes(currentToken);
+        if (result.status == 200 || result.status == 201 || result.status == 202) {
 
-        },
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
-        },
-        // data: dataStr,
-        success: function (data, textStatus, xhr) {
-            /* getRepsByUser();*/
-            if (xhr.status == 200 || xhr.status == 201 || xhr.status == 202) {
+            localStorage.setItem(REPORT_TYPE_NAME, JSON.stringify(data.reportTypes));
 
-                localStorage.setItem(REPORT_TYPE_NAME, JSON.stringify(data.reportTypes));
+            fillReportTypes(selRepType_NewRep)//con la data de local storage
 
-                fillReportTypes(selRepType_NewRep)//con la data de local storage
+        }
+        else
+            alert(result.error);
 
+    }
+    catch (ex) {
+        alert(ex.error)
+    }
 
-
-            }
-            else
-                alert(textStatus);
-
-
-        },
-        error: function (xhr, textStatus) {
-            alert("Error en la solicitud" + xhr.responseText);
-        },
-
-
-    });
 
 
 

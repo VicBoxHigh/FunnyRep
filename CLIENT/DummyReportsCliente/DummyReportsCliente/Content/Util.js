@@ -1,4 +1,8 @@
-﻿
+﻿const API_URL = "https://it-junior.grupomarves.net:57996/";
+
+const REPORT_TYPE_NAME = "REPORT_TYPES";
+const KEY_TOKEN_NAME = "SESSIONTOKEN";
+
 //objeto date a string
 const getDateStr = (date) => {
 
@@ -23,4 +27,32 @@ const fillReportTypesNewRep = (selecToSet) => {
     for (let currentType in listParsed) {
         selecToSet.append(`<option value='${currentType}' >${listParsed[currentType]}</option>`)
     }
+}
+
+
+
+const getReporTypes = (token) => {
+
+
+    return $.ajax({
+        type: "GET",
+        url: API_URL + "api/ReportType",
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + token}`)
+
+        },
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+      
+
+    });
+
+
 }

@@ -30,7 +30,7 @@ namespace DumyReportes.Models
         public string CurrentToke { get; set; }
 
         [DataMember]
-        public string AccessLevelName { get; internal set; }
+        public string AccessLevelName { get;  set; }
 
         public User() { }
 

@@ -46,9 +46,13 @@ namespace DumyReportes.Data
 
         public static string QUERY_CREDENTIALS_EXIST =
             @"
-               SELECT * FROM [User] Where UserName = @user and  Pass =  @pass and IsEnabled = 1  ;
+               SELECT U.* ,U.[Name] AS U_Name, AL.[Name] AS A_Name
+                FROM [User] U
+                INNER JOIN AccessLevel AL ON U.[Level] = AL.[Level]
+                Where UserName = @user and  Pass =  @pass and IsEnabled = 1  ;
  
             ";
+        //La usa el Token Validator
 
         internal ErrorFlag CredentialsExist(string userName, string password, out User userResult, bool recursive = false)
         {
@@ -58,7 +62,7 @@ namespace DumyReportes.Data
             SqlCommand command = new SqlCommand(QUERY_CREDENTIALS_EXIST, ConexionBD.getConexion());
             command.Parameters.Add("@user", System.Data.SqlDbType.VarChar).Value = userName;
             command.Parameters.Add("@pass", System.Data.SqlDbType.VarChar).Value = password;
-            
+
             //bad password?
 
 
@@ -79,32 +83,7 @@ namespace DumyReportes.Data
                     }
                 }
 
-                //No existe, entonces consulta a checadas.
-                //Si esta llamada no es recursiva, entrará
-                if (operationResult == ErrorFlag.ERROR_NOT_EXISTS && !recursive && int.TryParse(userName, out int userNameInt))//empleados son un números, admins no, por tanto si el admin no existe, no hay login
-                {
-                    //Revisa en Empleados
-                    ErrorFlag errorFlag = EmployeeExists(userName);
-                  //  ErrorFlag errorFlag2 = ErrorFlag.ERROR_NO_AFECTED_RECORDS | ErrorFlag.ERROR_OK_RESULT;
-
-                    if (errorFlag != ErrorFlag.ERROR_OK_RESULT) operationResult = errorFlag;
-
-                    else//existe employee, then insert it
-                    {
-                        ErrorFlag resultCreate = Create(new User(userName, userName, userName, true, AccessLevel.PUBLIC), out string error);
-                        if (resultCreate == ErrorFlag.ERROR_OK_RESULT)
-                        {
-                            //if (resultCreate == ErrorFlag.ERROR_OK_RESULT)
-                            operationResult = CredentialsExist(userName, password, out userResult, true);
-                        }
-                        else
-                        {
-                            operationResult = resultCreate;
-
-                            //llama recursiva para que simule la solicitud original
-                        }
-                    }
-                }
+               
             }
             catch (SqlException ex)
             {
@@ -124,30 +103,31 @@ namespace DumyReportes.Data
 
         public ErrorFlag EmployeeExists(string numEmpleado)
         {
-            ErrorFlag result = ErrorFlag.ERROR_OK_RESULT;
-            SqlConnection sqlConnection = ConexionBD.getConexion(ConexionBD.ConnectionDB.CHECADAS);
-            using (SqlCommand command = new SqlCommand(QUERY_EXIST_EMPLOYEE, sqlConnection))
-            {
-                command.Parameters.Add("@numEmpleado", System.Data.SqlDbType.VarChar).Value = numEmpleado;
-                try
-                {
+            throw new NotImplementedException();
+            /* ErrorFlag result = ErrorFlag.ERROR_OK_RESULT;
+             SqlConnection sqlConnection = ConexionBD.getConexion(ConexionBD.ConnectionDB.CHECADAS);
+             using (SqlCommand command = new SqlCommand(QUERY_EXIST_EMPLOYEE, sqlConnection))
+             {
+                 command.Parameters.Add("@numEmpleado", System.Data.SqlDbType.VarChar).Value = numEmpleado;
+                 try
+                 {
 
-                    using (SqlDataReader sqlDataReader = command.ExecuteReader())
-                    {
+                     using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                     {
 
-                        if (!sqlDataReader.HasRows) result = ErrorFlag.ERROR_NOT_EXISTS;
-
-
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    result = ErrorFlag.ERROR_CONNECTION_DB;
-                }
-            }
+                         if (!sqlDataReader.HasRows) result = ErrorFlag.ERROR_NOT_EXISTS;
 
 
-            return result;
+                     }
+                 }
+                 catch (SqlException ex)
+                 {
+                     result = ErrorFlag.ERROR_CONNECTION_DB;
+                 }
+             }
+
+
+             return result;*/
         }
 
         //Insertará un row para tabla usuario
@@ -187,14 +167,18 @@ namespace DumyReportes.Data
 
         public static string QUERY_GET_USER =
             @"
-            SELECT   [IdUser]
-                      ,[NumEmpleado]
-                      ,[UserName]
-                      ,[Pass]
-                      ,[Name]
-                      ,[IsEnabled]
-                      ,[Level]
-              FROM .[dbo].[User]
+            SELECT TOP (1000) [IdUser]
+                  ,[NumEmpleado]
+                  ,[UserName]
+                  ,[Pass]
+                  ,U.[Name] AS U_Name
+                  ,[IsEnabled]
+                  ,U.[Level]
+				  ,AL.[Name] AS A_Name
+              FROM [dbo].[User] U
+			  INNER JOIN AccessLevel AL ON U.[Level] = AL.[Level]
+              
+              
               
 
             ";
@@ -205,7 +189,7 @@ namespace DumyReportes.Data
             Flags.ErrorFlag result;
             users = new List<IReportObject>();
 
-            SqlCommand command = new SqlCommand(QUERY_GET_USER /*ALL*/, ConexionBD.getConexion());
+            SqlCommand command = new SqlCommand(QUERY_GET_USER + "WHERE IdUser > 1 order by IdUser ASC"/*ALL*/, ConexionBD.getConexion());
             try
             {
 
@@ -234,13 +218,14 @@ namespace DumyReportes.Data
 
         }
 
+        //token lo usa
         public ErrorFlag Get(int iduser, out IReportObject user, out string error)
         {
             error = "";
             user = null;
             Flags.ErrorFlag result;
 
-            SqlCommand command = new SqlCommand(QUERY_GET_USER + " Where IdUser = @IdUser", ConexionBD.getConexion());
+            SqlCommand command = new SqlCommand(QUERY_GET_USER + " Where IdUser = @IdUser order by IdUser ASC", ConexionBD.getConexion());
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = iduser;
 
 
@@ -289,7 +274,8 @@ namespace DumyReportes.Data
 
             if (user != null) { 
                 user.IdUser = (int)reader["IdUser"];
-                user.Name = reader["Name"].ToString();
+                user.Name = reader["U_Name"].ToString();
+                user.AccessLevelName = reader["A_Name"].ToString();
             }
 
             return user;
@@ -352,7 +338,8 @@ namespace DumyReportes.Data
 
         public ErrorFlag Delete(int id, out string error)
         {
-            error = "";
+            throw new NotImplementedException();
+            /*error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_DELETE_USER, ConexionBD.getConexion());
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = id;
@@ -372,15 +359,16 @@ namespace DumyReportes.Data
             }
 
 
-            return result;
+            return result;*/
         }
 
         public static string QUERY_EXIST_USER =
             @"SELECT TOP 1 FROM [ReportApp].[dbo].[User] Where [User].IdUser =  @IdUser";
-
+        [Obsolete]
         public ErrorFlag Exists(int id, out string error)
         {
-            error = "";
+            throw  new NotImplementedException();
+            /*error = "";
             ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = id;
@@ -398,7 +386,7 @@ namespace DumyReportes.Data
                 }
 
 
-            return result;
+            return result;*/
 
         }
 
@@ -410,10 +398,11 @@ namespace DumyReportes.Data
 
         public static string QUERY_EXISTS =
            @"SELECT TOP (1) * FROM [ReportApp].[dbo].[User] Where [User].UserName =  @IdUser and [User].Pass ) = @Pass";
+        [Obsolete]
         public ErrorFlag Exist(string userName, string pass, out User user)
         {
-
-            ErrorFlag result;
+            throw new NotImplementedException();
+           /* ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.VarChar).Value = userName;
             command.Parameters.Add("@Pass", System.Data.SqlDbType.VarChar).Value = pass;
@@ -436,7 +425,7 @@ namespace DumyReportes.Data
             }
 
 
-            return result;
+            return result;*/
 
         }
 
