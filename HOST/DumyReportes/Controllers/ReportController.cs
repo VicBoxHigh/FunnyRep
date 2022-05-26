@@ -66,7 +66,7 @@ namespace DumyReportes.Controllers
                     _ReportDataContext.GetReportsByOwner(owner: user, out reportesAsignados);
                     break;
                 case AccessLevel.ADMIN:
-                case AccessLevel.SUPERADMIN:
+                case AccessLevel.TI:
                     _ReportDataContext.GetAllReports(reportAsigned: out reportesAsignados, reportsNoAsigned: out reportesNoAsignados);
 
                     break;

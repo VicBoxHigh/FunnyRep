@@ -1,7 +1,7 @@
 ﻿
 
-const btnToogleNewRep = $("#btnTogleNewRep")
-
+const btnToogleNewRep = $("#btnTogleNewRep");
+const btnUsuariosPage = $("#btnUsuarios");
 
  
 //const selRepType_Dtl = $("#selRepType_Dtl");
@@ -59,27 +59,37 @@ btnToogleNewRep.on("click", () => {
 
 });
 
+const btnUsuariosRedirect = (event) => {
+    window.location.href = "./Usuarios";
+}
 
 const checkSessionLevel = () => {
     let lu = localStorage.getItem("LevelUser");
+    let ln = localStorage.getItem("LevelName");
 
     if (!lu) {
-
         window.location.href = "./Login"
         return
     }
-
 
     //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
     //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
     if (lu != 0) { //ningún admin sube reps
         btnToogleNewRep.addClass("no-render")
-
     } else {//usuario basic, no puede cambiar el stat del reporte
 
         selStatusRep.addClass("no-render");
         btnSaveStatus.addClass("no-render");
 
+        btnUsuariosPage.off("click")
+        btnUsuariosPage.addClass("no-render");
+    }
+
+
+    // TODO btnUsuarios solo disponible para TI.
+    if (ln === "TI") {
+        btnUsuariosPage.removeClass("no-render");
+        btnUsuariosPage.on("click", () => window.location.href = "./Usuarios" )
     }
     //Por defecto el contenedor Nuevo reporte será escondido, no importa el usuario
     //seg+un si es usuario basic, al hacer clic en NEW, se mostrará

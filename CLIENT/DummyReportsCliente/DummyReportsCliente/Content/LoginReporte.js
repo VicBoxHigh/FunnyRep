@@ -97,7 +97,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
         //if (localStorage.getItem("sessionToken"))
         localStorage.setItem(KEY_TOKEN_NAME, data.token);
         localStorage.setItem("LevelUser", data.levelUser);
-
+        localStorage.setItem("LevelName", data.levelName);
 
         //Cuando no es un OK
     } else {
@@ -108,6 +108,7 @@ const successPromiseLog = (data, textStatus, xhr) => {
 const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
+    localStorage.removeItem("LevelName");
     if (xhr)
         alert(xhr.responseText ? xhr.responseText:
             (xhr.status == 401 ? "Credenciales inválidas" : "Error al enviar la solicitud al servidor.")

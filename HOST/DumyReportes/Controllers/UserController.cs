@@ -28,7 +28,7 @@ namespace DumyReportes.Controllers
         {
 
             UserIdentiy userIdentiy = HttpContext.Current.User.Identity as UserIdentiy;
-            if (userIdentiy == null || !userIdentiy.IsAuthenticated | userIdentiy.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+            if (userIdentiy == null || !userIdentiy.IsAuthenticated | userIdentiy.user.AccessLevel < Flags.AccessLevel.TI)
             {
                 return Content(HttpStatusCode.Unauthorized, "No está autorizado para acceder.");
             }
@@ -87,7 +87,7 @@ namespace DumyReportes.Controllers
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated
-                || genericIdentity.user == null || genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+                || genericIdentity.user == null  )
                 return Content(HttpStatusCode.Unauthorized, "No tiene permisos para realizar esta acción.");
 
 
@@ -95,7 +95,8 @@ namespace DumyReportes.Controllers
             return Ok(new
             {
                 token = genericIdentity.user.CurrentToke,
-                levelUser = (int)genericIdentity.user.AccessLevel * HIDING_FACTOR
+                levelUser = (int)genericIdentity.user.AccessLevel * HIDING_FACTOR,
+                levelName = (string) genericIdentity.user.AccessLevelName
 
             }); ;
 
@@ -123,7 +124,7 @@ namespace DumyReportes.Controllers
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
 
-            if (genericIdentity.user == null || genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+            if (genericIdentity.user == null || genericIdentity.user.AccessLevel < Flags.AccessLevel.TI)
                 return Content(HttpStatusCode.Unauthorized, "No tiene permisos para crear un usuario.");
 
             //Válida la data
@@ -153,7 +154,7 @@ namespace DumyReportes.Controllers
             user.IdUser = id;
 
             UserIdentiy identity = (UserIdentiy)HttpContext.Current.User.Identity;
-            if (identity == null || !identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+            if (identity == null || !identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.TI)
             {
                 return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar está acción.");
             }
@@ -196,7 +197,7 @@ namespace DumyReportes.Controllers
         {
 
             UserIdentiy identity = (UserIdentiy)HttpContext.Current.User.Identity;
-            if (identity == null || identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN) return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta acción.");
+            if (identity == null || identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.TI) return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta acción.");
 
 
             Flags.ErrorFlag errorFlag = _UserDataContext.Delete(id, out string error);
