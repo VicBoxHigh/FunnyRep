@@ -52,9 +52,8 @@ namespace DumyReportes.Data
                 Where UserName = @user and  Pass =  @pass and IsEnabled = 1  ;
  
             ";
-        //La usa el Token Validator
-
-        internal ErrorFlag CredentialsExist(string userName, string password, out User userResult, bool recursive = false)
+        //La usa el Login Validator Helper
+        internal ErrorFlag CredentialsExist(string userName, string password, out User userResult, out string errorResult)
         {
             userResult = null;
             ErrorFlag operationResult = ErrorFlag.ERROR_NOT_EXISTS;
@@ -64,7 +63,7 @@ namespace DumyReportes.Data
             command.Parameters.Add("@pass", System.Data.SqlDbType.VarChar).Value = password;
 
             //bad password?
-
+            errorResult = "";
 
             try
             {
@@ -73,6 +72,7 @@ namespace DumyReportes.Data
                 {
                     if (!reader.HasRows)
                     {
+                        errorResult = "Credenciales inválidas.";
                         operationResult = ErrorFlag.ERROR_NOT_EXISTS;
 
                     }
@@ -83,10 +83,11 @@ namespace DumyReportes.Data
                     }
                 }
 
-               
+
             }
             catch (SqlException ex)
             {
+                errorResult = "Error al intentar válidar credenciales.";
                 operationResult = ErrorFlag.ERROR_CONNECTION_DB;
             }
 
@@ -231,19 +232,25 @@ namespace DumyReportes.Data
 
             try
             {
-
+                using (command)
                 using (SqlDataReader sqlDataReader = command.ExecuteReader())
                 {
 
-                    if (!sqlDataReader.HasRows) return Flags.ErrorFlag.ERROR_NOT_EXISTS;
+                    if (!sqlDataReader.HasRows)
+                    {
+                        error = "Credenciales no validas";
+                        return Flags.ErrorFlag.ERROR_NOT_EXISTS;
+                    }
 
                     if (sqlDataReader.Read())
                     {
+
                         user = InstanceFromReader(sqlDataReader);
                         result = Flags.ErrorFlag.ERROR_OK_RESULT;
                     }
                     else
                     {
+                        error = "Error al leer datos, intente más tarde";
                         result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
                     }
 
@@ -272,7 +279,8 @@ namespace DumyReportes.Data
                    (Flags.AccessLevel)reader["Level"]
                );
 
-            if (user != null) { 
+            if (user != null)
+            {
                 user.IdUser = (int)reader["IdUser"];
                 user.Name = reader["U_Name"].ToString();
                 user.AccessLevelName = reader["A_Name"].ToString();
@@ -281,18 +289,18 @@ namespace DumyReportes.Data
             return user;
         }
 
+        /*
+                public static string QUERY_UPDATE_USER =
+                    @"
+                        UPDATE [dbo].[User]
+                           SET [NumEmpleado] = @NumEmpleado
+                              ,[UserName] = @UserName
+                              ,[Pass] = @Pass
+                              ,[IsEnabled] = @IsEnabled
+                              ,[Level] = @Level
+                         WHERE [User].IdUser = @IdUser
 
-        public static string QUERY_UPDATE_USER =
-            @"
-                UPDATE [dbo].[User]
-                   SET [NumEmpleado] = @NumEmpleado
-                      ,[UserName] = @UserName
-                      ,[Pass] = @Pass
-                      ,[IsEnabled] = @IsEnabled
-                      ,[Level] = @Level
-                 WHERE [User].IdUser = @IdUser
-
-                ";
+                        ";*/
 
         /*  public static Flags.ErrorFlag UpdateUser(User updatedUser, out string error)
           {
@@ -303,25 +311,38 @@ namespace DumyReportes.Data
             User updatedUser = reportObject as User;
             error = "";
             Flags.ErrorFlag result;
-            SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
-            command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = updatedUser.IdUser;
+            SqlCommand command = new SqlCommand("dbo.UpdateUserInfo", ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
 
-            command.Parameters.Add("@NumEmpleado", System.Data.SqlDbType.VarChar).Value = updatedUser.NumEmpleado;
-            command.Parameters.Add("@UserName", System.Data.SqlDbType.VarChar).Value = updatedUser.UserName;
-            command.Parameters.Add("@Pass", System.Data.SqlDbType.VarChar).Value = updatedUser.Pass;
-            command.Parameters.Add("@IsEnabled", System.Data.SqlDbType.Bit).Value = updatedUser.IsEnabled ? 1 : 0;
-            command.Parameters.Add("@Level", System.Data.SqlDbType.Int).Value = (int)updatedUser.AccessLevel;
+            command.Parameters.Add("@idUser", System.Data.SqlDbType.Int).Value = updatedUser.IdUser;
+
+            command.Parameters.Add("@numEmpleado", System.Data.SqlDbType.VarChar).Value = updatedUser.NumEmpleado;
+            command.Parameters.Add("@userName", System.Data.SqlDbType.VarChar).Value = updatedUser.UserName;
+            command.Parameters.Add("@pass", System.Data.SqlDbType.VarChar).Value = updatedUser.Pass;
+            command.Parameters.Add("@isEnabled", System.Data.SqlDbType.Bit).Value = updatedUser.IsEnabled ? 1 : 0;
+            command.Parameters.Add("@level", System.Data.SqlDbType.Int).Value = (int)updatedUser.AccessLevel;
 
             try
             {
                 int a = command.ExecuteNonQuery();
-                if (a == 0) result = Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS;
+                if (a == 0)
+                {
+                    result = Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS;
+
+                    error = "El registro no existe o fue cambiado, No se guardaron cambios.";
+                }
                 else result = Flags.ErrorFlag.ERROR_OK_RESULT;
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                result = ErrorFlag.ERROR_CONFLICT_CANT_DELETE;
+                error = "El usuario tiene ligado almenos 1 reporte, por lo tanto no es posible eliminarlo.";
+
             }
             catch (SqlException ex)
             {
-                error = ex.Message;
-                result = Flags.ErrorFlag.ERROR_CONNECTION_DB;
+                result = ErrorFlag.ERROR_DATABASE;
+                error = "Error desconocido en base de datos";
             }
 
 
@@ -338,8 +359,8 @@ namespace DumyReportes.Data
 
         public ErrorFlag Delete(int id, out string error)
         {
-            throw new NotImplementedException();
-            /*error = "";
+            //throw new NotImplementedException();
+            error = "";
             Flags.ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_DELETE_USER, ConexionBD.getConexion());
             command.Parameters.Add("@IdUser", System.Data.SqlDbType.Int).Value = id;
@@ -351,15 +372,20 @@ namespace DumyReportes.Data
                 result = ErrorFlag.ERROR_OK_RESULT;
 
             }
-            catch (SqlException ex)
+            catch (SqlException ex) when ( ex.Number == 547)
+            {
+                result = ErrorFlag.ERROR_CONFLICT_CANT_DELETE;
+                error = "El usuario tiene ligado almenos 1 reporte, por lo tanto no es posible eliminarlo.";
+
+            }
+            catch(SqlException ex)
             {
                 result = ErrorFlag.ERROR_DATABASE;
-                error = ex.Message;
-
+                error = "Error desconocido en base de datos";
             }
 
 
-            return result;*/
+            return result;
         }
 
         public static string QUERY_EXIST_USER =
@@ -367,7 +393,7 @@ namespace DumyReportes.Data
         [Obsolete]
         public ErrorFlag Exists(int id, out string error)
         {
-            throw  new NotImplementedException();
+            throw new NotImplementedException();
             /*error = "";
             ErrorFlag result;
             SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
@@ -402,30 +428,30 @@ namespace DumyReportes.Data
         public ErrorFlag Exist(string userName, string pass, out User user)
         {
             throw new NotImplementedException();
-           /* ErrorFlag result;
-            SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
-            command.Parameters.Add("@IdUser", System.Data.SqlDbType.VarChar).Value = userName;
-            command.Parameters.Add("@Pass", System.Data.SqlDbType.VarChar).Value = pass;
-            user = null;
-            result = ErrorFlag.ERROR_OK_RESULT;
-            try
-            {
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
+            /* ErrorFlag result;
+             SqlCommand command = new SqlCommand(QUERY_UPDATE_USER, ConexionBD.getConexion());
+             command.Parameters.Add("@IdUser", System.Data.SqlDbType.VarChar).Value = userName;
+             command.Parameters.Add("@Pass", System.Data.SqlDbType.VarChar).Value = pass;
+             user = null;
+             result = ErrorFlag.ERROR_OK_RESULT;
+             try
+             {
+                 using (SqlDataReader reader = command.ExecuteReader())
+                 {
 
-                    if (reader.HasRows)
-                        user = InstanceFromReader(reader) as User;
-                    else result = ErrorFlag.ERROR_NOT_EXISTS;
-                }
+                     if (reader.HasRows)
+                         user = InstanceFromReader(reader) as User;
+                     else result = ErrorFlag.ERROR_NOT_EXISTS;
+                 }
 
-            }
-            catch (SqlException ex)
-            {
-                result = ErrorFlag.ERROR_CONNECTION_DB;
-            }
+             }
+             catch (SqlException ex)
+             {
+                 result = ErrorFlag.ERROR_CONNECTION_DB;
+             }
 
 
-            return result;*/
+             return result;*/
 
         }
 

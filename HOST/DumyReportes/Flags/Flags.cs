@@ -30,7 +30,10 @@ namespace DumyReportes.Flags
         ERROR_NO_FILE_TO_READ,
         ERROR_UNAUTHORIZED_ACCESS,
         ERROR_PARSE,
-        FATAL
+        FATAL,
+        ERROR_NULL_TOKEN,
+        ERROR_CONFLICT_CANT_DELETE,
+        UNKNOWN
     }
 
     public enum ReportStatus

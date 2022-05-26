@@ -109,7 +109,9 @@ const failPromiseLog = (xhr, textStatus) => {
     localStorage.removeItem(KEY_TOKEN_NAME);
     localStorage.removeItem("LevelUser");
     if (xhr)
-        alert(xhr.status == 401 ? "Credenciales inválidas" : "Error al enviar la solicitud al servidor.")
+        alert(xhr.responseText ? xhr.responseText:
+            (xhr.status == 401 ? "Credenciales inválidas" : "Error al enviar la solicitud al servidor.")
+        );
 
 }
 

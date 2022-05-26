@@ -30,6 +30,14 @@ const fillReportTypesNewRep = (selecToSet) => {
 }
 
 
+const checkSession = () => {
+    let token = localStorage.getItem(KEY_TOKEN_NAME)
+    if (!token) {
+        alert("Inicie sesión primero.");
+        window.href = './Login'
+    }
+    return token;
+}
 
 const getReporTypes = (token) => {
 
@@ -50,7 +58,7 @@ const getReporTypes = (token) => {
             "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
             "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
         },
-      
+
 
     });
 

@@ -86,7 +86,9 @@ namespace DumyReportes.Controllers
 
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
-            if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
+            if (genericIdentity == null || !genericIdentity.IsAuthenticated
+                || genericIdentity.user == null || genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+                return Content(HttpStatusCode.Unauthorized, "No tiene permisos para realizar esta acción.");
 
 
 
@@ -111,6 +113,8 @@ namespace DumyReportes.Controllers
         }
 
         // POST: api/User
+        [HttpPost]
+        [IdentityBasicAuthentication]
 
         public IHttpActionResult Post(/*[FromBody]*/User user)
         {
@@ -119,7 +123,7 @@ namespace DumyReportes.Controllers
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
 
-            if (genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+            if (genericIdentity.user == null || genericIdentity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
                 return Content(HttpStatusCode.Unauthorized, "No tiene permisos para crear un usuario.");
 
             //Válida la data
@@ -139,29 +143,83 @@ namespace DumyReportes.Controllers
         //including user disabling 
         // PUT: api/User/5
         [HttpPut]
+        [IdentityBasicAuthentication]
 
         public IHttpActionResult Put(int id, [FromBody] User user)
         {
+
             bool isValid = user.Validate();
             if (!isValid) return Content(HttpStatusCode.BadRequest, Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
             user.IdUser = id;
 
+            UserIdentiy identity = (UserIdentiy)HttpContext.Current.User.Identity;
+            if (identity == null || !identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN)
+            {
+                return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar está acción.");
+            }
+
             Flags.ErrorFlag result = _UserDataContext.Update(user, out string error);
-
-            if (result == Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS)
-                return Content(HttpStatusCode.NoContent, result.ToString());
+            HttpStatusCode resultCode;
 
 
-            return Ok();
+            switch (result)
+            {
+
+                case Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS:
+                    resultCode = HttpStatusCode.NotModified;
+                    break;
+                case Flags.ErrorFlag.ERROR_OK_RESULT:
+                    resultCode = HttpStatusCode.OK;
+                    break;
+                case Flags.ErrorFlag.ERROR_CONFLICT_CANT_DELETE:
+                    resultCode = HttpStatusCode.Conflict;
+                    break;
+                case Flags.ErrorFlag.ERROR_DATABASE:
+                    resultCode = HttpStatusCode.NotModified;
+                    break;
+                default:
+                    resultCode = HttpStatusCode.InternalServerError;
+                    break;
+
+            }
+
+            return Content(resultCode, error);
+
+
+
 
         }
 
         [HttpDelete]
-        // DELETE: api/User/5
-
+        [IdentityBasicAuthentication]
         public IHttpActionResult Delete(int id)
         {
-            return Content(HttpStatusCode.NotImplemented, "Esta función no ha sido creada´aún.");
+
+            UserIdentiy identity = (UserIdentiy)HttpContext.Current.User.Identity;
+            if (identity == null || identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.SUPERADMIN) return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta acción.");
+
+
+            Flags.ErrorFlag errorFlag = _UserDataContext.Delete(id, out string error);
+
+            HttpStatusCode resultCode;
+            switch (errorFlag)
+            {
+                case Flags.ErrorFlag.ERROR_OK_RESULT:
+                    resultCode = HttpStatusCode.OK;
+                    break;
+                case Flags.ErrorFlag.ERROR_CONFLICT_CANT_DELETE:
+                    resultCode = HttpStatusCode.Conflict;
+                    break;
+                case Flags.ErrorFlag.ERROR_DATABASE:
+                    resultCode = HttpStatusCode.NotModified;
+                    break;
+                default:
+                    resultCode = HttpStatusCode.InternalServerError; //Flags.ErrorFlag.UNKNOWN;
+                    break;
+            }
+
+            return Content(resultCode, error);
+
             //Flags.ErrorFlag result = _UserDataContext.Delete(id, out string error);
 
         }

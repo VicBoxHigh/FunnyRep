@@ -49,40 +49,54 @@ namespace DumyReportes.Util
          */
 
         public static int MINUTES_VALID_TOKEN = 120;
-        public static ErrorFlag ValidateToke(string token, out User user)
+        public static ErrorFlag ValidateToke(string token, out User user, out string errorResult )
         {
+            
             user = null;
-            if (String.IsNullOrEmpty(token)) return ErrorFlag.ERROR_INVALID_TOKEN;
+            errorResult = "Error desconocido al validar credenciales.";
+            if (String.IsNullOrEmpty(token))
+            {
+                errorResult = "Sesión inválida, inicie de nuevo. ";
+
+                return ErrorFlag.ERROR_INVALID_TOKEN;
+            }
             byte[] tokenBytesDecrypted = null;
             try
             {
                 tokenBytesDecrypted = Convert.FromBase64String(token);
 
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
+                errorResult = "Error al leer la sesión, inicie de nuevo.";
                 return ErrorFlag.ERROR_PARSE;
             }
 
-            if (tokenBytesDecrypted == null || tokenBytesDecrypted.Length == 0) return ErrorFlag.ERROR_INVALID_TOKEN;
+
+            if (tokenBytesDecrypted == null || tokenBytesDecrypted.Length == 0)
+            {
+                errorResult = "Sesión en mal estado.";
+                return ErrorFlag.ERROR_INVALID_TOKEN;
+            }
+
 
             string tokenStr = Encoding.UTF8.GetString(tokenBytesDecrypted);
 
-            ErrorFlag resultUFAT = UserFromArrayToken(tokenStr, out User userCredentialsLogin);
+            ErrorFlag resultUFAT = UserFromArrayToken(tokenStr, out User userCredentialsLogin, out errorResult);
+
             if (resultUFAT != ErrorFlag.ERROR_OK_RESULT) return resultUFAT;//
 
             UserDataContext userDataCtx = new UserDataContext();
 
             IReportObject userRepObj = null;//basado en el 
-            ErrorFlag resultGetUser = userDataCtx.Get(userCredentialsLogin.IdUser, out userRepObj, out string error);
+            ErrorFlag resultGetUser = userDataCtx.Get(userCredentialsLogin.IdUser, out userRepObj, out errorResult);
 
             if (resultGetUser != ErrorFlag.ERROR_OK_RESULT) return resultGetUser;
 
 
-
-
             if (!UserCredentialAgainstDB(userCredentialsLogin, userRepObj))
             {
+                errorResult = "Error al verificar credenciales, inicie sesión nuevamente";
                 return ErrorFlag.ERROR_INVALID_TOKEN;
             }
             user = userRepObj as User;
@@ -112,7 +126,7 @@ namespace DumyReportes.Util
 
         }
 
-        private static ErrorFlag UserFromArrayToken(string token, out User user)
+        private static ErrorFlag UserFromArrayToken(string token, out User user, out string result)
         {
 
             user = null;
@@ -120,7 +134,11 @@ namespace DumyReportes.Util
 
 
 
-            if (tokenProperties == null || tokenProperties.Length == 0 || tokenProperties.Length != 7) return ErrorFlag.ERROR_INVALID_TOKEN;
+            if (tokenProperties == null || tokenProperties.Length == 0 || tokenProperties.Length != 7)
+            {
+                result = "Error al interpretar datos de sesión, inicie de nuevo";
+                return ErrorFlag.ERROR_INVALID_TOKEN;
+            }
             DateTime dateTime = DateTime.Parse(tokenProperties[3]);
 
             DateTime tokenExpiration = dateTime.AddMinutes(120);
@@ -130,16 +148,10 @@ namespace DumyReportes.Util
             //if(resultCompare <=0) //DateNow es igual o menor que la fecha de expiration del token.
             if (resultCompare > 0)//DateNow sobrepasa el expiration date del token
             {
+                result = "La sesión expiró";
                 return ErrorFlag.ERROR_EXPIRED_TOKEN;
             }
-
-            /*if (Math.Abs(dateTime.Subtract(DateTime.Now).TotalMinutes) > MINUTES_VALID_TOKEN)
-            {
-                return ErrorFlag.ERROR_EXPIRED_TOKEN;
-            }
-*/
-
-  
+             
             user = new User()
             {
                 IdUser = int.Parse(tokenProperties[0]),
@@ -150,9 +162,7 @@ namespace DumyReportes.Util
 
 
             };
-
-
-
+            result = "";
             return ErrorFlag.ERROR_OK_RESULT;
 
         }

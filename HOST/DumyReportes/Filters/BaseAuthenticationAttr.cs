@@ -49,27 +49,54 @@ namespace DumyReportes.Filters
                 var user = userPass.Item1;
                 var pass = userPass.Item2;
 
-                Task<IPrincipal> task = AuthenticateAsync(context, user, pass, cancellationToken);
+                Task<Dictionary<string, object>> task = AuthenticateAsync(context, user, pass, cancellationToken);
 
-                principal = await task;
+                //principal = await task;
+                Dictionary<string, object> resultAuth = await task;
+                object resultError = "";
+                resultAuth.TryGetValue("error", out resultError);
+                if (!String.IsNullOrEmpty(resultError as string))
+                {
+                    context.ErrorResult = new AuthenticationFailureResult(resultError as string, request);
+                    return;
+                }
+
+                resultAuth.TryGetValue("IPrincipal", out object principalObj);
+                principal = principalObj as IPrincipal;
+
+
+
 
             }
-            else if(authorization.Scheme.Equals("Bearer"))//Any othe actiona
+            else if (authorization.Scheme.Equals("Bearer"))//Any othe actiona
             {
                 //string token = Convert.FromBase64String(authorization.Parameter);
 
-                principal = await AuthenticateAsync(context, authorization.Parameter,cancellationToken);
+                //principal
+                Dictionary<string, object> result = await AuthenticateAsync(context, authorization.Parameter, cancellationToken);
+                object resultError = "";
+                result.TryGetValue("error", out resultError);
+                if (!String.IsNullOrEmpty(resultError as string))
+                {
+                    context.ErrorResult = new AuthenticationFailureResult(resultError as string, request);
+                    return;
+                }
+
+                result.TryGetValue("IPrincipal", out object principalObj);
+                principal = principalObj as IPrincipal;
+
+
             }
             else //cualquier otra
             {
                 return;
             }
 
-           
 
-           
 
-           
+
+
+
 
             //https://racineennis.ca/2018/07/02/how-to-basic-authentication-filter-aspnet-web-api
             //https://www.youtube.com/watch?v=BZnmhyZzKgs
@@ -77,12 +104,12 @@ namespace DumyReportes.Filters
 
             //Task myTask = AuthenticateAsync(context, user, pass, cancellationToken);
 
-            if(principal == null)
+            if (principal == null)
             {
                 //Si la autenticación fue correcta, se tendrá un obj principal;
                 context.ErrorResult = new AuthenticationFailureResult("Credenciales inválidas.", request);
 
-                
+
             }
             else
             {
@@ -92,12 +119,12 @@ namespace DumyReportes.Filters
             }
 
 
-         
+
         }
 
-        public abstract Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string user, string pass, CancellationToken cancellationToken);
+        public abstract Task<Dictionary<string, object>> AuthenticateAsync(HttpAuthenticationContext context, string user, string pass, CancellationToken cancellationToken);
 
-        public abstract Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken);
+        public abstract Task<Dictionary<string, object>> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken);
 
 
 
@@ -175,13 +202,6 @@ namespace DumyReportes.Filters
             //hace challenge con auth basic,
             context.ChallengeWith("Basic", parameter);
         }
-        private void SetPrincipal(IPrincipal principal)
-        {
-            Thread.CurrentPrincipal = principal;
-            if (HttpContext.Current != null)
-            {
-                HttpContext.Current.User = principal;
-            }
-        }
+ 
     }
 }

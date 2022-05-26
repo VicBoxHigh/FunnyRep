@@ -294,48 +294,25 @@ AS
 GO
 
 
---UPDATE REPORT
-/*
-CREATE PROCEDURE UpdateReport
-	@idReport int,
-	@idStatus int,
-	@idReportType int
+
+CREATE PROCEDURE dbo.UpdateUserInfo 
+	@idUser int,
+	@numEmpleado varchar(25),
+	@userName varchar(25),
+	@pass varchar(25),
+	@name varchar(60),
+	@isEnabled bit,
+	@userLevel int
 AS
 
-	
-	UPDATE [dbo].[Report]
-	SET 
-		[IdStatus] = @idStatus,
-		[IdReportType] = @idReportType
-
-	WHERE [IdReport] = @idReport;
-
-
-	DECLARE @oldRepStatus int;
-	SET @oldRepStatus = (SELECT TOP(1) IdReportType FROM Report WHERE IdReport = @idReport);
-	
-	DECLARE @tempTitle varchar(50);
-
-	--Cambia el estado con respecto al actual
-	IF(@idStatus != (SELECT TOP(1) IdStatus FROM Report WHERE  IdReport = @idReport ))
-	BEGIN 
-
-		SET @tempTitle = CONCAT('El estado del reporte cambió a: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @idReportType) );
-		--Generar entry dtl
-		EXEC InsertDtlEntry @idReport, @tempTitle , '' , GETDATE, 0, 1	;	
-	END
+	UPDATE TOP(1) [dbo].[User]
+	   SET [NumEmpleado] = @numEmpleado,
+		  ,[UserName] = @userName,
+		  ,[Pass] = @pass,
+		  ,[Name] = @name,
+		  ,[IsEnabled] = @isEnabled,
+		  ,[Level] = @userLevel
+	 WHERE [User].IdUser  = @idUser
 
 
-	DECLARE @oldRepType int;
-	set @oldRepType = (SELECT TOP(1) IdReportType FROM Report WHERE IdReport = @idReport);
-
-	IF(@idReportType != @oldRepType)
-	BEGIN
-	
-		SET @tempTitle = CONCAT ('El reporte se re-clasificó a tipo: ',( SELECT TOP(1) ReportType.[Name] FROM ReportType Where IdReportType = @idReportType) );
-		EXEC InsertDtlEntry @idReport, @tempTitle, '', GETDATE ,0,1;
-	END
-
-
-
-GO*/
+GO

@@ -53,6 +53,7 @@ const checkSessionLevel = () => {
         window.location.href = "./Login"
         return
     }
+    
 
     //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
     //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");

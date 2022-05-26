@@ -22,13 +22,15 @@ namespace DumyReportes.Filters
 
 
         //credentials are got on super, here just need to validate them against DB or your storage to know the 
-        public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string userName, string pass, CancellationToken cancellationToken)
+        public override async Task<Dictionary<string, object>> AuthenticateAsync(HttpAuthenticationContext context, string userName, string pass, CancellationToken cancellationToken)
         {
             LoginValidatorHelper loginValidatorHelper = new LoginValidatorHelper(userName, pass);
             GenericPrincipal genericPrincipal = null;
+            Dictionary<string, object> result = new Dictionary<string, object>();
+
             try
             {
-                ErrorFlag resultValidate = loginValidatorHelper.Validate(out User user);
+                ErrorFlag resultValidate = loginValidatorHelper.Validate(out User user, out string error);
                 if (resultValidate == ErrorFlag.ERROR_OK_RESULT)//false? entonces no access a user, 
                 {
                     genericPrincipal = createPrincipal(user, "Basic");
@@ -36,6 +38,8 @@ namespace DumyReportes.Filters
                     user.CurrentToke = token;
 
                 }
+                result.Add("IPrincipal", genericPrincipal);
+                result.Add("error", error);
 
 
             }
@@ -47,7 +51,7 @@ namespace DumyReportes.Filters
 
 
 
-            return genericPrincipal;
+            return result;
 
         }
 
@@ -62,28 +66,40 @@ namespace DumyReportes.Filters
             return genericPrincipal;
         }
 
-        public override async Task<IPrincipal> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken)
+        delegate int MyDelegatte(int a, int b);
+
+        public override async Task<Dictionary<string, object>> AuthenticateAsync(HttpAuthenticationContext context, string token, CancellationToken cancellationToken)
         {
 
-            ErrorFlag resultValidate = TokenHelper.ValidateToke(token, out User user);
+            ErrorFlag resultValidate = TokenHelper.ValidateToke(token, out User user, out string resultError);
 
+            Dictionary<string, object> result = new Dictionary<string, object>();
 
             GenericPrincipal genericPrincipal = null;
 
+            Dictionary<string, MyDelegatte> mudo;
 
-            if (resultValidate != ErrorFlag.ERROR_OK_RESULT) return genericPrincipal;//null 
+
+            if (resultValidate != ErrorFlag.ERROR_OK_RESULT || user == null)
+            {
+
+                result.Add("error", resultError);
+                result.Add("IPricipal", genericPrincipal);//principal explicit null
+
+                return result;//null 
+            }
             //si hay error parse, o expiration del token,  retornará Unauthorized de igual manera..
 
             if (user != null)
             {
-                genericPrincipal = createPrincipal(user, "Bearer");//Solo usa bearer porque está función solo es llamada cuando hay token
-            }
-            else
-            {
-               
+
+                //genericPrincipal = createPrincipal(user, "Bearer");  //Solo usa bearer porque está función solo es llamada cuando hay token
+                result.Add("IPrincipal", createPrincipal(user, "Bearer"));
+                result.Add("error", "");
             }
 
-            return genericPrincipal;
+
+            return result;
         }
 
 

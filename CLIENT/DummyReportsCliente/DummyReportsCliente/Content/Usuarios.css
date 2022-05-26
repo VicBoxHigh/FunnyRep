@@ -1,23 +1,24 @@
 ﻿@import 'https://fonts.googleapis.com/css?family=Montserrat:300,400,700';
+/*ESTO ES UN MOBILE FIRST, 
+    LOS ESTILOS SE APLICARÁN COMO MOBILE 
+    Y LOS BREAKPOINTS SERÁN para una resolución mayor a 520xp
 
+*/
 body {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-
     padding: 0 0;
     font-family: Montserrat, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     color: #444;
-    
 }
-.virtual-body{
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    width:100%;
-
+.virtual-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 
@@ -110,7 +111,7 @@ tr:hover > .containerActionsRow {
 }*/
 /*////*/
 table {
-    margin: 1em 0;
+   /* margin: 1em 0;*/
     max-width: 98%;
 }
 
@@ -118,7 +119,10 @@ table {
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
         max-width: 100%;
-        overflow:hidden;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: repeat( 2, minmax(50px, 1fr) );
+        padding: 1em 0.5em;
     }
 
     table th {
@@ -129,6 +133,10 @@ table {
         display: block;
     }
 
+        table td > * {
+            margin: 0.3em 0
+        }
+
         table td:first-child {
             padding-top: 0.5em;
         }
@@ -138,12 +146,18 @@ table {
         }
 
         table td:before {
-            content: attr(data-th) ": ";
+            content: attr(data-th);
             font-weight: bold;
-           /* width: 6.5em;*/
+            /* width: 6.5em;*/
             display: block;
         }
 
+        table td:before {
+        
+            margin:0.3em 0;
+        
+        }
+/*Cuando la pantalla mide al menos 520px, el before se remueve*/
 @media (min-width: 520px) {
     table td:before {
         display: none;
@@ -153,8 +167,16 @@ table {
 table th, table td {
     text-align: left;
 }
-
+/*Cuando la pantalla mide al menos 520px, */
 @media (min-width: 520px) {
+    table tr {
+        display: block;
+    }
+
+        table tr > input[type="button"] {
+            display: block;
+        }
+
     table th, table td {
         display: table-cell;
         padding: 1.25em 0.1em;
