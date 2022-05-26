@@ -168,11 +168,12 @@
     <Content Include="Content\normalize.css" />
     <Content Include="Content\NuevoReporte.css" />
     <Content Include="Content\NuevoReporte.js" />
-    <Content Include="Content\NuevoReporte_Cam.js" />
-    <Content Include="Content\NuevoReporte_Eventos.js" />
-    <Content Include="Content\NuevoReporte_init.js" />
-    <Content Include="Content\NuevoReporte_render.js" />
-    <Content Include="Content\NuevoReport_HeadExpand.js" />
+    <Content Include="Content\Report\Reporte_newReport.js" />
+    <Content Include="Content\Report\Reporte_Eventos.js" />
+    <Content Include="Content\Report\Reporte_HeadsPane.js" />
+    <Content Include="Content\Report\Reporte_init.js" />
+    <Content Include="Content\Report\Report_DtlEnries.js" />
+    <Content Include="Content\Report\Report_HeadExpand.js" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Usuarios.css" />
     <Content Include="Content\Usuarios.js" />

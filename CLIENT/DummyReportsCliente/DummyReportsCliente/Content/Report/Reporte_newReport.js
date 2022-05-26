@@ -1,4 +1,6 @@
-﻿const btnGuardar = document.getElementById("btnGuardar");
+﻿const containerNewRep = $("#cntNewRep");
+
+const btnGuardar = document.getElementById("btnGuardar");
 const btnGetLocation = $("#btnGetLocation");
 
 const txtTitle = $("#txtTitle");
@@ -156,7 +158,7 @@ const stopCam = () => {
 }
 
 
-const initNewReportView = () => {
+const initNewReportView = async () => {
 
 
     if (localStorage.getItem(REPORT_TYPE_NAME)) {
@@ -171,7 +173,9 @@ const initNewReportView = () => {
     }
 
     try {
-        let result = await getReporTypes(currentToken);
+        let taskRepTypes = getReporTypes(currentToken);
+        let result = await taskRepTypes;
+
         if (result.status == 200 || result.status == 201 || result.status == 202) {
 
             localStorage.setItem(REPORT_TYPE_NAME, JSON.stringify(data.reportTypes));

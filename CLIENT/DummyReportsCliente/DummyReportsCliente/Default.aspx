@@ -20,20 +20,20 @@
 
             <div id="cntRepHeads" class="container-heads">
 
-                <input type="radio" id="checkAsignados" name="AsginacionStat" value="Asignados">
+                <input type="radio" id="checkAsignados" name="AsginacionStat" checked  value="1">
                 <label for="checkAsignados">Asignados</label><br>
-                <input type="radio" id="checkSinAsignar" name="AsginacionStat" value="No asignados">
+                <input type="radio" id="checkSinAsignar" name="AsginacionStat" value="0">
                 <label for="checkSinAsignar">No asignados</label><br>
 
 
-                <input type="checkbox" id="checkEspera" name="repStatus" value="Espera">
+                <input type="checkbox" id="checkEspera" name="repStatus" checked  value="0">
                 <label for="checkEspera">En espera</label><br>
 
-                <input type="checkbox" id="checkProceso" name="repStatus" value="Proceso">
+                <input type="checkbox" id="checkProceso" name="repStatus" checked value="1">
                 <label for="checkProceso">En proceso</label><br>
 
-                <input type="checkbox" id="checkCompletado" name="repStatus" value="Completo">
-                <label for="checkCompletado">Copleatados</label><br>
+                <input type="checkbox" id="checkCompletado" name="repStatus" checked value="2">
+                <label for="checkCompletado">Completados</label><br>
 
 
 
@@ -52,7 +52,7 @@
 
         <div id="cntNewRep" class="containerNewReport">
 
-            <input id="txtTitle" type="text" name="title" id="titleReport" placeholder="Titulo" />
+            <input id="txtTitle" type="text" name="title"  placeholder="Titulo" />
 
             <textarea type="text" rows="5" cols="50" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
 
@@ -84,7 +84,7 @@
 
                 <div class="container-headexpand__EmpleadoNotif"> </div>
                 <div class="container-headexpand__description"> </div>
-                <select name="selRepType_Dtl" id="selRepType_Dtl">
+                <select name="selRepType_Dtl" class="selRepType_Dtl" id="selRepType_Dtl">
                 </select>
 
                 <div class="container-headexpand__location">
@@ -129,11 +129,14 @@
     <!-- <script src="webcam.js" type="text/javascript"></script> -->
     <script src="Content/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="Content/webcam-easyV.js"></script>
+
     <script type="text/javascript" src="Content/Util.js" ></script>
-    <script src="Content/NuevoReporte_Cam.js" type="text/javascript"></script>
-    <script src="Content/NuevoReporte_init.js" type="text/javascript"></script>
-    <script src="Content/NuevoReport_HeadExpand.js" type="text/javascript"></script>
-    <script src="Content/NuevoReporte_Eventos.js" type="text/javascript"></script>
+    <script type="text/javascript" src="Content/Report/Reporte_newReport.js"></script>
+    <script src="Content/Report/Reporte_init.js" type="text/javascript"></script>
+    <script src="Content/Report/Reporte_HeadsPane.js" type="text/javascript"></script>
+    <script src="Content/Report/Report_HeadExpand.js" type="text/javascript"></script>
+    <script src="Content/Report/Report_DtlEnries.js" type="text/javascript"></script>
+    <script src="Content/Report/Reporte_Eventos.js" type="text/javascript"></script>
     <script src="Content/NuevoReporte.js" type="text/javascript"></script>
 
 </body>

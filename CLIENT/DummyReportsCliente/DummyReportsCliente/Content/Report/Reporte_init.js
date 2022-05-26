@@ -1,20 +1,9 @@
 ﻿
-const containerNewRep = $("#cntNewRep");
-const containerRepDtl = $("#cntRepDtl");
 
 const btnToogleNewRep = $("#btnTogleNewRep")
 
-const repHeadsContainer = $("#cntRepHeads");
 
-
-const txtRepDtlUserInput = $("#txtRepDtlUserInput")
-const btnSendRepDtlUpdate = $("#btnSendRepDtlUpdate")
-
-const selStatusRep = $("#selStat");
-const btnSaveStatus = $("#btnSaveStatus");
-
-
-
+ 
 //const selRepType_Dtl = $("#selRepType_Dtl");
 
 //INIT UI - Según el usuario
@@ -45,15 +34,41 @@ const btnSaveStatus = $("#btnSaveStatus");
 //Muestra todos los filtros
 
 
+
+btnToogleNewRep.on("click", () => {
+
+    if (containerNewRep.hasClass("no-render")) {
+
+        containerNewRep.removeClass("no-render");
+
+        containerRepDtl.addClass("no-render")
+        btnToogleNewRep.val("Detalle")
+        initCam();
+        initNewReportView();
+    }
+    else {
+
+        containerNewRep.addClass("no-render");
+
+        containerRepDtl.removeClass("no-render")
+
+        btnToogleNewRep.val("Nuevo Reporte");
+        stopCam();
+
+    }
+
+});
+
+
 const checkSessionLevel = () => {
     let lu = localStorage.getItem("LevelUser");
 
-    if (!lu ) {
+    if (!lu) {
 
         window.location.href = "./Login"
         return
     }
-    
+
 
     //si es un usuario publico, podrá hacer toogle a la ventana de nuevo reporte.
     //btnToogleNewRep.prop("display", lu == 0 ? "block" : "none");
@@ -82,5 +97,3 @@ const checkSessionLevel = () => {
     }
 
 }
-
-

@@ -1,4 +1,6 @@
-﻿//Incluye inicialización de todos los elementos del header del reporte
+﻿const containerRepDtl = $("#cntRepDtl");
+
+//Incluye inicialización de todos los elementos del header del reporte
 //he = HeadExpand 
 
 const heTitle = $(".container-headexpand__title");
@@ -12,11 +14,14 @@ const heStatus = $(".container-headexpand__status");
 const heNotifiedDT = $(".container-headexpand__notifiedDT");
 const heInicioDT = $(".container-headexpand__InicioDt");
 const heFinDT = $(".container-headexpand__FinDt");
-const heEvidencePic = (".container-headexpand__EvidencePic");
+const heEvidencePic = $(".container-headexpand__EvidencePic");
 
 
+const selStatusRep = $("#selStat");
+const btnSaveStatus = $("#btnSaveStatus");
 
-const reFillReportDtl = (individualRepHead, targetHead) => {
+
+const refillReportHeadExpand = (individualRepHead, targetHead) => {
     let statusRepStr = individualRepHead.IdStatus == 0 ? "EN ESPERA" : individualRepHead.IdStatus == 1 ? "EN PROCESO" : "COMPLETADA";
 
     let dateRep = new Date(individualRepHead.DTCreation);
@@ -29,9 +34,9 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
 
     heTitle.text(individualRepHead.Title);
     heIdReport.text(individualRepHead.IdReport);
-    heNumEmpleadoWhoNotif = individualRepHead.UserWhoNotified.NumEmpleado ?
-                            "# Nómina: " + individualRepHead.UserWhoNotified.NumEmpleado :
-                            '';
+    heNumEmpleadoWhoNotif.text(individualRepHead.UserWhoNotified.NumEmpleado ?
+        "# Nómina: " + individualRepHead.UserWhoNotified.NumEmpleado :
+        '');
     heWhoNotif.text("Notificó:" + individualRepHead.UserWhoNotified.Name);
     heDescription.text(individualRepHead.Description);
     //heSelectReportType .clear y append opstions
@@ -60,10 +65,24 @@ const reFillReportDtl = (individualRepHead, targetHead) => {
     btnSaveStatus.on("click", (event) => statusClasifChange(event, individualRepHead));
 
     heSelectReportType.off("change")
-    heSelectReportType.on("change", (event) => statusClasifChange(event,individualRepHead))
+    heSelectReportType.on("change", (event) => statusClasifChange(event, individualRepHead))
 
 
 }
+
+
+
+const clearReportDtl = () => {
+
+    containerRepDtl.children(".container-reportDtlEntries").children("container-reportDtlEntry ").remove();
+
+    let containerHeadExpanded = containerRepDtl.children(".container-headexpand");
+
+    containerHeadExpanded.children().children().remove();
+
+}
+
+
 
 const statusClasifChange = async (event, individualRepHead) => {
     let task = saveStatus(individualRepHead);
@@ -78,3 +97,39 @@ const statusClasifChange = async (event, individualRepHead) => {
 }
 
 
+
+//Guarda el status del reporte
+const saveStatus = (individualRepHead) => {
+    let currentToken = checkSession();
+
+    let userLvl = localStorage.getItem("LevelUser");
+    
+    if (!userLvl || userLvl == 0) alert("No tiene permiso para realizar esta acción.");
+
+    let newClasif = heSelectReportType.val();
+
+    let newStatus = selStatusRep.val();
+
+
+    //individualRepHead.IdStatus = selStatusRep.val();
+
+    return $.ajax({
+        type: "PUT",
+        url: API_URL + `api/Report?id=${individualRepHead.IdReport}&newClasif=${newClasif}&newStatus=${newStatus}`,
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        data: d,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
+
+    })
+}

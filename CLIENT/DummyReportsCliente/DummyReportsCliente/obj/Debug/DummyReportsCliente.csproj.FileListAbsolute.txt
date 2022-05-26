@@ -78,6 +78,7 @@ C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyRepo
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\System.Web.WebPages.Razor.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\System.Web.Optimization.resources.dll
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\bin\es\Microsoft.AspNet.FriendlyUrls.resources.dll
+C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.AssemblyReference.cache
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CoreCompileInputs.cache
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.csproj.CopyComplete
 C:\Users\progjun2\source\repos\DumyReportes\CLIENT\DummyReportsCliente\DummyReportsCliente\obj\Debug\DummyReportsCliente.dll

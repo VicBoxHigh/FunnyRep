@@ -2,6 +2,9 @@
 
 const REPORT_TYPE_NAME = "REPORT_TYPES";
 const KEY_TOKEN_NAME = "SESSIONTOKEN";
+const REPORTS_ASIGNADOS_NAME = "REPASIGNADOS";
+const REPORTS_NO_ASIGNADOS_NAME = "REPNOASIGNADOS"
+
 
 //objeto date a string
 const getDateStr = (date) => {
@@ -39,7 +42,10 @@ const checkSession = () => {
     return token;
 }
 
-const getReporTypes = (token) => {
+
+
+
+const getReporTypes =   (token) => {
 
 
     return $.ajax({
