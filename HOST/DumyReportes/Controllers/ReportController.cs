@@ -85,29 +85,6 @@ namespace DumyReportes.Controllers
 
         }
 
-        //Get specific Header report by ID, detail report data
-        //hould report have the title?
-        // GET: api/Report/5
-      /*  public IHttpActionResult Get(int id)
-        {
-            if (id < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
-
-            Flags.ErrorFlag resultGetReporDetail = _ReportDataContext.Get(id, out IReportObject reportObj, out string error);
-
-
-            if (resultGetReporDetail != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, resultGetReporDetail.ToString());
-
-
-            return Ok(
-                new
-                {
-                    report = reportObj
-                }
-                );
-
-
-        }
-*/
 
         //Get reports ByOwnerId
         //Get reports ByWhoNotifier
@@ -169,33 +146,12 @@ namespace DumyReportes.Controllers
         }
 
 
-        /*  // PUT: api/Report/5
-          [ObsoleteAttribute("Nuevo metodo")]
-          public IHttpActionResult Put(int id, [FromBody] Report report)
-          {
-              UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
-              if (user == null || !user.IsAuthenticated || user.user.AccessLevel.Equals(AccessLevel.PUBLIC)) return Unauthorized();
 
-              if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_VALIDATION_ENTITY.ToString());
-              if (id != report.IdReport) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
-
-
-              Flags.ErrorFlag resulUpdate = _ReportDataContext.Update(report, out string error);
-
-              if (resulUpdate != Flags.ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resulUpdate);
-
-
-
-              return StatusCode(HttpStatusCode.NoContent);
-
-
-          }*/
-
-
-        public IHttpActionResult Put([FromUri]int id, [FromUri] int newClasif, [FromUri] int newStatus)
+        //Los únicos cambios que puede haber en un reporte son la clasificación y el estado
+        public IHttpActionResult Put([FromUri] int id, [FromUri] int newClasif, [FromUri] int newStatus)
         {
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
-            if (user == null || !user.IsAuthenticated || user.user.AccessLevel.Equals(AccessLevel.PUBLIC)) return Unauthorized();
+            if (user == null || !user.IsAuthenticated || user.user.AccessLevel < AccessLevel.AGENT) return Unauthorized();
 
             if (newClasif > -1 || newStatus > -1)
             {
