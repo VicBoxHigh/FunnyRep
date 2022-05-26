@@ -62,10 +62,14 @@ const refillReportHeadExpand = (individualRepHead, targetHead) => {
     selStatusRep.val(individualRepHead.IdStatus);
 
     btnSaveStatus.off("click");
-    btnSaveStatus.on("click", (event) => statusClasifChange(event, individualRepHead));
+    btnSaveStatus.on("click",
+        (event) =>  statusClasifChange(targetHead, individualRepHead)
+    );
 
     heSelectReportType.off("change")
-    heSelectReportType.on("change", (event) => statusClasifChange(event, individualRepHead))
+    heSelectReportType.on("change",
+        (event) => statusClasifChange(targetHead, individualRepHead)
+    )
 
 
 }
@@ -84,7 +88,7 @@ const clearReportDtl = () => {
 
 
 
-const statusClasifChange = async (event, individualRepHead) => {
+const statusClasifChange = async (targetHead, individualRepHead) => {
     let task = saveStatus(individualRepHead);
 
     try {
@@ -103,7 +107,7 @@ const saveStatus = (individualRepHead) => {
     let currentToken = checkSession();
 
     let userLvl = localStorage.getItem("LevelUser");
-    
+
     if (!userLvl || userLvl == 0) alert("No tiene permiso para realizar esta acción.");
 
     let newClasif = heSelectReportType.val();
@@ -122,7 +126,7 @@ const saveStatus = (individualRepHead) => {
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
         },
-        data: d,
+
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": "true",
