@@ -149,12 +149,18 @@ namespace DumyReportes.Data
             try
             {
                 int a = command.ExecuteNonQuery();
-                if (a == 0)//ya existe
+                if (a == 0)
+                {//ya existe, no hubo modificaciones
                     result = ErrorFlag.ERROR_RECORD_EXISTS;
+                    error = "El usuario ya existe, no hubo cambios.";
+                }
                 if (a > 0)//siempre será 1
                     result = Flags.ErrorFlag.ERROR_OK_RESULT;
                 else //a<0
+                {
                     result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
+                    error = "No hubo cambios";
+                }
             }
             catch (SqlException ex)
             {
@@ -183,7 +189,7 @@ namespace DumyReportes.Data
               
 
             ";
-        //Where IdUser = @IdUser
+        //Trae todos los usuarios, esxcepto el #1, que corresponde al sistema.
         public ErrorFlag GetAll(out List<IReportObject> users, out string error)
         {
             error = "";
@@ -209,10 +215,21 @@ namespace DumyReportes.Data
 
                 }
             }
+            catch (IndexOutOfRangeException IOORE)
+            {
+                result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
+                error = "Error al leer la información de usarios.";
+            }
             catch (SqlException ex)
             {
                 result = Flags.ErrorFlag.ERROR_DATABASE;
-                error = ex.Message;
+                error = "Error al obtener los datos de empleados, DB.";
+            }
+            catch (Exception ex2)
+
+            {
+                result = ErrorFlag.UNKNOWN;
+                error = "Error desconodico al obtener empleados.";
             }
 
             return result;
@@ -372,13 +389,13 @@ namespace DumyReportes.Data
                 result = ErrorFlag.ERROR_OK_RESULT;
 
             }
-            catch (SqlException ex) when ( ex.Number == 547)
+            catch (SqlException ex) when (ex.Number == 547)
             {
                 result = ErrorFlag.ERROR_CONFLICT_CANT_DELETE;
                 error = "El usuario tiene ligado almenos 1 reporte, por lo tanto no es posible eliminarlo.";
 
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 result = ErrorFlag.ERROR_DATABASE;
                 error = "Error desconocido en base de datos";

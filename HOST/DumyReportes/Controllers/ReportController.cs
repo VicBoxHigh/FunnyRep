@@ -55,24 +55,27 @@ namespace DumyReportes.Controllers
 
             List<Report> reportesAsignados = new List<Report>();
             List<Report> reportesNoAsignados = new List<Report>();
-
+            string error = "";
+            ErrorFlag flagResultGet = ErrorFlag.ERROR_OK_RESULT;
 
             switch (user.AccessLevel)
             {
                 case AccessLevel.PUBLIC:
-                    _ReportDataContext.GetReportsByWhoNotified(user, out reportesAsignados, out reportesNoAsignados);
+                    flagResultGet = _ReportDataContext.GetReportsByWhoNotified(user, out reportesAsignados, out reportesNoAsignados, out error);
                     break;
                 case AccessLevel.AGENT://los AGENT solo aparecerán reportes asignados.
-                    _ReportDataContext.GetReportsByOwner(owner: user, out reportesAsignados);
+                    flagResultGet = _ReportDataContext.GetReportsByOwner(owner: user, out reportesAsignados, out error);
                     break;
                 case AccessLevel.ADMIN:
                 case AccessLevel.TI:
-                    _ReportDataContext.GetAllReports(reportAsigned: out reportesAsignados, reportsNoAsigned: out reportesNoAsignados);
+                    flagResultGet = _ReportDataContext.GetAllReports(reportAsigned: out reportesAsignados, reportsNoAsigned: out reportesNoAsignados, out error);
 
                     break;
             }
 
-            if (reportesAsignados.Count == 0 && reportesNoAsignados.Count == 0) return StatusCode(HttpStatusCode.NoContent);
+            if (reportesAsignados.Count == 0 && reportesNoAsignados.Count == 0) return Content(HttpStatusCode.NoContent, "La consulta no regresó reportes.");
+
+            if (flagResultGet != ErrorFlag.ERROR_OK_RESULT) return Content(EvaluateErrorFlag(flagResultGet), error);
 
             return Ok(
                 new
@@ -86,6 +89,44 @@ namespace DumyReportes.Controllers
         }
 
 
+
+        public HttpStatusCode EvaluateErrorFlag(Flags.ErrorFlag errorFlag)
+        {
+            HttpStatusCode resultCode;
+            switch (errorFlag)
+            {
+
+                case Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS:
+                    resultCode = HttpStatusCode.NotModified;
+                    break;
+                case ErrorFlag.ERROR_PARSE:
+                    resultCode = HttpStatusCode.Conflict;
+                    break;
+                case Flags.ErrorFlag.ERROR_OK_RESULT:
+                    resultCode = HttpStatusCode.OK;
+                    break;
+                case Flags.ErrorFlag.ERROR_RECORD_EXISTS://ya existe la entidad                    
+                case Flags.ErrorFlag.ERROR_CONFLICT_CANT_DELETE:
+                    resultCode = HttpStatusCode.Conflict;
+                    break;
+                case Flags.ErrorFlag.ERROR_DATABASE:
+                    resultCode = HttpStatusCode.NotModified;
+                    break;
+                case ErrorFlag.UNKNOWN:
+                    resultCode = HttpStatusCode.InternalServerError;
+                    break;
+                default:
+                    resultCode = HttpStatusCode.InternalServerError;
+                    break;
+
+
+            }
+
+            return resultCode;
+
+        }
+
+
         //Get reports ByOwnerId
         //Get reports ByWhoNotifier
 
@@ -94,11 +135,11 @@ namespace DumyReportes.Controllers
         // POST: api/Report
         public IHttpActionResult Post([FromBody] Report report)
         {
-            if (report == null) return BadRequest("Objeto nulo");
-            if (!report.Validate()) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
+            if (report == null) return Content(HttpStatusCode.BadRequest, "Objeto nulo");
+            if (!report.Validate()) return Content(HttpStatusCode.BadRequest, "Datos de la solicitud son inválidos.");
 
             UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
-            if (user == null || !user.IsAuthenticated) return Unauthorized();
+            if (user == null || !user.IsAuthenticated) return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta operación.");
 
             report.IdUserWhoNotified = user.user.IdUser;
 
@@ -118,7 +159,7 @@ namespace DumyReportes.Controllers
 
         }
 
-        private IHttpActionResult ValidateResult(ErrorFlag resultCreateEvidence)
+        private IHttpActionResult ValidateResult(ErrorFlag resultCreateEvidence, string error = "")
         {
             IHttpActionResult result;
             switch (resultCreateEvidence)
@@ -127,14 +168,23 @@ namespace DumyReportes.Controllers
 
                     result = InternalServerError(new Exception("No es posible escribir el archivo. Operación abortada."));
                     break;
+                case ErrorFlag.ERROR_CREATION_ENITITY:
+                    result = Content(HttpStatusCode.Conflict, error);
+                    break;
                 case ErrorFlag.ERROR_NOT_EXISTS:
-                    result = NotFound();
+                    result = Content(HttpStatusCode.NotFound, "El elemento no existe.");
                     break;
                 case ErrorFlag.ERROR_NO_AFECTED_RECORDS:
                     result = Content(HttpStatusCode.NotModified, "Sin cambios");
                     break;
                 case ErrorFlag.ERROR_CONNECTION_DB:
                     result = InternalServerError(new Exception("Error en base de datos"));
+                    break;
+                case ErrorFlag.ERROR_UNAUTHORIZED_ACCESS:
+                    result = Content(HttpStatusCode.Forbidden, "No tiene permisos para acceder a la ruta de almacenamiento.");
+                    break;
+                case ErrorFlag.CANT_FIND_DIRECTORY:
+                    result = Content(HttpStatusCode.NotFound, "No es posible encontrar la ruta de alacenamiento. ");
                     break;
                 default:
                     result = BadRequest("No es posible procesar la solicitud.");
@@ -171,6 +221,8 @@ namespace DumyReportes.Controllers
         // DELETE: api/Report/5
         public IHttpActionResult Delete(int id)
         {
+
+            return Content(HttpStatusCode.Forbidden, "Ningún reporte puede ser eliminado");
             if (id < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
 
 

@@ -11,7 +11,7 @@ namespace BasicAuthentication.Results
     {
         public AuthenticationFailureResult(string reasonPhrase, HttpRequestMessage request)
         {
-            ReasonPhrase = reasonPhrase +"asdas";
+            ReasonPhrase = reasonPhrase +" AuthFailedResult block";
             Request = request;
         }
 
@@ -35,7 +35,7 @@ namespace BasicAuthentication.Results
            // response.Content.Headers.Add("Error", ReasonPhrase);
             response.RequestMessage = Request;
             response.ReasonPhrase = ReasonPhrase;
-            response.Content = new StringContent(ReasonPhrase);
+            response.Content = new StringContent(ReasonPhrase);//responseText in xhr result
  
             return response;
         }

@@ -170,9 +170,9 @@ namespace DumyReportes.Data
 
             error = "";
             ErrorFlag result;
-         
+
             using (SqlCommand command = new SqlCommand("dbo.InsertDtlEntry", ConexionBD.getConexion()))
-            {           
+            {
                 try
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
@@ -189,11 +189,18 @@ namespace DumyReportes.Data
                 }
                 catch (SqlException ex)
                 {
+                    error = "Error al intentar ingresar una entrada al reporte.";
                     result = ErrorFlag.ERROR_CREATION_ENITITY;
+                }
+                catch(InvalidCastException ice)
+                {
+                    result = ErrorFlag.ERROR_PARSE;
+                    error = "Error en el formato del reporte";
                 }
                 catch (Exception ex)
                 {
-                    result = ErrorFlag.FATAL;
+                    error = "Error desconocido";
+                    result = ErrorFlag.UNKNOWN;
                 }
             }
 
@@ -262,8 +269,15 @@ namespace DumyReportes.Data
                 }
 
             }
+            catch (IndexOutOfRangeException ioore)//cuando no encuentra alguna propiedad en el reader.
+            {
+
+                error = "Error al intentar leer la información obtenida.";
+                return ErrorFlag.ERROR_PARSE;
+            }
             catch (SqlException ex)
             {
+                error = "Error desconocido.";
                 return ErrorFlag.ERROR_DATABASE;
             }
 
@@ -293,7 +307,7 @@ namespace DumyReportes.Data
                     NumEmpleado = reader["NumEmpleado"].ToString(),
                     Name = reader["Name"].ToString(),
                     IsEnabled = (bool)reader["IsEnabled"],
-                    AccessLevel = (AccessLevel) reader["Level"],
+                    AccessLevel = (AccessLevel)reader["Level"],
                     AccessLevelName = (reader["AccessLevelName"]).ToString()
                 }
 

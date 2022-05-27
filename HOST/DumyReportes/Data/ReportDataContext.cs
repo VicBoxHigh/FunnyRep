@@ -125,19 +125,33 @@ namespace DumyReportes.Data
             command.Parameters.Add("@fileNameEvidence", System.Data.SqlDbType.VarChar).Value = report.FileNameEvidence;
             command.Parameters.Add("@pathEvidence", System.Data.SqlDbType.VarChar).Value = report.PathEvidence;
 
-            using (command)
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
-                if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
-                //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
-                if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
-                {
-                    result = ErrorFlag.ERROR_CREATION_ENITITY;
-                    if (reader.Read())
-                        error = reader.GetString(0);
 
+            try
+            {
+                using (command)
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    result = ErrorFlag.ERROR_NO_AFECTED_RECORDS;
+                    if (reader.RecordsAffected == 2) result = ErrorFlag.ERROR_OK_RESULT;
+                    //!= 2 rows affected -> no cambios en DB , así que se puede generar un error code en el query
+                    if (reader.HasRows)//si hay un ROWS significa exception interno en SQL
+                    {
+                        result = ErrorFlag.ERROR_CREATION_ENITITY;
+                        if (reader.Read())
+                            error = reader.GetString(0);
+
+                    }
                 }
+            }
+            catch (SqlException sEx)
+            {
+                result = ErrorFlag.ERROR_DATABASE;
+                error = "Error al intentar guardar el reporte, DB.";
+            }
+            catch(Exception ex)
+            {
+                result = ErrorFlag.UNKNOWN;
+                error = "Erros desconocido al intentar guardar el reporte";
             }
 
 
@@ -379,73 +393,117 @@ SELECT TOP (1) [IdReport]
 
         }
 
-        public ErrorFlag GetReportsByWhoNotified(User whoNotified, out List<Report> reportsAsignados, out List<Report> reportsNoAsignados)
+        public ErrorFlag GetReportsByWhoNotified(User whoNotified, out List<Report> reportsAsignados, out List<Report> reportsNoAsignados, out string error)
         {
             SqlCommand command = new SqlCommand("dbo.ReportsByWhoNotified", ConexionBD.getConexion());
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add("@IdUserWhoNotif", System.Data.SqlDbType.Int).Value = whoNotified.IdUser;
 
-            using (command)
-            using (SqlDataReader reader = command.ExecuteReader())
+            reportsAsignados = new List<Report>();
+            reportsNoAsignados = new List<Report>();
+            ErrorFlag resultFlag;
+            try
             {
-                //Reps que ya tienen un owner
-                bool isOwnedReps = false;
-                reportsAsignados = new List<Report>();
-                reportsNoAsignados = new List<Report>();
-                //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
-                do
+                using (command)
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                        {
-                            Report newRep = InstanceFromReader2(reader, isOwnedReps) as Report;
-                            ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
-                            newRep.Pic64 = base64Img;
+                    //Reps que ya tienen un owner
+                    //Deberá traer 2 results, el primero es Reportes que ya han sido asignados y el segundo reps que no
+                    do
+                    {
+                        bool isOwnedReps = false;
+                        if (reader.HasRows)
+                            while (reader.Read())
+                            {
+                                Report newRep = InstanceFromReader2(reader, isOwnedReps) as Report;
+                                ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
+                                newRep.Pic64 = base64Img;
 
-                            if (isOwnedReps) reportsAsignados.Add(newRep);
-                            else reportsNoAsignados.Add(newRep);
-                        }
-                    isOwnedReps = true;
+                                if (isOwnedReps) reportsAsignados.Add(newRep);
+                                else reportsNoAsignados.Add(newRep);
+                            }
+                        isOwnedReps = true;
 
-                } while (reader.NextResult());//segunda vuelva trae los que aun no han sido asignados
+                    } while (reader.NextResult());//segunda vuelva trae los que aun no han sido asignados
 
+
+                }
+                error = "";
+                resultFlag = ErrorFlag.ERROR_OK_RESULT;
 
             }
+            catch (IndexOutOfRangeException ioore)
+            {
+                error = "Error al intentar leer la información obtenida.";
+                resultFlag = ErrorFlag.ERROR_PARSE;
+            }
+            catch (Exception ex)
+            {
+                resultFlag = ErrorFlag.UNKNOWN;
+                error = "Error desconocido";
+            }
 
-            return ErrorFlag.ERROR_OK_RESULT;
+
+
+            return resultFlag;
 
         }
 
         //Llamada por usuarios Agent
-        public ErrorFlag GetReportsByOwner(User owner, out List<Report> reportObjs)
+        public ErrorFlag GetReportsByOwner(User owner, out List<Report> reportObjs, out string error)
         {
             SqlCommand command = new SqlCommand("dbo.RepsByOwner", ConexionBD.getConexion());
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.Add("@IdUserOwner", System.Data.SqlDbType.Int).Value = owner.IdUser;
 
+            ErrorFlag resultFlag;
 
-            using (command)
-            using (SqlDataReader reader = command.ExecuteReader())
+            reportObjs = new List<Report>();
+
+            try
             {
-                reportObjs = new List<Report>();
 
-                if (reader.HasRows)
-                    while (reader.Read())
-                        reportObjs.Add(InstanceFromReader2(reader, ownerInfoExist: true));//reports de owners
+                using (command)
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
 
+                    if (reader.HasRows)
+                        while (reader.Read())
+                        {
+                            Report newRep = InstanceFromReader2(reader, ownerInfoExist: true);
+                            reportObjs.Add(newRep);//reports de owners
+
+                            ErrorFlag errorFlag = EvidenceHelper.GetEvidenceImg(newRep.FileNameEvidence, out string base64Img);
+                            newRep.Pic64 = base64Img;
+
+
+                        }
+                }
+                resultFlag = ErrorFlag.ERROR_OK_RESULT;
+                error = "";
+            }
+            catch (IndexOutOfRangeException ioore)
+            {
+                error = "Error al intentar leer la información obtenida.";
+                resultFlag = ErrorFlag.ERROR_PARSE;
+            }
+            catch (Exception ex)
+            {
+                resultFlag = ErrorFlag.UNKNOWN;
+                error = "Error desconocido";
             }
 
 
-            return ErrorFlag.ERROR_OK_RESULT;
+            return resultFlag;
 
         }
         //llamada por admin y superadmin
-        public ErrorFlag GetAllReports(out List<Report> reportAsigned, out List<Report> reportsNoAsigned)
+        public ErrorFlag GetAllReports(out List<Report> reportAsigned, out List<Report> reportsNoAsigned, out string error)
         {
             SqlCommand command = new SqlCommand("dbo.ReportsAllAsignadosNoAsignados", ConexionBD.getConexion());
             command.CommandType = System.Data.CommandType.StoredProcedure;
             //Sin params
-
+            ErrorFlag resultFlag;
             reportAsigned = new List<Report>();
             reportsNoAsigned = new List<Report>();
             try
@@ -474,11 +532,18 @@ SELECT TOP (1) [IdReport]
 
                     } while (reader.NextResult());
 
+                    resultFlag = ErrorFlag.ERROR_OK_RESULT;
                 }
+            }
+            catch (IndexOutOfRangeException ioore)
+            {
+                error = "Error al intentar leer la información obtenida.";
+                resultFlag = ErrorFlag.ERROR_PARSE;
             }
             catch (SqlException e)
             {
-
+                resultFlag = ErrorFlag.UNKNOWN;
+                error = "Error desconocido al leer los reportes para el actual usuario.";
             }
 
 
@@ -531,7 +596,7 @@ SELECT TOP (1) [IdReport]
         {
 
             Report report = null;
-           
+
 
             report = new Report()
             {
@@ -583,7 +648,7 @@ SELECT TOP (1) [IdReport]
         }
 
 
-     
+
         public ErrorFlag Update(IReportObject reportObject, out string error)
         {
             Report report = reportObject as Report;

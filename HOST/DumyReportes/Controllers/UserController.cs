@@ -87,7 +87,7 @@ namespace DumyReportes.Controllers
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
             if (genericIdentity == null || !genericIdentity.IsAuthenticated
-                || genericIdentity.user == null  )
+                || genericIdentity.user == null)
                 return Content(HttpStatusCode.Unauthorized, "No tiene permisos para realizar esta acción.");
 
 
@@ -96,22 +96,20 @@ namespace DumyReportes.Controllers
             {
                 token = genericIdentity.user.CurrentToke,
                 levelUser = (int)genericIdentity.user.AccessLevel * HIDING_FACTOR,
-                levelName = (string) genericIdentity.user.AccessLevelName
+                levelName = (string)genericIdentity.user.AccessLevelName
 
             }); ;
 
         }
 
-
-        [HttpPost]
-        /*   [AllowAnonymous]*/
-
-
-        [Route("~/api/User/V ")]
-        public IHttpActionResult OK(int a)
-        {
-            return Ok("ok");
-        }
+        /*
+                [HttpPost]
+                *//*   [AllowAnonymous]*//*
+                [Route("~/api/User/V ")]
+                public IHttpActionResult OK(int a)
+                {
+                    return Ok("ok");
+                }*/
 
         // POST: api/User
         [HttpPost]
@@ -129,13 +127,13 @@ namespace DumyReportes.Controllers
 
             //Válida la data
             bool isValid = user.Validate();
-            if (!isValid) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
-
+            if (!isValid) return Content(HttpStatusCode.BadRequest, Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
             //Inserta en DB
             Flags.ErrorFlag resultCreate = _UserDataContext.Create(user, out string error);
 
-            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return BadRequest(resultCreate.ToString());
+
+            if (resultCreate != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(EvaluateErrorFlag(resultCreate), error);
 
             return StatusCode(HttpStatusCode.Created);// resultCreate.ToString();
 
@@ -160,10 +158,17 @@ namespace DumyReportes.Controllers
             }
 
             Flags.ErrorFlag result = _UserDataContext.Update(user, out string error);
+
+            HttpStatusCode resultCode = EvaluateErrorFlag(result);
+
+            return Content(resultCode, error);
+
+        }
+
+        public HttpStatusCode EvaluateErrorFlag(Flags.ErrorFlag errorFlag)
+        {
             HttpStatusCode resultCode;
-
-
-            switch (result)
+            switch (errorFlag)
             {
 
                 case Flags.ErrorFlag.ERROR_NO_UPDATED_RECORDS:
@@ -172,6 +177,7 @@ namespace DumyReportes.Controllers
                 case Flags.ErrorFlag.ERROR_OK_RESULT:
                     resultCode = HttpStatusCode.OK;
                     break;
+                case Flags.ErrorFlag.ERROR_RECORD_EXISTS://ya existe la entidad                    
                 case Flags.ErrorFlag.ERROR_CONFLICT_CANT_DELETE:
                     resultCode = HttpStatusCode.Conflict;
                     break;
@@ -184,10 +190,7 @@ namespace DumyReportes.Controllers
 
             }
 
-            return Content(resultCode, error);
-
-
-
+            return resultCode;
 
         }
 
@@ -202,22 +205,8 @@ namespace DumyReportes.Controllers
 
             Flags.ErrorFlag errorFlag = _UserDataContext.Delete(id, out string error);
 
-            HttpStatusCode resultCode;
-            switch (errorFlag)
-            {
-                case Flags.ErrorFlag.ERROR_OK_RESULT:
-                    resultCode = HttpStatusCode.OK;
-                    break;
-                case Flags.ErrorFlag.ERROR_CONFLICT_CANT_DELETE:
-                    resultCode = HttpStatusCode.Conflict;
-                    break;
-                case Flags.ErrorFlag.ERROR_DATABASE:
-                    resultCode = HttpStatusCode.NotModified;
-                    break;
-                default:
-                    resultCode = HttpStatusCode.InternalServerError; //Flags.ErrorFlag.UNKNOWN;
-                    break;
-            }
+            HttpStatusCode resultCode = EvaluateErrorFlag(errorFlag);
+
 
             return Content(resultCode, error);
 

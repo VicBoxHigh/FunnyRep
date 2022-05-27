@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 
 namespace DumyReportes.Flags
@@ -33,7 +34,8 @@ namespace DumyReportes.Flags
         FATAL,
         ERROR_NULL_TOKEN,
         ERROR_CONFLICT_CANT_DELETE,
-        UNKNOWN
+        UNKNOWN,
+        CANT_FIND_DIRECTORY
     }
 
     public enum ReportStatus

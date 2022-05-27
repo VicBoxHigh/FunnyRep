@@ -69,11 +69,15 @@ namespace DumyReportes.Util
                 }
                 catch (DirectoryNotFoundException dnfe)
                 {
-                    resultCreation = ErrorFlag.ERROR_NOT_EXISTS;
+                    resultCreation = ErrorFlag.CANT_FIND_DIRECTORY;
                 }
                 catch (UnauthorizedAccessException uae)
                 {
                     resultCreation = ErrorFlag.ERROR_UNAUTHORIZED_ACCESS;
+                }
+                catch(Exception ex)
+                {
+                    resultCreation = ErrorFlag.UNKNOWN;
                 }
 
             return resultCreation;
