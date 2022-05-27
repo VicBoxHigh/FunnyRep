@@ -506,6 +506,8 @@ SELECT TOP (1) [IdReport]
             ErrorFlag resultFlag;
             reportAsigned = new List<Report>();
             reportsNoAsigned = new List<Report>();
+            error = "";
+
             try
             {
                 using (command)
