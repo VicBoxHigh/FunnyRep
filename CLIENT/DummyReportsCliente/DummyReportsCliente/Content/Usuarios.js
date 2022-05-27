@@ -35,7 +35,7 @@ const getUsers = () => {
 const fillUserstable = (users) => {
     let tbdy = usersTable.children("tbody");
     //let reportTypes = localStorage.getItem(REPORT_TYPE_NAME);
-    /*   //etTypes
+    /*   //getTypes
        if (!reportTypes) {
            try {
    
@@ -95,10 +95,8 @@ const fillUserstable = (users) => {
             
         `);
 
-        let btnDeleteUser = $(`
-           
-                <input type="button" value="Elimnar" />
-            
+        let btnDeleteUser = $(`           
+                <input type="button" value="Elimnar" />            
         `)
 
         //set events to btns
@@ -112,8 +110,10 @@ const fillUserstable = (users) => {
 
         newTr.append(newTd);
 
+      /*  tbdy.children("tr:last").before(newTr)*/
 
-        tbdy.append(newTr)
+        //row para nuevo se econtrará hasta arriba
+        tbdy.append(newTr);
     }
 }
 
@@ -163,7 +163,8 @@ const saveUserChanges = (event, newUserInfo) => {
 
         },
         error: (xhr, statusText) => {
-
+            if (xhr.responseText)
+                alert(xhr.responseText);
         }
 
 
@@ -217,7 +218,7 @@ const init = async () => {
         result = await taskLoad;
     }
     catch (ex) {
-        alert(JSON.stringify(ex) + ex.responseJSON)
+        alert(ex.responseText)
     }
 
     fillUserstable(result.users)

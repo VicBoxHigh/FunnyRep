@@ -255,33 +255,29 @@ GO
 CUANDO SE ACUTALICE LA TABLA REPORT COMPROBARÄ SI EL STATUS o TIPO DE REPORTE
 CAMBIO,
 
-SI CAMBIARON, GENERARÁ UN DtlEntry con ese cambio (para que sea mostrado en la app)
+SI CAMBIARON, GENERARÁ UN DtlEntry con ese cambio (para que sea mostrado en la app), este es un evento de sistema (ligado al usuario 1)
 
 */
-CREATE TRIGGER [dbo].UpdateReportTriger ON Report
-AFTER UPDATE
+CREATE TRIGGER [dbo].ReportChange  ON Report
+INSTEAD OF UPDATE
 AS
 
 	DECLARE @tempDescription varchar(50);
 	DECLARE @IdReport int = (SELECT IdReport FROM inserted);
+ 
+ 	DECLARE @newIdStat int = (SELECT IdStatus as newStat FROM inserted);
+	DECLARE @oldIdStat int = (SELECT IdStatus FROM deleted);
 
-	DECLARE @newIdStat int = (SELECT IdStatus as newStat FROM inserted) ;
+	--Indica la clasificacion de reporte, electrico, edificio, mecanico
 	DECLARE @newIdRepType int = (SELECT IdReportType FROM inserted);
-		
+	DECLARE @oldIdRepType int = (SELECT IdReportType FROM deleted);
+
+
 	DECLARE @currentDT datetime =GETDATE();
-
-
-	--Si cambió el status
-	IF(@newIdStat  != (SELECT IdStatus FROM deleted) )
-	BEGIN
-		SET @tempDescription = CONCAT('El reporte se marcó como: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
-		--Generar entry dtl
-		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
-	
-	END
+ 
 
 	--Si cambió el typo de reporte
-	IF( @newIdRepType != ( SELECT IdReportType FROM deleted ) )
+	IF( @newIdRepType != @oldIdRepType )
 	BEGIN
 
 		SET @tempDescription = CONCAT ('El reporte se re-clasificó a tipo: ',( SELECT TOP(1) ReportType.[Name] FROM ReportType Where IdReportType = @newIdRepType ) );
@@ -289,11 +285,114 @@ AS
 
 
 	END
+
+
+	--El estado del report cambia
+	IF((@newIdStat = 1  and @oldIdStat = 0 ) )--ESPERA a PROCESO
+	BEGIN 
+		UPDATE Report
+		SET
+			InicioReporteDT = @currentDT,
+			IdStatus = inserted.IdStatus
+		From inserted
+		WHERE Report.IdReport = inserted.IdReport;
+
+
+		SET @tempDescription = CONCAT('El reporte se marcó como: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		--Generar entry dtl
+		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
+
+	END
+	ELSE IF  (@newIdStat = 2 and @oldIdStat = 1) 
+	BEGIN 
+		UPDATE Report
+		SET
+			FinReporteDT = @currentDT,
+			IdStatus = inserted.IdStatus
+		From inserted
+		WHERE Report.IdReport = inserted.IdReport;
+
+
+		SET @tempDescription = CONCAT('El reporte se marcó como: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		--Generar entry dtl
+		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
+	
+	END
 	
 
 GO
 
+/*
+El cambio de estado de un reporte, solo puede subir
+ESPERA < PROCESO < COMPLETADO
 
+si el estatus anterior es menor al nuevo, entonces:
+
+--Genera el evento de sistema en ReportDtl
+--Reprt Inicio se coloca a la fecha actual
+--Actualiza Report Status
+
+--Todo queda restringido siempre que se cumple la primera regla
+*/
+/*
+CREATE TRIGGER [dbo].UpdateReportChangeStatusTriger on Report
+INSTEAD OF UPDATE
+AS
+
+	DECLARE @tempDescription varchar(50);
+	DECLARE @IdReport int = (SELECT IdReport FROM inserted);
+
+	--Indica  si  está en espera, proceso o completado
+	DECLARE @newIdStat int = (SELECT IdStatus as newStat FROM inserted);
+	DECLARE @oldIdStat int = (SELECT IdStatus FROM deleted);
+
+	DECLARE @currentDT datetime =GETDATE();
+
+
+	
+	IF((@newIdStat = 1  and @oldIdStat = 0 ) )--ESPERA a PROCESO
+	BEGIN 
+		UPDATE Report
+		SET
+			InicioReporteDT = @currentDT,
+			IdStatus = inserted.IdStatus
+		From inserted
+		WHERE Report.IdReport = inserted.IdReport;
+
+
+		SET @tempDescription = CONCAT('El reporte se marcó como: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		--Generar entry dtl
+		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
+
+	END
+	ELSE IF  (@newIdStat = 2 and @oldIdStat = 1) 
+	BEGIN 
+		UPDATE Report
+		SET
+			FinReporteDT = @currentDT,
+			IdStatus = inserted.IdStatus
+		From inserted
+		WHERE Report.IdReport = inserted.IdReport;
+
+
+		SET @tempDescription = CONCAT('El reporte se marcó como: ', ( SELECT TOP(1) ReportStatus.titleStatus FROM ReportStatus Where IdStatus = @newIdStat ) );
+		--Generar entry dtl
+		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
+	
+	END
+	--Acepted Cases
+	--si new = 1, and old = 0 -> set inicio date
+	--si new = 2, and old = 1 -> set Fin Date
+	
+
+
+
+	--no acpted Cases
+	--si new = 2 and old = 0 -> 
+	--cualqueir otro 
+
+GO
+*/
 
 CREATE PROCEDURE dbo.UpdateUserInfo 
 	@idUser int,
