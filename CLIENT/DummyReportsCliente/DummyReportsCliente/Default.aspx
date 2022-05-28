@@ -86,7 +86,9 @@
                 <div class="container-headexpand__description"> </div>
                 <select name="selRepType_Dtl" class="selRepType_Dtl" id="selRepType_Dtl">
                 </select>
+                <select name="selAsignarUser" class="selAsignarUser">
 
+                </select>
                 <div class="container-headexpand__location">
                     
                 </div>
