@@ -32,13 +32,15 @@ namespace DumyReportes.Data
                                ,[UserName]
                                ,[Pass]
                                ,[IsEnabled]
-                               ,[Level])
+                               ,[Level]
+                               ,[Name])
                          VALUES
                                (@NumEmpleado,
                                @User
                                ,@Pass
                                ,@IsEnabled
-                               ,@UserLevel);
+                               ,@UserLevel
+                                ,@Name);
               END
    
             ";
@@ -145,6 +147,7 @@ namespace DumyReportes.Data
             command.Parameters.Add("@Pass", System.Data.SqlDbType.VarChar).Value = user.Pass;
             command.Parameters.Add("@IsEnabled", System.Data.SqlDbType.Bit).Value = user.IsEnabled;
             command.Parameters.Add("@UserLevel", System.Data.SqlDbType.Int).Value = user.AccessLevel;
+            command.Parameters.Add("@Name", System.Data.SqlDbType.VarChar).Value = user.Name;
 
             try
             {

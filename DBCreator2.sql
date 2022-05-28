@@ -1,9 +1,7 @@
-  CREATE DATABASE ReportApp9;
+USE  ReportApp8;
   GO 
 
-  USE ReportApp9;
- GO
-
+ 
 CREATE TABLE AccessLevel(
 
 [Level] int NOT NULL PRIMARY KEY, --UNIQUE and NOT NULL

@@ -1,9 +1,58 @@
 ﻿const usersTable = $("#usersTable");
 const butonBack = $("#btnAtras");
 
+const txtNewNumEmpleado = $("#txtNewNumEmpleado");
+const txtNewUsuario = $("#txtNewUsuario");
+const txtNewContrasena = $("#txtNewContrasena");
+const txtNewNombre = $("#txtNewNombre");
+const selNewStatus = $("#selNewStatus");
+const selNewLevel = $("#selNewLevel");
+
+const btnNewUsuario = $("#btnNewUsuario");
+
+const trNewUser = $("table tbody tr:first-child");
+
 butonBack.on("click", (event) => {
     location.href = './Default';
 })
+
+btnNewUsuario.on("click", e => {
+    let currentToken = checkSession();
+    let newUserInfo = extractUserInfo(e, null, trNewUser)
+    let newUserStr = JSON.stringify(newUserInfo);
+
+    $.ajax({
+
+        type: "POST",
+        url: API_URL + `/api/User/`,
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        data: newUserStr,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+
+        complete: (xhr, statusText) => {
+            if ((xhr.status !== 200 || xhr.status !== 201) && xhr.responseText) {
+                alert(xhr.responseText);
+            }
+            else if (xhr.status !== 200 || xhr.status !== 201) {
+                location.href = './Usuarios'
+            }
+
+        }
+
+    });
+
+})
+
 
 const getUsers = () => {
 
@@ -38,21 +87,6 @@ const getUsers = () => {
 
 const fillUserstable = (users) => {
     let tbdy = usersTable.children("tbody");
-    //let reportTypes = localStorage.getItem(REPORT_TYPE_NAME);
-    /*   //getTypes
-       if (!reportTypes) {
-           try {
-   
-               reportTypes = getReporTypes(localStorage.getItem(KEY_TOKEN_NAME));
-               //code 200?
-           }
-           catch (ex) {
-   
-   
-               return;
-           }
-       }
-   */
 
     for (let currentUserIndex in users) {//Genera cada row
         let currentUser = users[currentUserIndex];
@@ -124,7 +158,7 @@ const fillUserstable = (users) => {
 const extractUserInfo = (event, oldUser, rowRef) => {
 
     let userUpdated = {};
-    userUpdated.Iduser = oldUser.IdUser;
+    userUpdated.Iduser = oldUser ? oldUser.IdUser : 0;
     userUpdated.NumEmpleado = rowRef.children(`td:nth-child(2)`).children("input[type='text']").val();;
     userUpdated.UserName = rowRef.children('td:nth-child(3)').children("input[type='text']").val();
     userUpdated.Pass = rowRef.children('td:nth-child(4)').children("input[type='text']").val();
@@ -221,12 +255,12 @@ const init = async () => {
     try {
         let taskLoad = getUsers();
         result = await taskLoad;
+        fillUserstable(result.users)
     }
     catch (ex) {
         alert(ex.responseText)
     }
 
-    fillUserstable(result.users)
 
 
 

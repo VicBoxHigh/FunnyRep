@@ -19,7 +19,7 @@ namespace DumyReportes.Data
           //   @"Data Source=localhost\SQLEXPRESSTESTV,50891;Initial Catalog=ChecadasVic;User ID=cheto;Password=chetoconsalsa";
 
           //@"Data Source=localhost\SQLEXPRESS19,8465;Initial Catalog=ReportApp;User ID=ReportApp;Password=Marves2022;";
-          @"Data Source=localhost\SQLEXPRESS,8466;Initial Catalog=ReportApp9;User ID=ReportApp;Password=MarvesTI2022;";
+          @"Data Source=localhost\SQLEXPRESS,8466;Initial Catalog=ReportApp8;User ID=ReportApp;Password=MarvesTI2022;";
 
         private static string CADENA_CONEXION_Checadas =
          @"Data Source=172.16.0.7\SQLEXPRESS,1433;Initial Catalog=Checadas;User ID=asistencia;Password=w0RkbE4t;";

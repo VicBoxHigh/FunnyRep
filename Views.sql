@@ -1,4 +1,4 @@
-USE  ReportApp9;
+USE  ReportApp8;
 GO
 --La vista retorna Los reportes que no hayan sido asignados a un Agente (los que no tienen una relacion en tabla UserOwner_Reportf)
 CREATE VIEW dbo.RepNoAsignados 

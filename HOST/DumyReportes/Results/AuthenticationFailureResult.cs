@@ -11,7 +11,7 @@ namespace BasicAuthentication.Results
     {
         public AuthenticationFailureResult(string reasonPhrase, HttpRequestMessage request)
         {
-            ReasonPhrase = reasonPhrase +" AuthFailedResult block";
+            ReasonPhrase = reasonPhrase /*+" AuthFailedResult block"*/;
             Request = request;
         }
 

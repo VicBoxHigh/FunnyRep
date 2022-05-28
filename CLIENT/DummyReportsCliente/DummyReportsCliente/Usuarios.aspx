@@ -14,10 +14,11 @@
 </head>
 <body>
     <form id="form1" runat="server">
-            <div class="header">
-                
-                <input type="button" value="← Atrás" id="btnAtras" />
-            </div>
+        <div class="header">
+
+            <input type="button" value="← Atrás" id="btnAtras" />
+            <img alt="Logo Marves" src="Content/Logotipo.png"/>
+        </div>
 
         <div class="virtual-body">
 
@@ -42,22 +43,22 @@
                     <tr>
 
                         <td data-th="ID: "></td>
-                        <td data-th="NumEmpleado: ">
+                        <td data-th="# Empleado: ">
                             <input type="text" id="txtNewNumEmpleado" /></td>
-                        <td data-th="UserName: ">
+                        <td data-th="Usuario: ">
                             <input type="text" id="txtNewUsuario" /></td>
-                        <td data-th="Pass: ">
+                        <td data-th="Constraseña: ">
                             <input type="text" id="txtNewContrasena" /></td>
-                        <td data-th="Name: ">
+                        <td data-th="Nombre: ">
                             <input type="text" id="txtNewNombre" /></td>
 
-                        <td data-th="Enabled: ">
+                        <td data-th="Activo: ">
                             <select type="text" id="selNewStatus">
-                                <option value="1" selected>ACTIVO </option>
-                                <option value="0">INACTIVO </option>
+                                <option value="1" selected>Sí </option>
+                                <option value="0">No </option>
                             </select>
                         </td>
-                        <td data-th="Level: ">
+                        <td data-th="Nivel Usuario: ">
                             <select type="text" id="selNewLevel">
                                 <option value="0" selected>BASICO </option>
                                 <option value="1">AGENTE </option>
@@ -66,7 +67,7 @@
                             </select>
                         </td>
                         <td>
-                            <input type="button" value="Nuevo Usuario" />
+                            <input type="button" value="Nuevo Usuario" id="btnNewUsuario" />
                         </td>
                     </tr>
                 </tbody>
