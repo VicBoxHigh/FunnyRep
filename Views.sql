@@ -63,7 +63,7 @@ SELECT R.*,
 		UNotif.[Level],
 		UNotif.NumEmpleado
 		
-	FROM [ReportApp9].[dbo].[UserOwner_Report] UOR
+	FROM  [dbo].[UserOwner_Report] UOR
 	INNER JOIN GroupUOR ON GroupUOR.IdReport = UOR.IdReport AND GroupUOR.LastAgentByDate = UOR.DT
 	INNER JOIN [dbo].Report R ON UOR.IdReport = R.IdReport
 	--Header Expand
