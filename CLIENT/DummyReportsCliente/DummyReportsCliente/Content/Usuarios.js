@@ -78,10 +78,10 @@ const fillUserstable = (users) => {
                     </td>
                     <td data-th="Level: " >
                         <select>
-                            <option value="1" ${currentUser.AccessLevelName === "BASIC" ? "selected" : ""} > Básico</option>
-                            <option value="2" ${currentUser.AccessLevelName === "ADMIN" ? "selected" : ""}> Agente</option>
-                            <option value="3" ${currentUser.AccessLevelName === "AGENT" ? "selected" : ""}> Administrador</option>
-                            <option value="4" ${currentUser.AccessLevelName === "TI" ? "selected" : ""}> TI</option>
+                            <option value="0" ${currentUser.AccessLevelName === "BASIC" ? "selected" : ""} > Básico</option>
+                            <option value="1" ${currentUser.AccessLevelName === "ADMIN" ? "selected" : ""}> Agente</option>
+                            <option value="2" ${currentUser.AccessLevelName === "AGENT" ? "selected" : ""}> Administrador</option>
+                            <option value="3" ${currentUser.AccessLevelName === "TI" ? "selected" : ""}> TI</option>
                         </select>
                     </td>
 
@@ -101,14 +101,14 @@ const fillUserstable = (users) => {
 
         //set events to btns
 
-        btnSaveChanges.on("click", (e) => saveUserChanges(e, currentUser, extractUserInfo()))
-        btnDeleteUser.on("click", (e) => deleteUser(e, currentUser))
 
         let newTd = $(`<td></td>`);
         newTd.append(btnDeleteUser);
         newTd.append(btnSaveChanges);
 
         newTr.append(newTd);
+        btnSaveChanges.on("click", (e) => saveUserChanges(e,  extractUserInfo(e,currentUser,newTr) )   )
+        btnDeleteUser.on("click", (e) => deleteUser(e, currentUser))
 
       /*  tbdy.children("tr:last").before(newTr)*/
 
@@ -117,17 +117,17 @@ const fillUserstable = (users) => {
     }
 }
 
-const extracUserInfo = (event, oldUser, rowRef) => {
+const extractUserInfo = (event, oldUser, rowRef) => {
 
     let userUpdated = {};
     userUpdated.Iduser = oldUser.IdUser;
-    userUpdated.NumEmpleado = rowRef.children(`td:nth-child(1)`).val();;
-    userUpdated.UserName = rowRef.children('td:nth-child(2)').val();
-    userUpdated.Pass = rowRef.children('td:nth-child(3)').val();
+    userUpdated.NumEmpleado = rowRef.children(`td:nth-child(2)`).children("input[type='text']").val();;
+    userUpdated.UserName = rowRef.children('td:nth-child(3)').children("input[type='text']").val();
+    userUpdated.Pass = rowRef.children('td:nth-child(4)').children("input[type='text']").val();
 
-    userUpdated.Name = rowRef.children('td:nth-child(4)').val();
-    userUpdated.AccessLevel = rowRef.children('td:nth-child(5)').children("select")[0]?.val();//0 o 1
-    userUpdated.AccessLevel = rowRef.children('td:nth-child(6)').children("select")[0]?.val();//tipo usuario 0 al 3
+    userUpdated.Name = rowRef.children('td:nth-child(5)').children("input[type='text']").val();
+    userUpdated.IsEnabled = rowRef.children('td:nth-child(6)').children("select").val() === "1" ? true : false;//0 o 1
+    userUpdated.AccessLevel = rowRef.children('td:nth-child(7)').children("select").val();//tipo usuario 0 al 3
 
     return userUpdated
 
@@ -140,7 +140,7 @@ const saveUserChanges = (event, newUserInfo) => {
 
     $.ajax({
         type: "PUT",
-        url: API_URL + "api/User",
+        url: API_URL + `api/User?id=${newUserInfo.Iduser}`,
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",

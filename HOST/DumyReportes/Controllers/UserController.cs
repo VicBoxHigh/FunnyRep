@@ -1,5 +1,6 @@
 ﻿using DumyReportes.Data;
 using DumyReportes.Filters;
+using DumyReportes.Flags;
 using DumyReportes.Models;
 using DumyReportes.Util;
 using System;
@@ -147,6 +148,8 @@ namespace DumyReportes.Controllers
         public IHttpActionResult Put(int id, [FromBody] User user)
         {
 
+
+
             bool isValid = user.Validate();
             if (!isValid) return Content(HttpStatusCode.BadRequest, Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
             user.IdUser = id;
@@ -157,9 +160,14 @@ namespace DumyReportes.Controllers
                 return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar está acción.");
             }
 
+            //para no exponer el nivel de acceso,  se colocaron del 0 al 3, la db acepta´ra unicamente -> 0 10 20 y 30
+            user.AccessLevel = (AccessLevel) (  ( (int)user.AccessLevel) * 10);
+
             Flags.ErrorFlag result = _UserDataContext.Update(user, out string error);
 
             HttpStatusCode resultCode = EvaluateErrorFlag(result);
+
+
 
             return Content(resultCode, error);
 

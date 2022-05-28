@@ -335,9 +335,10 @@ namespace DumyReportes.Data
 
             command.Parameters.Add("@numEmpleado", System.Data.SqlDbType.VarChar).Value = updatedUser.NumEmpleado;
             command.Parameters.Add("@userName", System.Data.SqlDbType.VarChar).Value = updatedUser.UserName;
+            command.Parameters.Add("@name", System.Data.SqlDbType.VarChar).Value = updatedUser.Name;
             command.Parameters.Add("@pass", System.Data.SqlDbType.VarChar).Value = updatedUser.Pass;
             command.Parameters.Add("@isEnabled", System.Data.SqlDbType.Bit).Value = updatedUser.IsEnabled ? 1 : 0;
-            command.Parameters.Add("@level", System.Data.SqlDbType.Int).Value = (int)updatedUser.AccessLevel;
+            command.Parameters.Add("@userLevel", System.Data.SqlDbType.Int).Value = (int)updatedUser.AccessLevel;
 
             try
             {

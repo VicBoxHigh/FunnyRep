@@ -405,11 +405,11 @@ CREATE PROCEDURE dbo.UpdateUserInfo
 AS
 
 	UPDATE TOP(1) [dbo].[User]
-	   SET [NumEmpleado] = @numEmpleado,
-		  ,[UserName] = @userName,
-		  ,[Pass] = @pass,
-		  ,[Name] = @name,
-		  ,[IsEnabled] = @isEnabled,
+	   SET [NumEmpleado] = @numEmpleado
+		  ,[UserName] = @userName
+		  ,[Pass] = @pass
+		  ,[Name] = @name
+		  ,[IsEnabled] = @isEnabled
 		  ,[Level] = @userLevel
 	 WHERE [User].IdUser  = @idUser
 
