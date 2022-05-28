@@ -16,7 +16,7 @@
     <form id="form1" runat="server">
             <div class="header">
                 
-                <input type="button" value="← Atrás" onclick="window.Location.href = './Default'" />
+                <input type="button" value="← Atrás" id="btnAtras" />
             </div>
 
         <div class="virtual-body">

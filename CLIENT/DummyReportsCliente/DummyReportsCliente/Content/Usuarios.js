@@ -1,5 +1,9 @@
-﻿const usersTable = $("#usersTable")
+﻿const usersTable = $("#usersTable");
+const butonBack = $("#btnAtras");
 
+butonBack.on("click", (event) => {
+    location.href = './Default';
+})
 
 const getUsers = () => {
 
