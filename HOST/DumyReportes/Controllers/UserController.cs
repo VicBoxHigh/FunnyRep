@@ -121,7 +121,7 @@ namespace DumyReportes.Controllers
 
             UserIdentiy genericIdentity = HttpContext.Current.User.Identity as UserIdentiy;
 
-            if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Unauthorized();
+            if (genericIdentity == null || !genericIdentity.IsAuthenticated) return Content(HttpStatusCode.Unauthorized, "No tiene permisos para crear un usuario.");
 
             if (genericIdentity.user == null || genericIdentity.user.AccessLevel < Flags.AccessLevel.TI)
                 return Content(HttpStatusCode.Unauthorized, "No tiene permisos para crear un usuario.");
@@ -204,11 +204,11 @@ namespace DumyReportes.Controllers
 
         [HttpDelete]
         [IdentityBasicAuthentication]
-        public IHttpActionResult Delete(int id)
+        public IHttpActionResult Delete([FromUri]int id)
         {
 
             UserIdentiy identity = (UserIdentiy)HttpContext.Current.User.Identity;
-            if (identity == null || identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.TI) return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta acción.");
+            if (identity == null || !identity.IsAuthenticated || identity.user == null || identity.user.AccessLevel < Flags.AccessLevel.TI) return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta acción.");
 
 
             Flags.ErrorFlag errorFlag = _UserDataContext.Delete(id, out string error);

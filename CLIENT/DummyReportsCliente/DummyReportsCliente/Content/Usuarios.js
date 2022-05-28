@@ -107,10 +107,10 @@ const fillUserstable = (users) => {
         newTd.append(btnSaveChanges);
 
         newTr.append(newTd);
-        btnSaveChanges.on("click", (e) => saveUserChanges(e,  extractUserInfo(e,currentUser,newTr) )   )
+        btnSaveChanges.on("click", (e) => saveUserChanges(e, extractUserInfo(e, currentUser, newTr)))
         btnDeleteUser.on("click", (e) => deleteUser(e, currentUser))
 
-      /*  tbdy.children("tr:last").before(newTr)*/
+        /*  tbdy.children("tr:last").before(newTr)*/
 
         //row para nuevo se econtrará hasta arriba
         tbdy.append(newTr);
@@ -159,12 +159,13 @@ const saveUserChanges = (event, newUserInfo) => {
         },
         complete: (xhr, statusText) => {
             if (xhr.status == 200) window.location.href = "./Usuarios";
-            else alert(xhr.responseText);
+            else if (xhr.responseText)
+                alert(xhr.responseText);
 
         },
         error: (xhr, statusText) => {
-            if (xhr.responseText)
-                alert(xhr.responseText);
+            /*if (xhr.responseText)
+                alert(xhr.responseText);*/
         }
 
 
@@ -175,18 +176,17 @@ const deleteUser = (event, userInfo) => {
 
     let token = checkSession();
 
-    let d = JSON.stringify(userInfo.Iduser);
 
     $.ajax({
         type: "DELETE",
-        url: API_URL + "api/User",
+        url: API_URL + `api/User?id=${userInfo.IdUser}`,
         contentType: "application/json",
         crossDomain: true,
         datatype: "json",
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", `${'Bearer ' + token}`)
         },
-        data: d,
+
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": "true",
@@ -199,11 +199,12 @@ const deleteUser = (event, userInfo) => {
         complete: (xhr, statusText) => {
 
             if (xhr.status == 200) window.location.href = "./Usuarios";
-            else alert(xhr.responseText);
+            else if (xhr.responseText)
+                alert(xhr.responseText);
 
         },
         error: (xhr, statusText) => {
-            //alert("a")
+            //alert(xhr.responseText)
         }
 
 

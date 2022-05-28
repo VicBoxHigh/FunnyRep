@@ -354,7 +354,7 @@ namespace DumyReportes.Data
             catch (SqlException ex) when (ex.Number == 547)
             {
                 result = ErrorFlag.ERROR_CONFLICT_CANT_DELETE;
-                error = "El usuario tiene ligado almenos 1 reporte, por lo tanto no es posible eliminarlo.";
+                error = "Conflicto con datos del usuario, no es posible modificarlo."; ;
 
             }
             catch (SqlException ex)
