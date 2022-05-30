@@ -301,8 +301,8 @@ SELECT TOP (1) [IdReport]
                 {
                     result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
                     error = sqlEx.Message;
-                } 
-                catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     result = ErrorFlag.UNKNOWN;
                     error = "Error interno en base de datos, no se realizaron cambios";
@@ -554,7 +554,7 @@ SELECT TOP (1) [IdReport]
             reportAsigned = new List<Report>();
             reportsNoAsigned = new List<Report>();
             error = "";
-
+            
             try
             {
                 using (command)
@@ -658,8 +658,8 @@ SELECT TOP (1) [IdReport]
                 IdReportType = (int)reader["IdReportType"],
                 FileNameEvidence = reader["FileNameEvidence"].ToString(),
                 PathEvidence = reader["PathEvidence"].ToString(),
-                FinReprteDT = reader["InicioReporteDT"] == null ? (DateTime)reader["FinReporteDT"] : DateTime.MinValue,
-                InicioReporteDT = reader["FinReporteDT"] == null ? (DateTime)reader["FinReporteDT"] : DateTime.MinValue,
+                InicioReporteDT = reader["InicioReporteDT"] == System.DBNull.Value ? DateTime.MinValue : (DateTime)reader["InicioReporteDT"] ,
+                FinReprteDT = reader["FinReporteDT"] == System.DBNull.Value ? DateTime.MinValue : (DateTime)reader["FinReporteDT"] ,
                 UserWhoNotified = new User()
                 {
                     IdUser = (int)reader["UNotif_IdUser"],

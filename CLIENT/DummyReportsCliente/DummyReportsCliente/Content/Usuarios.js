@@ -261,9 +261,7 @@ const init = async () => {
         alert(ex.responseText)
     }
 
-
-
-
+     
 }
 
 init();
