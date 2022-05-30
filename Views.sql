@@ -303,7 +303,7 @@ AS
 		EXEC InsertDtlEntry @IdReport,1 ,'',@tempDescription   , @currentDT, 0;
 
 	END
-	ELSE IF  (@newIdStat = 2 and @oldIdStat = 1) 
+	ELSE IF  (@newIdStat = 2 and @oldIdStat = 1) -- PROCESO a COMPPLETADO
 	BEGIN 
 		UPDATE Report
 		SET
@@ -414,4 +414,52 @@ AS
 	 WHERE [User].IdUser  = @idUser
 
 
+GO
+
+ 
+--Asignara el reporte a una persona, esto se puede hacer N veces,
+--Restricciones: idReporte debe existir, y el usuario debe existir y tener al menos nivel 10 de acceso;
+CREATE PROCEDURE dbo.SetReportOwner
+@idReport int,
+@idUsuario int
+AS 
+
+
+	IF(NOT EXISTS ( SELECT TOP 1 * FROM dbo.[User] WHERE IdUser = @idUsuario AND  IsEnabled = 1 AND [Level] > 0)  		)
+	BEGIN ;
+		THROW 54321, 'Compruebe que el usuario a asignarle el reporte tenga al menos un nivel de agente y se encuentre activo',1;
+	END;
+
+	IF(NOT EXISTS (SELECT TOP (1) * FROM Report WHERE IdReport = @idReport  ) )
+	BEGIN;
+		THROW 54322, 'El reporte que quiere asignar no existe.',1;
+		
+	END;
+
+	DECLARE @currentDate datetime = GETDATE();
+	DECLARE @usuarioAsignadoName varchar(60) = (SELECT TOP(1) [Name] FROM [User] WHERE IdUser = @idUsuario);
+	DECLARE @description varchar(512) = CONCAT('El reporte se asignó a: ',@usuarioAsignadoName);
+	
+
+	--Si el transaction falla, el exception irá al result de la llamada.
+	BEGIN TRANSACTION AsignarReporte
+
+		--El usuario se vuelve propietario.
+		INSERT INTO UserOwner_Report(IdUser,IdReport,DT)
+		VALUES (@idUsuario,@idReport,@currentDate);
+			 
+		--generaría un evento de sistema e insertaria la relacion del usuario con el reporte.
+		EXEC InsertDtlEntry @idReport,1 ,'', @description, @currentDate ,0;
+		--No importa si se indica owner o no, ya que la app toma mayor prioridad al usuario 1
+		--Usuario 1 es quien actualiza por ser evento de sistema
+ 
+		--algo no se ejecutó (y las validaciones se saltaron)
+		IF(@@TRANCOUNT != 2)
+			BEGIN 
+				ROLLBACK AsignarReporte
+			END
+		ELSE
+			BEGIN
+				COMMIT TRANSACTION AsignarReporte
+			END
 GO

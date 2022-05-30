@@ -172,10 +172,13 @@ namespace DumyReportes.Controllers
                     result = Content(HttpStatusCode.Conflict, error);
                     break;
                 case ErrorFlag.ERROR_NOT_EXISTS:
-                    result = Content(HttpStatusCode.NotFound, "El elemento no existe.");
+                    result = Content(HttpStatusCode.NotFound, error ?? "El elemento no existe.");
                     break;
                 case ErrorFlag.ERROR_NO_AFECTED_RECORDS:
-                    result = Content(HttpStatusCode.NotModified, "Sin cambios");
+                    result = Content(HttpStatusCode.NotModified, error ?? "Sin cambios");
+                    break;
+                case ErrorFlag.ERROR_DATABASE:
+                    result = Content(HttpStatusCode.Conflict, error ?? "Error en base de datos.");
                     break;
                 case ErrorFlag.ERROR_CONNECTION_DB:
                     result = InternalServerError(new Exception("Error en base de datos"));
@@ -215,6 +218,25 @@ namespace DumyReportes.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
 
+
+        }
+
+        //Acceso debe ser ADMIN (30) o mayor
+        //Asgina un reporte a algun usuario
+        public IHttpActionResult Put([FromUri] int idUsuario, [FromUri] int idReport)
+        {
+            UserIdentiy user = HttpContext.Current.User.Identity as UserIdentiy;
+
+            if (user == null || !user.IsAuthenticated || user.user.AccessLevel < AccessLevel.AGENT)
+                return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar esta acción.");
+
+
+            Flags.ErrorFlag resultSet = _ReportDataContext.AsignarReporte(idUsuario, idReport, out string error);
+
+            if (resultSet != ErrorFlag.ERROR_OK_RESULT) return ValidateResult(resultSet);
+
+
+            return Ok();
 
         }
 

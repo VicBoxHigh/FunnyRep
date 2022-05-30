@@ -148,7 +148,7 @@ namespace DumyReportes.Data
                 result = ErrorFlag.ERROR_DATABASE;
                 error = "Error al intentar guardar el reporte, DB.";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result = ErrorFlag.UNKNOWN;
                 error = "Erros desconocido al intentar guardar el reporte";
@@ -266,6 +266,53 @@ SELECT TOP (1) [IdReport]
 
         }
 
+        internal ErrorFlag AsignarReporte(int idUsuario, int idReport, out string error)
+        {
+
+            SqlCommand command = new SqlCommand("dbo.SetReportOwner", ConexionBD.getConexion());
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            ErrorFlag result;
+
+            using (command)
+            {
+                //Asignará el reporte, los rowsAffected esperados son 2
+                //2 -> se realizó correctamente
+                //1 -> Jamás pasará
+                //0 -> Transaction falló .
+                //-1 -> ejecución problema?
+                try
+                {
+                    int rowsModified = command.ExecuteNonQuery();
+                    if (rowsModified == 2)
+                    {
+                        error = "";
+                        return ErrorFlag.ERROR_OK_RESULT;
+                    }
+                    else //el otro caso sería que el transaction falló sin exception , así que no hubo cambios 
+                    {
+                        error = "Error interno al tratar de asignar reporte, intente más tarde";
+                        result = ErrorFlag.ERROR_DATABASE;
+                    }
+
+
+                }
+                catch (SqlException sqlEx) when (sqlEx.Number == 54321 //Usuario no valido a asignar
+                                                || sqlEx.Number == 54322) //Reporte no existe
+                {
+                    result = Flags.ErrorFlag.ERROR_NOT_EXISTS;
+                    error = sqlEx.Message;
+                } 
+                catch(Exception ex)
+                {
+                    result = ErrorFlag.UNKNOWN;
+                    error = "Error interno en base de datos, no se realizaron cambios";
+                }
+
+            }
+
+            return result;
+
+        }
 
         public static string QUERY_GET_REPORT_BY_USER_WHONOTIFIED =
             @"
