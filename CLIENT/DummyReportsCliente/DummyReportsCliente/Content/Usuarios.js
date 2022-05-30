@@ -117,8 +117,8 @@ const fillUserstable = (users) => {
                     <td data-th="Level: " >
                         <select>
                             <option value="0" ${currentUser.AccessLevelName === "BASIC" ? "selected" : ""} > Básico</option>
-                            <option value="1" ${currentUser.AccessLevelName === "ADMIN" ? "selected" : ""}> Agente</option>
-                            <option value="2" ${currentUser.AccessLevelName === "AGENT" ? "selected" : ""}> Administrador</option>
+                            <option value="1" ${currentUser.AccessLevelName === "AGENT" ? "selected" : ""}> Agente</option>
+                            <option value="2" ${currentUser.AccessLevelName === "ADMIN" ? "selected" : ""}> Administrador</option>
                             <option value="3" ${currentUser.AccessLevelName === "TI" ? "selected" : ""}> TI</option>
                         </select>
                     </td>

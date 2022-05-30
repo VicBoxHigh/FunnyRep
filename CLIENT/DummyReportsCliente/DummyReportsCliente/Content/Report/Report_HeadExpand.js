@@ -11,15 +11,83 @@ const heDescription = $(".container-headexpand__description");
 const heSelectReportType = $(".selRepType_Dtl");
 const heLocation = $(".container-headexpand__location");//<a></a> nested
 const heStatus = $(".container-headexpand__status");
-const heNotifiedDT = $(".container-headexpand__notifiedDT");
+const heNotifiedDT = $(".container-headexpand__notifiedDt");
 const heInicioDT = $(".container-headexpand__InicioDt");
 const heFinDT = $(".container-headexpand__FinDt");
 const heEvidencePic = $(".container-headexpand__EvidencePic");
 
+const selAsignarUser = $("#selAsignarUser");
 
 const selStatusRep = $("#selStat");
 const btnSaveStatus = $("#btnSaveStatus");
 
+let usuariosAgente;
+
+selAsignarUser.on("click", (event) => {
+    if (!usuariosAgente) {
+        requestUsers();//carga los datos en cache, pero no localstorage
+
+    }
+    //solo una vez
+    selAsignarUser.off("click");
+})
+
+
+
+let requestUsers = () => {
+    let currentToken = checkSession();
+    $.ajax({
+
+        type: "GET",
+        url: API_URL + `/api/User/all`,
+        contentType: "application/json",
+        crossDomain: true,
+        datatype: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `${'Bearer ' + currentToken}`)
+        },
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+        },
+        success: (data, statustext, xhr) => {
+            if (xhr.status == 200) {
+                if (data.users) {
+                    usuariosAgente = data.users;
+
+                    refillSelectuser()
+
+                }
+
+            }
+
+        },
+        error: (xhr, textStatus) => {
+
+        },
+        complete: (xhr, statustexts) => {
+            if (xhr.status != 200) {
+                alert("Error al obtener ususuario para asignacion de reportes: " + xhr.responseText);
+            }
+        }
+
+
+    });
+}
+
+const refillSelectuser = (event) => {
+    selAsignarUser.children().remove();
+    for (let currentAgent in usuariosAgente) {
+        let currenObj = usuariosAgente[currentAgent];
+        selAsignarUser.append(`
+            <option value${currenObj.IdUser}"> ${currenObj.Name} - ${currenObj.AccessLevelName} </option>
+        `);
+    }
+
+
+}
 
 const refillReportHeadExpand = (individualRepHead, targetHead) => {
     let statusRepStr = individualRepHead.IdStatus == 0 ? "EN ESPERA" : individualRepHead.IdStatus == 1 ? "EN PROCESO" : "COMPLETADA";
@@ -47,12 +115,15 @@ const refillReportHeadExpand = (individualRepHead, targetHead) => {
                           ${individualRepHead.Location.Description ? individualRepHead.Location.Description : "Ubicación"}
                          </a>`);
 
-    heStatus.text(statusRepStr);
+    heStatus.text(statusRepStr);//checar ocultamiento
+    ////////////////
     heNotifiedDT.text(dateRepStr);
-    heInicioDT.text(dateRepInicioStr);
-    heFinDT.text(dateRepFinStr);
+    heInicioDT.text(dateRepInicioStr === "1/1/1 0:00 AM" ? "----" : dateRepInicioStr);
+    heFinDT.text(dateRepFinStr === "1/1/1 0:00 AM" ? "----" : dateRepFinStr);
     heEvidencePic.attr("src", `data:image/png;base64,${individualRepHead.Pic64}`)
 
+
+    refillSelectuser();
 
     //clasificación de reporte
     fillReportTypesNewRep(heSelectReportType);
@@ -63,7 +134,7 @@ const refillReportHeadExpand = (individualRepHead, targetHead) => {
 
     btnSaveStatus.off("click");
     btnSaveStatus.on("click",
-        (event) =>  statusClasifChange(targetHead, individualRepHead)
+        (event) => statusClasifChange(targetHead, individualRepHead)
     );
 
     heSelectReportType.off("change")

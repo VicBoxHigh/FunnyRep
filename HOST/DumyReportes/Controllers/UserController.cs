@@ -58,7 +58,7 @@ namespace DumyReportes.Controllers
 
                 //request usuario ADMIN
                 var resulFilter = from currentUser in users.Cast<User>()
-                                  where currentUser.AccessLevel >= AccessLevel.AGENT //siempre arrojará usuarios mayores a agente
+                                  where currentUser.AccessLevel == AccessLevel.AGENT //siempre arrojará usuarios mayores a agente
                                   select new
                                   {
                                       currentUser.IdUser,
@@ -67,7 +67,7 @@ namespace DumyReportes.Controllers
                                   };
                 return Ok(new
                 {
-                    users,
+                    users = resulFilter.ToList(),
 
                     error = result.ToString() + error
 
@@ -171,6 +171,7 @@ namespace DumyReportes.Controllers
             bool isValid = user.Validate();
             if (!isValid) return Content(HttpStatusCode.BadRequest, Flags.ErrorFlag.ERROR_INVALID_OBJECT.ToString());
 
+            user.AccessLevel = (Flags.AccessLevel)((int)user.AccessLevel * 10);
             //Inserta en DB
             Flags.ErrorFlag resultCreate = _UserDataContext.Create(user, out string error);
 

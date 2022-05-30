@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="Content/Default.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- 
+
 </head>
 <body>
 
@@ -20,13 +20,13 @@
 
             <div id="cntRepHeads" class="container-heads">
 
-                <input type="radio" id="checkAsignados" name="AsginacionStat" checked  value="1">
+                <input type="radio" id="checkAsignados" name="AsginacionStat" checked value="1">
                 <label for="checkAsignados">Asignados</label><br>
                 <input type="radio" id="checkSinAsignar" name="AsginacionStat" value="0">
                 <label for="checkSinAsignar">No asignados</label><br>
 
 
-                <input type="checkbox" id="checkEspera" name="repStatus" checked  value="0">
+                <input type="checkbox" id="checkEspera" name="repStatus" checked value="0">
                 <label for="checkEspera">En espera</label><br>
 
                 <input type="checkbox" id="checkProceso" name="repStatus" checked value="1">
@@ -52,7 +52,7 @@
 
         <div id="cntNewRep" class="containerNewReport">
 
-            <input id="txtTitle" type="text" name="title"  placeholder="Titulo" />
+            <input id="txtTitle" type="text" name="title" placeholder="Titulo" />
 
             <textarea type="text" rows="5" cols="50" id="txtDescriptionReport" name="descriptionReport" placeholder="Describir problema"></textarea>
 
@@ -79,12 +79,12 @@
             <div id="cntRepHeadExpand" class="container-headexpand">
 
                 <div class="container-headexpand__title"></div>
-                <div class="container-headexpand__idReport"> </div>
-                <div class="item-report-head__numEmpleadoWhoNotified"> </div>
+                <div class="container-headexpand__idReport"></div>
+                <div class="item-report-head__numEmpleadoWhoNotified"></div>
 
-                <div class="container-headexpand__EmpleadoNotif"> </div>
-                <div class="container-headexpand__description"> </div>
-                
+                <div class="container-headexpand__EmpleadoNotif"></div>
+                <div class="container-headexpand__description"></div>
+
                 <label for="selRepType_Dtl">Tipo de mantenimiento del reporte:</label>
                 <select name="selRepType_Dtl" class="selRepType_Dtl" id="selRepType_Dtl"></select>
 
@@ -93,13 +93,18 @@
 
 
                 <div class="container-headexpand__location"></div>
-                <div class="container-headexpand__status"> </div>
-                <div class="container-headexpand__notifiedDt"> </div>
+                <div class="container-headexpand__status"></div>
 
-                <span class="container-headexpand__InicioDt"> </span>
-                <span class="container-headexpand__notifiedDt"> </span>
+                <label for="container-headexpand__notifiedDt">Creado:</label>
+                <div id="container-headexpand__notifiedDt" class="container-headexpand__notifiedDt"></div>
 
-                <img class="container-headexpand__EvidencePic"  ></img>
+                <label for="container-headexpand__InicioDt">Fecha Inicio: </label>
+                <span class="container-headexpand__InicioDt"></span>
+
+                <label for="container-headexpand__FinDt">Fecha Fin: </label>
+                <span class="container-headexpand__FinDt"></span>
+
+                <img   class="container-headexpand__EvidencePic"></img>
 
 
             </div>
@@ -133,7 +138,7 @@
     <script src="Content/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="Content/webcam-easyV.js"></script>
 
-    <script type="text/javascript" src="Content/Util.js" ></script>
+    <script type="text/javascript" src="Content/Util.js"></script>
     <script type="text/javascript" src="Content/Report/Reporte_newReport.js"></script>
     <script src="Content/Report/Reporte_init.js" type="text/javascript"></script>
     <script src="Content/Report/Reporte_HeadsPane.js" type="text/javascript"></script>

@@ -10,8 +10,8 @@ const mediatorTask = () => {
     //Reports are saved at this point
     //De acuerdo con los estados de lo filtros, de owned y no owned, someter
 
-    let reportsAsignados = JSON.parse(localStorage.getItem(REPORTS_ASIGNADOS_NAME));
-    let reportsNoAsignados = JSON.parse(localStorage.getItem(REPORTS_NO_ASIGNADOS_NAME));
+    let reportsAsignados = REPORTES_ASIGNADOS//JSON.parse(localStorage.getItem(REPORTS_ASIGNADOS_NAME));
+    let reportsNoAsignados = REPORTES_NO_ASIGNADOS// JSON.parse(localStorage.getItem(REPORTS_NO_ASIGNADOS_NAME));
 
     if (!reportsAsignados && !reportsNoAsignados) {
         //alert("No hay ")
@@ -41,14 +41,14 @@ const filterWith = (repsToWorkWith, statsOptions) => {
     //o filtro y luego entrega a render?
     let repsFiltered = [];
     let i = 0;
-    $.each(repsToWorkWith,( index, element) => {
-        if ($.inArray(element.IdStatus+"", statsOptions) !== -1) {
+    $.each(repsToWorkWith, (index, element) => {
+        if ($.inArray(element.IdStatus + "", statsOptions) !== -1) {
 
             repsFiltered[i] = element;
             i++;
         }
     })
- 
+
 
 
     return repsFiltered;

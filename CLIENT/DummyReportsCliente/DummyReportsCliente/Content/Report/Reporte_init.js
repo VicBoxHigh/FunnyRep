@@ -3,7 +3,7 @@
 const btnToogleNewRep = $("#btnTogleNewRep");
 const btnUsuariosPage = $("#btnUsuarios");
 
- 
+
 //const selRepType_Dtl = $("#selRepType_Dtl");
 
 //INIT UI - Según el usuario
@@ -59,6 +59,9 @@ btnToogleNewRep.on("click", () => {
 
 });
 
+
+
+
 const btnUsuariosRedirect = (event) => {
     window.location.href = "./Usuarios";
 }
@@ -89,7 +92,7 @@ const checkSessionLevel = () => {
     // TODO btnUsuarios solo disponible para TI.
     if (ln === "TI") {
         btnUsuariosPage.removeClass("no-render");
-        btnUsuariosPage.on("click", () => window.location.href = "./Usuarios" )
+        btnUsuariosPage.on("click", () => window.location.href = "./Usuarios")
     }
     //Por defecto el contenedor Nuevo reporte será escondido, no importa el usuario
     //seg+un si es usuario basic, al hacer clic en NEW, se mostrará

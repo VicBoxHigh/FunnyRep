@@ -37,7 +37,7 @@ namespace DumyReportes.Controllers
             if (idRH < 1) return BadRequest(Flags.ErrorFlag.ERROR_INVALID_ID.ToString());
             Flags.ErrorFlag resultGet = _ReportDtlContext.GetAll(idRH, out List<IReportObject> reportObjects, out string error);
 
-            if (resultGet == ErrorFlag.ERROR_NOT_EXISTS) return Content(HttpStatusCode.Conflict, "El reporte proporcionado no existe");
+            if (resultGet == ErrorFlag.ERROR_NOT_EXISTS) return Content(HttpStatusCode.NoContent, "El reporte proporcionado tiene entradas.");
             if (resultGet != Flags.ErrorFlag.ERROR_OK_RESULT) return Content(HttpStatusCode.Conflict, error);
 
             return Ok(

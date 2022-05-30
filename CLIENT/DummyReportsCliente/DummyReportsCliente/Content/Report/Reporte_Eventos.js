@@ -19,8 +19,13 @@ const clickReportHead = async (event, individualRepHead) => {
         data = await taskGetEntries;//unvelop the entries from the promise
 
     } catch (ex) {
+        if (ex.status == 204) {   //No content
+         
+        }
+        else {
 
-        alert("Error al solicitar el detalle.")
+            alert("Error al solicitar el detalle.")
+        }
     }
 
     //OK

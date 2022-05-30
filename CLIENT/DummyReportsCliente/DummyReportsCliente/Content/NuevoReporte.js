@@ -1,4 +1,5 @@
- 
+
+
 const getRepsByUser = () => {
 
     let currentToken = localStorage.getItem(KEY_TOKEN_NAME);
@@ -31,9 +32,12 @@ const getRepsByUser = () => {
                 alert(textStatus)
 
             if (data) {
-                localStorage.setItem(REPORTS_ASIGNADOS_NAME, JSON.stringify(data.reportesAsignados));
+                REPORTES_ASIGNADOS = data.reportesAsignados;
+                REPORTES_NO_ASIGNADOS = data.reportesNoAsignados;
+
+                /*localStorage.setItem(REPORTS_ASIGNADOS_NAME, JSON.stringify(data.reportesAsignados));
                 localStorage.setItem(REPORTS_NO_ASIGNADOS_NAME, JSON.stringify(data.reportesNoAsignados));
-                mediatorTask();
+                */mediatorTask();
             }
             //renderRepHeads(data.reportesAsignados, data.reportesNoAsignados)
 
@@ -51,7 +55,7 @@ const getRepsByUser = () => {
 
 const init = async () => {
     checkSessionLevel();
-    await initNewReportView()
+    await initNewReportView();
     getRepsByUser();
 
     ////fillReportTypesNewRep(selRepType_Dtl) //este no, se carga dinamico

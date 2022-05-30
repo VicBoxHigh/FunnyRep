@@ -426,7 +426,8 @@ CREATE PROCEDURE dbo.SetReportOwner
 AS 
 
 
-	IF(NOT EXISTS ( SELECT TOP 1 * FROM dbo.[User] WHERE IdUser = @idUsuario AND  IsEnabled = 1 AND [Level] > 0)  		)
+
+	IF(NOT EXISTS ( SELECT TOP 1 * FROM dbo.[User] WHERE IdUser = @idUsuario AND  IsEnabled = 1 AND [Level] = 20))--solo si es agente
 	BEGIN ;
 		THROW 54321, 'Compruebe que el usuario a asignarle el reporte tenga al menos un nivel de agente y se encuentre activo',1;
 	END;
