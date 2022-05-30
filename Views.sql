@@ -78,6 +78,7 @@ SELECT R.*,
  
 GO
 
+ 
 
 CREATE PROCEDURE ReportsByOwner
 	@IdUserOwner int
@@ -456,7 +457,7 @@ AS
 		--algo no se ejecutó (y las validaciones se saltaron)
 		IF(@@TRANCOUNT != 2)
 			BEGIN 
-				ROLLBACK AsignarReporte
+				ROLLBACK TRANSACTION AsignarReporte
 			END
 		ELSE
 			BEGIN

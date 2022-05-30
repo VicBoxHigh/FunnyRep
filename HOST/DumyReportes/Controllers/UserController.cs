@@ -22,6 +22,8 @@ namespace DumyReportes.Controllers
 
         private readonly UserDataContext _UserDataContext = new UserDataContext();
         // GET: api/User
+        //si es un usuario TI, regresará todos los datos
+        //Si es un usuario ADMIN, regresará solo Nombre y nivel de acceso
         [HttpGet]
         [Route("~/api/User/all")]
         [IdentityBasicAuthentication]
@@ -29,19 +31,58 @@ namespace DumyReportes.Controllers
         {
 
             UserIdentiy userIdentiy = HttpContext.Current.User.Identity as UserIdentiy;
-            if (userIdentiy == null || !userIdentiy.IsAuthenticated | userIdentiy.user.AccessLevel < Flags.AccessLevel.TI)
+            if (userIdentiy == null || !userIdentiy.IsAuthenticated || userIdentiy.user.AccessLevel < Flags.AccessLevel.ADMIN)
             {
                 return Content(HttpStatusCode.Unauthorized, "No está autorizado para acceder.");
             }
 
-            Flags.ErrorFlag result = _UserDataContext.GetAll(out List<IReportObject> users, out string error);
+            string error;
 
-            return Ok(new
+            Flags.ErrorFlag result = _UserDataContext.GetAll(out List<IReportObject> users, out error);
+
+            IHttpActionResult resultRequest = null;
+
+
+            if (userIdentiy.user.AccessLevel == AccessLevel.TI)
             {
-                users,
-                error = result.ToString() + error
+                return Ok(new
+                {
+                    users,
+                    error = result.ToString() + error
+                });
+            }
+            else if (userIdentiy.user.AccessLevel == AccessLevel.ADMIN)
+            {
 
-            });
+                //Debe dar salida unicamente a los campos name y Acces level de usuarios >=  agente
+
+                //request usuario ADMIN
+                var resulFilter = from currentUser in users.Cast<User>()
+                                  where currentUser.AccessLevel >= AccessLevel.AGENT //siempre arrojará usuarios mayores a agente
+                                  select new
+                                  {
+                                      currentUser.IdUser,
+                                      currentUser.AccessLevelName,
+                                      currentUser.Name
+                                  };
+                return Ok(new
+                {
+                    users,
+
+                    error = result.ToString() + error
+
+                });
+
+
+            }
+            else
+            {
+                return Content(HttpStatusCode.Unauthorized, "No está autorizado para realizar está acción.");
+            }
+
+
+            //request usuario TI
+            /*var resultFilter2 = from currentUser in users.Cast<User>()*/
 
         }
 
@@ -161,7 +202,7 @@ namespace DumyReportes.Controllers
             }
 
             //para no exponer el nivel de acceso,  se colocaron del 0 al 3, la db acepta´ra unicamente -> 0 10 20 y 30
-            user.AccessLevel = (AccessLevel) (  ( (int)user.AccessLevel) * 10);
+            user.AccessLevel = (AccessLevel)(((int)user.AccessLevel) * 10);
 
             Flags.ErrorFlag result = _UserDataContext.Update(user, out string error);
 
@@ -204,7 +245,7 @@ namespace DumyReportes.Controllers
 
         [HttpDelete]
         [IdentityBasicAuthentication]
-        public IHttpActionResult Delete([FromUri]int id)
+        public IHttpActionResult Delete([FromUri] int id)
         {
 
             UserIdentiy identity = (UserIdentiy)HttpContext.Current.User.Identity;

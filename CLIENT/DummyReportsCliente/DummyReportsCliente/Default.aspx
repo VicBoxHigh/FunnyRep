@@ -84,14 +84,15 @@
 
                 <div class="container-headexpand__EmpleadoNotif"> </div>
                 <div class="container-headexpand__description"> </div>
-                <select name="selRepType_Dtl" class="selRepType_Dtl" id="selRepType_Dtl">
-                </select>
-                <select name="selAsignarUser" class="selAsignarUser">
+                
+                <label for="selRepType_Dtl">Tipo de mantenimiento del reporte:</label>
+                <select name="selRepType_Dtl" class="selRepType_Dtl" id="selRepType_Dtl"></select>
 
-                </select>
-                <div class="container-headexpand__location">
-                    
-                </div>
+                <label for="selAsignarUser">Agente que atenderá:</label>
+                <select name="selAsignarUser" class="selAsignarUser" id="selAsignarUser"></select>
+
+
+                <div class="container-headexpand__location"></div>
                 <div class="container-headexpand__status"> </div>
                 <div class="container-headexpand__notifiedDt"> </div>
 
