@@ -191,7 +191,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ReportDtlController.cs" />
-    <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\ReportTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />

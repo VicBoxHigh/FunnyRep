@@ -287,7 +287,7 @@ AS
 
 	END
 
-
+	--Si no funciona de manera correcta, se puede eliminar el trigger, y usar algún SP.
 	--El estado del report cambia
 	IF((@newIdStat = 1  and @oldIdStat = 0 ) )--ESPERA a PROCESO
 	BEGIN 
@@ -427,7 +427,7 @@ AS
 
 
 
-	IF(NOT EXISTS ( SELECT TOP 1 * FROM dbo.[User] WHERE IdUser = @idUsuario AND  IsEnabled = 1 AND [Level] = 20))--solo si es agente
+	IF(NOT EXISTS ( SELECT TOP 1 * FROM dbo.[User] WHERE IdUser = @idUsuario AND  IsEnabled = 1 AND [Level] = 10))--solo si es agente
 	BEGIN ;
 		THROW 54321, 'Compruebe que el usuario a asignarle el reporte tenga al menos un nivel de agente y se encuentre activo',1;
 	END;
