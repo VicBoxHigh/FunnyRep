@@ -23,19 +23,7 @@ namespace DumyReportes.Controllers
         //WhoNotifiedReports and OwnerReports
 
         private readonly ReportDataContext _ReportDataContext = new ReportDataContext();
-
-
-
-
-        //isowner TRUE FALSE
-        //idUser  3088 3088
-        //__________________
-        //  Assigned | Created
-        //So, the function can get all the header reports , by owner or not, depending on the IdUser
-
-        ///Como se implementó autenticación, ya es posible hacerlo si estos parametros.
-
-        //Los datos a entregar dependerán del nivel de usuario que hizo login.
+ 
 
         [HttpGet]
         public IHttpActionResult Get(/*bool isOwner, int idUser*/)

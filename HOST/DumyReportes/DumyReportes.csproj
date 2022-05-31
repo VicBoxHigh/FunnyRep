@@ -193,7 +193,6 @@
     <Compile Include="Controllers\ReportDtlController.cs" />
     <Compile Include="Controllers\ReportTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data\ConexionBD.cs" />
     <Compile Include="Data\DeleteReportContext.cs" />
     <Compile Include="Data\IDataOperation.cs" />
@@ -205,7 +204,6 @@
     <Compile Include="Results\AuthenticationFailureResult.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
     <Compile Include="Filters\IdentityBasicAuthenticationAttribute.cs" />
-    <Compile Include="Filters\VicAuth2.cs" />
     <Compile Include="Filters\BaseAuthenticationAttr.cs" />
     <Compile Include="Flags\Flags.cs" />
     <Compile Include="Global.asax.cs">
